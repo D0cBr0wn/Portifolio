@@ -1,0 +1,38 @@
+npm run build
+npm run dev
+docker compose down -v
+docker compose build --no-cache
+docker compose up --build
+
+
+recupérer les instances docker : 
+docker ps
+docker exec -it <nom_du_conteneur> /bin/sh // prise de controle du container
+
+
+schema save : 
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Show {
+  id      Int      @id @default(autoincrement())
+  label   String
+  date    DateTime
+  venueId Int
+  venue   Venue    @relation(fields: [venueId], references: [id])
+}
+
+model Venue {
+  id    Int    @id @default(autoincrement())
+  name  String
+  city  String
+  shows Show[]
+}

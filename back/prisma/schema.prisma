@@ -1,0 +1,25 @@
+generator client {
+  provider      = "prisma-client-js"
+  output        = "../generated/prisma_client"
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Show {
+  id      Int      @id @default(autoincrement())
+  label   String
+  date    DateTime
+  venueId Int
+  venue   Venue    @relation(fields: [venueId], references: [id])
+}
+
+model Venue {
+  id    Int    @id @default(autoincrement())
+  name  String
+  city  String
+  shows Show[]
+}
