@@ -2095,18 +2095,27 @@ export namespace Prisma {
     id: number | null
     name: string | null
     city: string | null
+    address1: string | null
+    address2: string | null
+    zipCode: string | null
   }
 
   export type VenueMaxAggregateOutputType = {
     id: number | null
     name: string | null
     city: string | null
+    address1: string | null
+    address2: string | null
+    zipCode: string | null
   }
 
   export type VenueCountAggregateOutputType = {
     id: number
     name: number
     city: number
+    address1: number
+    address2: number
+    zipCode: number
     _all: number
   }
 
@@ -2123,18 +2132,27 @@ export namespace Prisma {
     id?: true
     name?: true
     city?: true
+    address1?: true
+    address2?: true
+    zipCode?: true
   }
 
   export type VenueMaxAggregateInputType = {
     id?: true
     name?: true
     city?: true
+    address1?: true
+    address2?: true
+    zipCode?: true
   }
 
   export type VenueCountAggregateInputType = {
     id?: true
     name?: true
     city?: true
+    address1?: true
+    address2?: true
+    zipCode?: true
     _all?: true
   }
 
@@ -2228,6 +2246,9 @@ export namespace Prisma {
     id: number
     name: string
     city: string
+    address1: string | null
+    address2: string | null
+    zipCode: string | null
     _count: VenueCountAggregateOutputType | null
     _avg: VenueAvgAggregateOutputType | null
     _sum: VenueSumAggregateOutputType | null
@@ -2253,6 +2274,9 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     city?: boolean
+    address1?: boolean
+    address2?: boolean
+    zipCode?: boolean
     shows?: boolean | Venue$showsArgs<ExtArgs>
     _count?: boolean | VenueCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["venue"]>
@@ -2261,21 +2285,30 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     city?: boolean
+    address1?: boolean
+    address2?: boolean
+    zipCode?: boolean
   }, ExtArgs["result"]["venue"]>
 
   export type VenueSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
     city?: boolean
+    address1?: boolean
+    address2?: boolean
+    zipCode?: boolean
   }, ExtArgs["result"]["venue"]>
 
   export type VenueSelectScalar = {
     id?: boolean
     name?: boolean
     city?: boolean
+    address1?: boolean
+    address2?: boolean
+    zipCode?: boolean
   }
 
-  export type VenueOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "city", ExtArgs["result"]["venue"]>
+  export type VenueOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "city" | "address1" | "address2" | "zipCode", ExtArgs["result"]["venue"]>
   export type VenueInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     shows?: boolean | Venue$showsArgs<ExtArgs>
     _count?: boolean | VenueCountOutputTypeDefaultArgs<ExtArgs>
@@ -2292,6 +2325,9 @@ export namespace Prisma {
       id: number
       name: string
       city: string
+      address1: string | null
+      address2: string | null
+      zipCode: string | null
     }, ExtArgs["result"]["venue"]>
     composites: {}
   }
@@ -2719,6 +2755,9 @@ export namespace Prisma {
     readonly id: FieldRef<"Venue", 'Int'>
     readonly name: FieldRef<"Venue", 'String'>
     readonly city: FieldRef<"Venue", 'String'>
+    readonly address1: FieldRef<"Venue", 'String'>
+    readonly address2: FieldRef<"Venue", 'String'>
+    readonly zipCode: FieldRef<"Venue", 'String'>
   }
     
 
@@ -3171,7 +3210,10 @@ export namespace Prisma {
   export const VenueScalarFieldEnum: {
     id: 'id',
     name: 'name',
-    city: 'city'
+    city: 'city',
+    address1: 'address1',
+    address2: 'address2',
+    zipCode: 'zipCode'
   };
 
   export type VenueScalarFieldEnum = (typeof VenueScalarFieldEnum)[keyof typeof VenueScalarFieldEnum]
@@ -3183,6 +3225,14 @@ export namespace Prisma {
   };
 
   export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+  export const NullsOrder: {
+    first: 'first',
+    last: 'last'
+  };
+
+  export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 
 
   /**
@@ -3280,6 +3330,9 @@ export namespace Prisma {
     id?: IntFilter<"Venue"> | number
     name?: StringFilter<"Venue"> | string
     city?: StringFilter<"Venue"> | string
+    address1?: StringNullableFilter<"Venue"> | string | null
+    address2?: StringNullableFilter<"Venue"> | string | null
+    zipCode?: StringNullableFilter<"Venue"> | string | null
     shows?: ShowListRelationFilter
   }
 
@@ -3287,6 +3340,9 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     city?: SortOrder
+    address1?: SortOrderInput | SortOrder
+    address2?: SortOrderInput | SortOrder
+    zipCode?: SortOrderInput | SortOrder
     shows?: ShowOrderByRelationAggregateInput
   }
 
@@ -3297,6 +3353,9 @@ export namespace Prisma {
     NOT?: VenueWhereInput | VenueWhereInput[]
     name?: StringFilter<"Venue"> | string
     city?: StringFilter<"Venue"> | string
+    address1?: StringNullableFilter<"Venue"> | string | null
+    address2?: StringNullableFilter<"Venue"> | string | null
+    zipCode?: StringNullableFilter<"Venue"> | string | null
     shows?: ShowListRelationFilter
   }, "id">
 
@@ -3304,6 +3363,9 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     city?: SortOrder
+    address1?: SortOrderInput | SortOrder
+    address2?: SortOrderInput | SortOrder
+    zipCode?: SortOrderInput | SortOrder
     _count?: VenueCountOrderByAggregateInput
     _avg?: VenueAvgOrderByAggregateInput
     _max?: VenueMaxOrderByAggregateInput
@@ -3318,6 +3380,9 @@ export namespace Prisma {
     id?: IntWithAggregatesFilter<"Venue"> | number
     name?: StringWithAggregatesFilter<"Venue"> | string
     city?: StringWithAggregatesFilter<"Venue"> | string
+    address1?: StringNullableWithAggregatesFilter<"Venue"> | string | null
+    address2?: StringNullableWithAggregatesFilter<"Venue"> | string | null
+    zipCode?: StringNullableWithAggregatesFilter<"Venue"> | string | null
   }
 
   export type ShowCreateInput = {
@@ -3368,6 +3433,9 @@ export namespace Prisma {
   export type VenueCreateInput = {
     name: string
     city: string
+    address1?: string | null
+    address2?: string | null
+    zipCode?: string | null
     shows?: ShowCreateNestedManyWithoutVenueInput
   }
 
@@ -3375,12 +3443,18 @@ export namespace Prisma {
     id?: number
     name: string
     city: string
+    address1?: string | null
+    address2?: string | null
+    zipCode?: string | null
     shows?: ShowUncheckedCreateNestedManyWithoutVenueInput
   }
 
   export type VenueUpdateInput = {
     name?: StringFieldUpdateOperationsInput | string
     city?: StringFieldUpdateOperationsInput | string
+    address1?: NullableStringFieldUpdateOperationsInput | string | null
+    address2?: NullableStringFieldUpdateOperationsInput | string | null
+    zipCode?: NullableStringFieldUpdateOperationsInput | string | null
     shows?: ShowUpdateManyWithoutVenueNestedInput
   }
 
@@ -3388,6 +3462,9 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     city?: StringFieldUpdateOperationsInput | string
+    address1?: NullableStringFieldUpdateOperationsInput | string | null
+    address2?: NullableStringFieldUpdateOperationsInput | string | null
+    zipCode?: NullableStringFieldUpdateOperationsInput | string | null
     shows?: ShowUncheckedUpdateManyWithoutVenueNestedInput
   }
 
@@ -3395,17 +3472,26 @@ export namespace Prisma {
     id?: number
     name: string
     city: string
+    address1?: string | null
+    address2?: string | null
+    zipCode?: string | null
   }
 
   export type VenueUpdateManyMutationInput = {
     name?: StringFieldUpdateOperationsInput | string
     city?: StringFieldUpdateOperationsInput | string
+    address1?: NullableStringFieldUpdateOperationsInput | string | null
+    address2?: NullableStringFieldUpdateOperationsInput | string | null
+    zipCode?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type VenueUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     city?: StringFieldUpdateOperationsInput | string
+    address1?: NullableStringFieldUpdateOperationsInput | string | null
+    address2?: NullableStringFieldUpdateOperationsInput | string | null
+    zipCode?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type IntFilter<$PrismaModel = never> = {
@@ -3527,10 +3613,29 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
+  export type StringNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | null
+    notIn?: string[] | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
+
   export type ShowListRelationFilter = {
     every?: ShowWhereInput
     some?: ShowWhereInput
     none?: ShowWhereInput
+  }
+
+  export type SortOrderInput = {
+    sort: SortOrder
+    nulls?: NullsOrder
   }
 
   export type ShowOrderByRelationAggregateInput = {
@@ -3541,6 +3646,9 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     city?: SortOrder
+    address1?: SortOrder
+    address2?: SortOrder
+    zipCode?: SortOrder
   }
 
   export type VenueAvgOrderByAggregateInput = {
@@ -3551,16 +3659,39 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     city?: SortOrder
+    address1?: SortOrder
+    address2?: SortOrder
+    zipCode?: SortOrder
   }
 
   export type VenueMinOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
     city?: SortOrder
+    address1?: SortOrder
+    address2?: SortOrder
+    zipCode?: SortOrder
   }
 
   export type VenueSumOrderByAggregateInput = {
     id?: SortOrder
+  }
+
+  export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | null
+    notIn?: string[] | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedStringNullableFilter<$PrismaModel>
+    _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
   export type VenueCreateNestedOneWithoutShowsInput = {
@@ -3605,6 +3736,10 @@ export namespace Prisma {
     connectOrCreate?: ShowCreateOrConnectWithoutVenueInput | ShowCreateOrConnectWithoutVenueInput[]
     createMany?: ShowCreateManyVenueInputEnvelope
     connect?: ShowWhereUniqueInput | ShowWhereUniqueInput[]
+  }
+
+  export type NullableStringFieldUpdateOperationsInput = {
+    set?: string | null
   }
 
   export type ShowUpdateManyWithoutVenueNestedInput = {
@@ -3729,15 +3864,63 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
+  export type NestedStringNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | null
+    notIn?: string[] | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
+
+  export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | null
+    notIn?: string[] | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedStringNullableFilter<$PrismaModel>
+    _max?: NestedStringNullableFilter<$PrismaModel>
+  }
+
+  export type NestedIntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | null
+    notIn?: number[] | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
   export type VenueCreateWithoutShowsInput = {
     name: string
     city: string
+    address1?: string | null
+    address2?: string | null
+    zipCode?: string | null
   }
 
   export type VenueUncheckedCreateWithoutShowsInput = {
     id?: number
     name: string
     city: string
+    address1?: string | null
+    address2?: string | null
+    zipCode?: string | null
   }
 
   export type VenueCreateOrConnectWithoutShowsInput = {
@@ -3759,12 +3942,18 @@ export namespace Prisma {
   export type VenueUpdateWithoutShowsInput = {
     name?: StringFieldUpdateOperationsInput | string
     city?: StringFieldUpdateOperationsInput | string
+    address1?: NullableStringFieldUpdateOperationsInput | string | null
+    address2?: NullableStringFieldUpdateOperationsInput | string | null
+    zipCode?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type VenueUncheckedUpdateWithoutShowsInput = {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     city?: StringFieldUpdateOperationsInput | string
+    address1?: NullableStringFieldUpdateOperationsInput | string | null
+    address2?: NullableStringFieldUpdateOperationsInput | string | null
+    zipCode?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ShowCreateWithoutVenueInput = {

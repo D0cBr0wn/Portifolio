@@ -127,12 +127,20 @@ exports.Prisma.ShowScalarFieldEnum = {
 exports.Prisma.VenueScalarFieldEnum = {
   id: 'id',
   name: 'name',
-  city: 'city'
+  city: 'city',
+  address1: 'address1',
+  address2: 'address2',
+  zipCode: 'zipCode'
 };
 
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
+};
+
+exports.Prisma.NullsOrder = {
+  first: 'first',
+  last: 'last'
 };
 
 

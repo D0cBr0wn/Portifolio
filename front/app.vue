@@ -1,6 +1,7 @@
 <template>
   <div>
-    <h1>it works</h1>
-    <UButton>Button</UButton>
+    <NuxtLayout>
+      <NuxtPage />
+    </NuxtLayout>
   </div>
 </template>

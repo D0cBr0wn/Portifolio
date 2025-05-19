@@ -21,5 +21,8 @@ model Venue {
   id    Int    @id @default(autoincrement())
   name  String
   city  String
+  address1 String?
+  address2 String?
+  zipCode String?
   shows Show[]
 }

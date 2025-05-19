@@ -2,5 +2,28 @@
 export default defineNuxtConfig({
   compatibilityDate: "2024-11-01",
   devtools: { enabled: true },
-  modules: ["@nuxt/eslint", "@nuxt/icon", "@nuxt/test-utils", "@nuxt/ui"],
+  runtimeConfig: {
+    public: {
+      apiBase: process.env.NUXT_PUBLIC_BACK_URL || "http://localhost:3000", // base de ton API Node.js
+    },
+  },
+  css: [
+    "vuetify/lib/styles/main.sass",
+    "@/assets/main.scss",
+    "@mdi/font/css/materialdesignicons.min.css",
+  ],
+  build: {
+    transpile: ["vuetify"],
+  },
+  devServer: {
+    host: "0.0.0.0",
+    port: 3001,
+  },
+  vite: {
+    define: {
+      "process.env.DEBUG": false,
+    },
+  },
+
+  modules: ["@nuxt/test-utils", "@nuxt/icon", "@nuxt/eslint", "@pinia/nuxt"],
 });

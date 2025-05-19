@@ -7,12 +7,30 @@
             <span class="text-h6">Venues</span>
             <v-btn color="primary" @click="dialog = true">Add a venue</v-btn>
           </v-card-title>
-          <pre>{{ store.venues }} venues</pre>
+
           <v-data-table
             :headers="headers"
             :items="store.venues"
             class="elevation-1"
-          />
+          >
+            <template v-slot:item.actions="{ item }">
+              <div class="d-flex ga-2 justify-end">
+                <v-icon
+                  color="medium-emphasis"
+                  icon="mdi-pencil"
+                  size="small"
+                  @click="launchEditVenue(item.id)"
+                ></v-icon>
+
+                <v-icon
+                  color="medium-emphasis"
+                  icon="mdi-delete"
+                  size="small"
+                  @click="deleteVenue(item.id)"
+                ></v-icon>
+              </div>
+            </template>
+          </v-data-table>
         </v-card>
 
         <!-- Dialog for creating a new venue -->
@@ -27,8 +45,13 @@
                   required
                 />
                 <v-text-field
-                  v-model="currentVenue.address"
-                  label="Address"
+                  v-model="currentVenue.address1"
+                  label="Address 1"
+                  required
+                />
+                <v-text-field
+                  v-model="currentVenue.address2"
+                  label="Address 2"
                   required
                 />
                 <v-text-field
@@ -44,8 +67,8 @@
               </v-form>
             </v-card-text>
             <v-card-actions class="justify-end">
-              <v-btn text @click="dialog = false">Cancel</v-btn>
-              <v-btn color="primary" @click="addVenue">Save</v-btn>
+              <v-btn text @click="cancel()">Cancel</v-btn>
+              <v-btn color="primary" @click="saveVenue()">Save</v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
@@ -54,8 +77,9 @@
   </v-app>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref } from "vue";
+import { editVenue } from "~/composables/venuesComposables";
 import { useVenueStore } from "~/pinia/venueStore";
 
 definePageMeta({
@@ -69,14 +93,19 @@ const dialog = ref(false);
 const currentVenue = ref({
   id: "",
   name: "",
+  address1: "",
+  address2: "",
+  zipCode: "",
   city: "",
 });
 
 const headers = [
-  { text: "Name", value: "name" },
-  { text: "Address", value: "address" },
-  { text: "Zip Code", value: "zipCode" },
-  { text: "City", value: "city" },
+  { title: "Name", key: "name" },
+  { title: "Address 1", key: "address1" },
+  { title: "Address 2", key: "address2" },
+  { title: "Zip Code", key: "zipCode" },
+  { title: "City", key: "city" },
+  { title: "Action", key: "actions", sortable: false },
 ];
 
 // const venues = ref([
@@ -94,16 +123,48 @@ onMounted(async () => {
 });
 
 const addVenue = async () => {
-  if (
-    currentVenue.value.name &&
-    currentVenue.value.address &&
-    currentVenue.value.zipCode &&
-    currentVenue.value.city
-  ) {
+  if (currentVenue.value.name && currentVenue.value.city) {
     await createVenues(currentVenue.value);
-    currentVenue.value = { name: "", address: "", zipCode: "", city: "" };
+
     dialog.value = false;
   }
+};
+
+const setCurrentVenue = (id: string) => {
+  currentVenue.value = store.venues.find((v) => v.id === id);
+};
+
+const launchEditVenue = (id: string) => {
+  setCurrentVenue(id);
+  dialog.value = true;
+};
+
+const deleteVenue = async (id: string) => {
+  await store.deleteVenue(id);
+  await getVenues();
+};
+
+const saveVenue = async () => {
+  console.warn("id = ", currentVenue.value.id);
+  if (currentVenue.value.id !== "") {
+    await editVenue(currentVenue.value);
+  } else {
+    await addVenue();
+  }
+  await getVenues();
+  cancel();
+};
+
+const cancel = () => {
+  dialog.value = false;
+  currentVenue.value = {
+    id: "",
+    name: "",
+    address1: "",
+    address2: "",
+    zipCode: "",
+    city: "",
+  };
 };
 </script>
 
