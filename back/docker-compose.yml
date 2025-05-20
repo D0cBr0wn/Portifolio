@@ -1,8 +1,10 @@
 version: '3'
 services:
   api:
+    container_name: back_api
     build:
       context: .
+    image: back_api_1:latest
     ports:
       - '3000:3000'
     volumes:
