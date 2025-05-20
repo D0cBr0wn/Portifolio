@@ -133,6 +133,25 @@ exports.Prisma.VenueScalarFieldEnum = {
   zipCode: 'zipCode'
 };
 
+exports.Prisma.UserScalarFieldEnum = {
+  id: 'id',
+  email: 'email',
+  password: 'password'
+};
+
+exports.Prisma.IpBanScalarFieldEnum = {
+  ip: 'ip',
+  reason: 'reason',
+  expiresAt: 'expiresAt'
+};
+
+exports.Prisma.FailedLoginAttemptScalarFieldEnum = {
+  id: 'id',
+  ip: 'ip',
+  emailTried: 'emailTried',
+  date: 'date'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -146,7 +165,10 @@ exports.Prisma.NullsOrder = {
 
 exports.Prisma.ModelName = {
   Show: 'Show',
-  Venue: 'Venue'
+  Venue: 'Venue',
+  User: 'User',
+  IpBan: 'IpBan',
+  FailedLoginAttempt: 'FailedLoginAttempt'
 };
 
 /**

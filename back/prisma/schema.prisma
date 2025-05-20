@@ -26,3 +26,22 @@ model Venue {
   zipCode String?
   shows Show[]
 }
+
+model User {
+  id       Int     @id @default(autoincrement())
+  email    String  @unique
+  password String
+}
+
+model IpBan {
+  ip        String   @id
+  reason    String
+  expiresAt DateTime
+}
+
+model FailedLoginAttempt {
+  id      Int     @id @default(autoincrement())
+  ip      String
+  emailTried    String
+  date    DateTime
+}

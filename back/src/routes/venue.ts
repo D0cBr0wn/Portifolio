@@ -1,6 +1,8 @@
 import { Router, Request, Response } from 'express'
 import { PrismaClient } from '../../generated/prisma_client'
 import { z } from 'zod'
+import { authenticateToken } from '../middleware/authMiddleware'
+import { ParamsDictionary } from 'express-serve-static-core'
 
 const router = Router()
 const prisma = new PrismaClient()
@@ -13,19 +15,14 @@ const venueSchema = z.object({
   city: z.string().min(1)
 })
 
-// Définir le type de paramètre `id`
-interface VenueParams {
-  id: string
-}
-
 // GET all venues
-router.get('/', async (req: Request, res: Response) => {
+router.get('/', authenticateToken, async (req: Request, res: Response) => {
   const venues = await prisma.venue.findMany()
   res.json(venues)
 })
 
 // POST a new venue
-router.post('/', async (req: Request, res: Response) => {
+router.post('/', authenticateToken, async (req: Request, res: Response) => {
   try {
     const data = venueSchema.parse(req.body)
     const venue = await prisma.venue.create({ data })
@@ -38,7 +35,8 @@ router.post('/', async (req: Request, res: Response) => {
 // PUT update a venue by ID
 router.put(
   '/:id',
-  async (req: Request<VenueParams>, res: Response): Promise<void> => {
+  authenticateToken,
+  async (req: Request<ParamsDictionary>, res: Response): Promise<void> => {
     const id = parseInt(req.params.id, 10)
     if (isNaN(id)) res.status(400).json({ error: 'Invalid ID' })
 
@@ -58,7 +56,8 @@ router.put(
 // DELETE a venue by ID
 router.delete(
   '/:id',
-  async (req: Request<VenueParams>, res: Response): Promise<void> => {
+  authenticateToken,
+  async (req: Request<ParamsDictionary>, res: Response): Promise<void> => {
     const id = parseInt(req.params.id, 10)
     if (isNaN(id)) res.status(400).json({ error: 'Invalid ID' })
 
