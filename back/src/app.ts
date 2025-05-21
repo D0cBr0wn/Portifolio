@@ -6,7 +6,8 @@ import auth from './routes/auth'
 import ipBan from './routes/ipBan'
 import helmet from 'helmet'
 import cors from 'cors'
-import logger from './logger'
+import { adminTrap } from './middleware/adminTrapMiddleware'
+import { ipBanCheck } from './middleware/ipBanMiddleware'
 
 dotenv.config()
 const app = express()
@@ -36,6 +37,10 @@ const corsOptions = {
 app.use(helmet())
 app.use(cors(corsOptions))
 app.use(express.json())
+// security
+app.use(ipBanCheck)
+app.use(adminTrap)
+// routes
 app.use('/shows', showRoutes)
 app.use('/venues', venueRoutes)
 app.use('/auth', auth)
@@ -45,6 +50,4 @@ app.get('/', (req, res) => {
   res.send('Hello from backend!')
 })
 
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`)
-})
+export default app

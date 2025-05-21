@@ -136,7 +136,8 @@ exports.Prisma.VenueScalarFieldEnum = {
 exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
   email: 'email',
-  password: 'password'
+  password: 'password',
+  banUntil: 'banUntil'
 };
 
 exports.Prisma.IpBanScalarFieldEnum = {

@@ -11,7 +11,7 @@ services:
       - .:/app
       - /app/node_modules
     environment:
-      DATABASE_URL: postgres://ooodbuser:password@postgres:5432/ooo_db
+      DATABASE_URL: file:./prisma/dev.db
     networks:
       - prisma-network
     command: npm run dev

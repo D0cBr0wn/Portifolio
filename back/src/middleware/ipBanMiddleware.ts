@@ -7,7 +7,7 @@ export async function ipBanCheck(
   req: Request,
   res: Response,
   next: NextFunction
-) {
+): Promise<void> {
   const ip = req.ip || req.connection.remoteAddress || ''
   const now = new Date()
 
@@ -16,13 +16,10 @@ export async function ipBanCheck(
 
   const ban = await prisma.ipBan.findUnique({ where: { ip } })
 
-  // TODO REMOVE TOO MUCH INFOS
   if (ban && ban.expiresAt > now) {
-    return res
-      .status(403)
-      .json({
-        error: `Access denied: banned for reason "${ban.reason}" until ${ban.expiresAt.toISOString()}`
-      })
+    res.status(403).json({
+      error: `Access denied`
+    })
   }
 
   next()
