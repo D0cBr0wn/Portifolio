@@ -1,7 +1,5 @@
 import { Request, Response, NextFunction } from 'express'
-import { PrismaClient } from '../../generated/prisma_client'
-
-const prisma = new PrismaClient()
+import prisma from '../lib/prisma'
 
 export async function ipBanCheck(
   req: Request,
@@ -20,6 +18,7 @@ export async function ipBanCheck(
     res.status(403).json({
       error: `Access denied`
     })
+    return
   }
 
   next()

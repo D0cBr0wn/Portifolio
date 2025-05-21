@@ -1,5 +1,5 @@
 import { Router, Request, Response } from 'express'
-import { PrismaClient } from '../../generated/prisma_client'
+import prisma from '../lib/prisma'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import { z } from 'zod'
@@ -9,7 +9,6 @@ import { banIp } from '../middleware/loginAttemptMiddleware'
 import { sendAdminBanAlert } from '../utils/sendAlerts'
 import { handleFailedLogin } from '../middleware/loginAttemptMiddleware'
 const router = Router()
-const prisma = new PrismaClient()
 
 const authSchema = z.object({
   email: z.string().email(),

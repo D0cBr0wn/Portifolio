@@ -1,8 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
-import { PrismaClient } from '../../generated/prisma_client'
+import prisma from '../lib/prisma'
 import { sendAdminBanAlert } from '../utils/sendAlerts'
-
-const prisma = new PrismaClient()
 
 const MAX_FAILED_ATTEMPTS = 3
 const WINDOW_MS = 15 * 60 * 1000 // 15 minutes

@@ -1,11 +1,10 @@
 import { Router, Request, Response } from 'express'
-import { PrismaClient } from '../../generated/prisma_client'
+import prisma from '../lib/prisma'
 import { z } from 'zod'
 import { authenticateToken } from '../middleware/authMiddleware'
 import { ParamsDictionary } from 'express-serve-static-core'
 
 const router = Router()
-const prisma = new PrismaClient()
 
 const venueSchema = z.object({
   name: z.string().min(1),
