@@ -3,6 +3,7 @@ import express from 'express'
 import showRoutes from './routes/show'
 import venueRoutes from './routes/venue'
 import auth from './routes/auth'
+import mfa from './routes/mfa'
 import ipBan from './routes/ipBan'
 import helmet from 'helmet'
 import cors from 'cors'
@@ -44,6 +45,7 @@ app.use(adminTrap)
 app.use('/shows', showRoutes)
 app.use('/venues', venueRoutes)
 app.use('/auth', auth)
+app.use('/mfa', mfa)
 app.use('/ipBan', ipBan)
 
 app.get('/', (req, res) => {

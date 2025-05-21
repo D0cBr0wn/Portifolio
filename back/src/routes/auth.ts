@@ -19,15 +19,17 @@ const SECRET = process.env.JWT_SECRET ?? 'fallback_secret'
 
 router.post(
   '/register',
-  authenticateToken,
+  //authenticateToken,
   async (req: Request, res: Response) => {
     try {
       const { email, password } = authSchema.parse(req.body)
       const hash = await bcrypt.hash(password, 10)
       const user = await prisma.user.create({ data: { email, password: hash } })
       res.status(201).json({ id: user.id, email: user.email })
+      return
     } catch (err) {
       res.status(400).json({ error: 'Invalid input' })
+      return
     }
   }
 )
@@ -50,6 +52,7 @@ router.post(
           'Tentative de login avec email "admin"'
         )
         res.status(403).json({ error: 'Access denied' })
+        return
       }
 
       if (!user || !(await bcrypt.compare(password, user.password))) {
@@ -60,17 +63,33 @@ router.post(
 
       if (user.banUntil && user.banUntil > new Date()) {
         res.status(403).json({ error: 'Access denied' })
+        return
       }
 
       // user banned for security reason
       if (user.banUntil && user.banUntil > new Date()) {
         res.status(403).json({ error: 'Access denied' })
+        return
       }
+
+      // MFA activé ?
+      if (user.mfaSecret) {
+        // MFA requis, on ne renvoie pas de token JWT complet
+        res.status(206).json({
+          mfaRequired: true,
+          userId: user.id,
+          message: 'MFA required'
+        })
+        return
+      }
+
+      // Pas de MFA, on génère le token JWT normal
 
       const token = jwt.sign({ userId: user.id }, SECRET, { expiresIn: '2h' })
       res.json({ token })
     } catch (err) {
       res.status(400).json({ error: 'Invalid input' })
+      return
     }
   }
 )

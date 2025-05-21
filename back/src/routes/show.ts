@@ -32,8 +32,10 @@ router.post('/', authenticateToken, async (req: Request, res: Response) => {
       }
     })
     res.status(201).json(show)
+    return
   } catch (err) {
     res.status(400).json({ error: err })
+    return
   }
 })
 
@@ -43,7 +45,10 @@ router.put(
   authenticateToken,
   async (req: Request<ParamsDictionary>, res: Response): Promise<void> => {
     const id = parseInt(req.params.id, 10)
-    if (isNaN(id)) res.status(400).json({ error: 'Invalid ID' })
+    if (isNaN(id)) {
+      res.status(400).json({ error: 'Invalid ID' })
+      return
+    }
 
     try {
       const data = showSchema.parse(req.body)
@@ -54,6 +59,7 @@ router.put(
       res.json(updatedShow)
     } catch (err) {
       res.status(400).json({ error: err })
+      return
     }
   }
 )
@@ -64,15 +70,20 @@ router.delete(
   authenticateToken,
   async (req: Request<ParamsDictionary>, res: Response): Promise<void> => {
     const id = parseInt(req.params.id, 10)
-    if (isNaN(id)) res.status(400).json({ error: 'Invalid ID' })
+    if (isNaN(id)) {
+      res.status(400).json({ error: 'Invalid ID' })
+      return
+    }
 
     try {
       await prisma.show.delete({
         where: { id }
       })
       res.status(204).send() // No content
+      return
     } catch (err) {
       res.status(400).json({ error: err })
+      return
     }
   }
 )

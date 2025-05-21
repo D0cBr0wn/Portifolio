@@ -3483,6 +3483,7 @@ export namespace Prisma {
     id: number | null
     email: string | null
     password: string | null
+    mfaSecret: string | null
     banUntil: Date | null
   }
 
@@ -3490,6 +3491,7 @@ export namespace Prisma {
     id: number | null
     email: string | null
     password: string | null
+    mfaSecret: string | null
     banUntil: Date | null
   }
 
@@ -3497,6 +3499,7 @@ export namespace Prisma {
     id: number
     email: number
     password: number
+    mfaSecret: number
     banUntil: number
     _all: number
   }
@@ -3514,6 +3517,7 @@ export namespace Prisma {
     id?: true
     email?: true
     password?: true
+    mfaSecret?: true
     banUntil?: true
   }
 
@@ -3521,6 +3525,7 @@ export namespace Prisma {
     id?: true
     email?: true
     password?: true
+    mfaSecret?: true
     banUntil?: true
   }
 
@@ -3528,6 +3533,7 @@ export namespace Prisma {
     id?: true
     email?: true
     password?: true
+    mfaSecret?: true
     banUntil?: true
     _all?: true
   }
@@ -3622,6 +3628,7 @@ export namespace Prisma {
     id: number
     email: string
     password: string
+    mfaSecret: string | null
     banUntil: Date | null
     _count: UserCountAggregateOutputType | null
     _avg: UserAvgAggregateOutputType | null
@@ -3648,6 +3655,7 @@ export namespace Prisma {
     id?: boolean
     email?: boolean
     password?: boolean
+    mfaSecret?: boolean
     banUntil?: boolean
   }, ExtArgs["result"]["user"]>
 
@@ -3655,6 +3663,7 @@ export namespace Prisma {
     id?: boolean
     email?: boolean
     password?: boolean
+    mfaSecret?: boolean
     banUntil?: boolean
   }, ExtArgs["result"]["user"]>
 
@@ -3662,6 +3671,7 @@ export namespace Prisma {
     id?: boolean
     email?: boolean
     password?: boolean
+    mfaSecret?: boolean
     banUntil?: boolean
   }, ExtArgs["result"]["user"]>
 
@@ -3669,10 +3679,11 @@ export namespace Prisma {
     id?: boolean
     email?: boolean
     password?: boolean
+    mfaSecret?: boolean
     banUntil?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "password" | "banUntil", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "password" | "mfaSecret" | "banUntil", ExtArgs["result"]["user"]>
 
   export type $UserPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "User"
@@ -3681,6 +3692,7 @@ export namespace Prisma {
       id: number
       email: string
       password: string
+      mfaSecret: string | null
       banUntil: Date | null
     }, ExtArgs["result"]["user"]>
     composites: {}
@@ -4108,6 +4120,7 @@ export namespace Prisma {
     readonly id: FieldRef<"User", 'Int'>
     readonly email: FieldRef<"User", 'String'>
     readonly password: FieldRef<"User", 'String'>
+    readonly mfaSecret: FieldRef<"User", 'String'>
     readonly banUntil: FieldRef<"User", 'DateTime'>
   }
     
@@ -6491,6 +6504,7 @@ export namespace Prisma {
     id: 'id',
     email: 'email',
     password: 'password',
+    mfaSecret: 'mfaSecret',
     banUntil: 'banUntil'
   };
 
@@ -6689,6 +6703,7 @@ export namespace Prisma {
     id?: IntFilter<"User"> | number
     email?: StringFilter<"User"> | string
     password?: StringFilter<"User"> | string
+    mfaSecret?: StringNullableFilter<"User"> | string | null
     banUntil?: DateTimeNullableFilter<"User"> | Date | string | null
   }
 
@@ -6696,6 +6711,7 @@ export namespace Prisma {
     id?: SortOrder
     email?: SortOrder
     password?: SortOrder
+    mfaSecret?: SortOrderInput | SortOrder
     banUntil?: SortOrderInput | SortOrder
   }
 
@@ -6706,6 +6722,7 @@ export namespace Prisma {
     OR?: UserWhereInput[]
     NOT?: UserWhereInput | UserWhereInput[]
     password?: StringFilter<"User"> | string
+    mfaSecret?: StringNullableFilter<"User"> | string | null
     banUntil?: DateTimeNullableFilter<"User"> | Date | string | null
   }, "id" | "email">
 
@@ -6713,6 +6730,7 @@ export namespace Prisma {
     id?: SortOrder
     email?: SortOrder
     password?: SortOrder
+    mfaSecret?: SortOrderInput | SortOrder
     banUntil?: SortOrderInput | SortOrder
     _count?: UserCountOrderByAggregateInput
     _avg?: UserAvgOrderByAggregateInput
@@ -6728,6 +6746,7 @@ export namespace Prisma {
     id?: IntWithAggregatesFilter<"User"> | number
     email?: StringWithAggregatesFilter<"User"> | string
     password?: StringWithAggregatesFilter<"User"> | string
+    mfaSecret?: StringNullableWithAggregatesFilter<"User"> | string | null
     banUntil?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
   }
 
@@ -6934,6 +6953,7 @@ export namespace Prisma {
   export type UserCreateInput = {
     email: string
     password: string
+    mfaSecret?: string | null
     banUntil?: Date | string | null
   }
 
@@ -6941,12 +6961,14 @@ export namespace Prisma {
     id?: number
     email: string
     password: string
+    mfaSecret?: string | null
     banUntil?: Date | string | null
   }
 
   export type UserUpdateInput = {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
+    mfaSecret?: NullableStringFieldUpdateOperationsInput | string | null
     banUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
@@ -6954,6 +6976,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
+    mfaSecret?: NullableStringFieldUpdateOperationsInput | string | null
     banUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
@@ -6961,12 +6984,14 @@ export namespace Prisma {
     id?: number
     email: string
     password: string
+    mfaSecret?: string | null
     banUntil?: Date | string | null
   }
 
   export type UserUpdateManyMutationInput = {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
+    mfaSecret?: NullableStringFieldUpdateOperationsInput | string | null
     banUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
@@ -6974,6 +6999,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
+    mfaSecret?: NullableStringFieldUpdateOperationsInput | string | null
     banUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
@@ -7280,6 +7306,7 @@ export namespace Prisma {
     id?: SortOrder
     email?: SortOrder
     password?: SortOrder
+    mfaSecret?: SortOrder
     banUntil?: SortOrder
   }
 
@@ -7291,6 +7318,7 @@ export namespace Prisma {
     id?: SortOrder
     email?: SortOrder
     password?: SortOrder
+    mfaSecret?: SortOrder
     banUntil?: SortOrder
   }
 
@@ -7298,6 +7326,7 @@ export namespace Prisma {
     id?: SortOrder
     email?: SortOrder
     password?: SortOrder
+    mfaSecret?: SortOrder
     banUntil?: SortOrder
   }
 

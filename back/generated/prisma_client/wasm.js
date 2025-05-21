@@ -137,6 +137,7 @@ exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
   email: 'email',
   password: 'password',
+  mfaSecret: 'mfaSecret',
   banUntil: 'banUntil'
 };
 

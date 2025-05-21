@@ -12,6 +12,7 @@ export async function adminTrap(
     await banIp(ip, 'Attempted access to /admin route')
     await sendAdminBanAlert(ip, null, 'Tentative d’accès à /admin')
     res.status(403).json({ error: 'Access denied' })
+    return
   }
   next()
 }
