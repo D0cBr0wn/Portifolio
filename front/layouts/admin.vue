@@ -1,20 +1,35 @@
 <template>
   <div class="main-container">
     <div class="header-wrapper">
+      <v-snackbar
+        v-for="notif in notificationStore.list"
+        :key="notif.id"
+        v-model="notif.visible"
+        :color="notif.type"
+        :timeout="notif.timeout"
+        location="top right"
+        @click:close="notificationStore.remove(notif.id)"
+      >
+        {{ notif.message }}
+      </v-snackbar>
+
       <div class="header">
         <div class="logo"></div>
       </div>
+
       <!-- <links /> -->
     </div>
     <div class="content">
       <slot />
     </div>
-    <footer-module />
+    <!-- <footer-module /> -->
   </div>
 </template>
 
 <script setup>
 // import FooterModule from '@/components/FooterModule.vue'
+import { useNotificationStore } from "../pinia/notificationsStore";
+const notificationStore = useNotificationStore();
 </script>
 
 <style scoped>

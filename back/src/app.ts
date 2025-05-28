@@ -17,7 +17,7 @@ const port = process.env.PORT || 3000
 const allowedOrigins =
   process.env.NODE_ENV === 'production'
     ? ['https://monsite.com']
-    : ['http://localhost:3000']
+    : ['http://localhost:8080']
 
 const corsOptions = {
   origin: function (

@@ -1,5 +1,9 @@
+<template>
+  <LoginForm />
+</template>
+
 <script setup>
 definePageMeta({
-  middleware: () => navigateTo("/auboulot/shows"),
+  layout: "admin",
 });
 </script>

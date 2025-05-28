@@ -4,7 +4,7 @@ import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import { z } from 'zod'
 import { loginLimiter } from '../middleware/rateLimiterMiddleware'
-import { authenticateToken } from '../middleware/authMiddleware'
+import speakeasy from 'speakeasy'
 import { banIp } from '../middleware/loginAttemptMiddleware'
 import { sendAdminBanAlert } from '../utils/sendAlerts'
 import { handleFailedLogin } from '../middleware/loginAttemptMiddleware'
@@ -74,11 +74,46 @@ router.post(
 
       // MFA activé ?
       if (user.mfaSecret) {
-        // MFA requis, on ne renvoie pas de token JWT complet
-        res.status(206).json({
-          mfaRequired: true,
-          userId: user.id,
-          message: 'MFA required'
+        const { mfaCode } = req.body
+
+        if (!mfaCode) {
+          res
+            .status(401)
+            .json({ mfaRequired: true, message: 'MFA code required' })
+          return
+        }
+
+        const isMfaValid = speakeasy.totp.verify({
+          secret: user.mfaSecret,
+          encoding: 'base32',
+          token: mfaCode,
+          window: 1 // tolérance de 30s en +/-
+        })
+
+        if (!isMfaValid) {
+          await handleFailedLogin(ip, email) // logique de ban éventuellement
+          res.status(401).json({ error: 'Invalid MFA code' })
+          return
+        }
+
+        // MFA OK → on génère le vrai token
+        const token = jwt.sign({ userId: user.id }, SECRET, { expiresIn: '2h' })
+        res.json({ token })
+        return
+      }
+
+      // Si MFA non configurée → inviter à la configurer
+      if (!user.mfaSecret) {
+        const mfaSetupToken = jwt.sign(
+          { userId: user.id, email: user.email, type: 'mfa_setup' },
+          SECRET,
+          { expiresIn: '5m' } // ou même 2 minutes
+        )
+
+        res.status(203).json({
+          mfaSetupRequired: true,
+          token: mfaSetupToken,
+          message: 'MFA setup required'
         })
         return
       }
