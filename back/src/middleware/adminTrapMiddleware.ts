@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
-import { banIp } from '../middleware/loginAttemptMiddleware'
-import { sendAdminBanAlert } from '../utils/sendAlerts'
+import { banIp } from '../helpers/loginAttemptHelper'
+import { sendAdminBanAlert } from '../helpers/sendAlerts'
 
 export async function adminTrap(
   req: Request,

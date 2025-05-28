@@ -1,7 +1,7 @@
 // src/tests/venue.test.ts
 import request from 'supertest'
 import express, { Request, Response, NextFunction } from 'express'
-import venueRouter from '../routes/venue'
+import venueRouter from '../router/venues'
 import prisma from '../lib/prisma'
 import * as authMiddleware from '../middleware/authMiddleware'
 

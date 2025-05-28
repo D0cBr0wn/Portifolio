@@ -18,7 +18,7 @@ jest.mock('../middleware/authMiddleware', () => ({
   authenticateToken: jest.fn((req, res, next) => next())
 }))
 
-import ipBanRouter from '../routes/ipBan'
+import ipBanRouter from '../router/ipBan'
 
 describe('GET /ipBan', () => {
   let app: express.Application

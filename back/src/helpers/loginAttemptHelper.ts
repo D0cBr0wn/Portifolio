@@ -1,6 +1,5 @@
-import { Request, Response, NextFunction } from 'express'
 import prisma from '../lib/prisma'
-import { sendAdminBanAlert } from '../utils/sendAlerts'
+import { sendAdminBanAlert } from './sendAlerts'
 
 const MAX_FAILED_ATTEMPTS = 3
 const WINDOW_MS = 15 * 60 * 1000 // 15 minutes
@@ -37,6 +36,15 @@ export async function banIp(ip: string, reason: string) {
     update: { reason, expiresAt },
     create: { ip, reason, expiresAt }
   })
+}
+
+export const shouldBanEmail = async (email: string, ip: string) => {
+  if (email.toLowerCase().includes('admin')) {
+    await banIp(ip, 'Attempted login with forbidden email')
+    await sendAdminBanAlert(ip, email, 'Tentative de login avec email "admin"')
+    return true
+  }
+  return false
 }
 
 // Fonctions à appeler dans le controller login en cas d’échec:

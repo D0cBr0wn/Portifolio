@@ -1,7 +1,7 @@
 // src/tests/handleFailedLogin.test.ts
-import { handleFailedLogin } from '../middleware/loginAttemptMiddleware'
+import { handleFailedLogin } from '../middleware/loginAttemptMiddleware_todelete'
 import prisma from '../lib/prisma'
-import { sendAdminBanAlert } from '../utils/sendAlerts'
+import { sendAdminBanAlert } from '../helpers/sendAlerts'
 
 jest.mock('../lib/prisma', () => ({
   __esModule: true,

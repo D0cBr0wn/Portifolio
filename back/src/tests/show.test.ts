@@ -1,7 +1,7 @@
 // src/tests/show.test.ts
 import request from 'supertest'
 import express, { Request, Response, NextFunction } from 'express'
-import showRouter from '../routes/show'
+import showRouter from '../router/shows'
 import prisma from '../lib/prisma'
 import * as authMiddleware from '../middleware/authMiddleware'
 

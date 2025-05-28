@@ -73,7 +73,7 @@ import type { MfaVerifyPayload } from "~/model/types/Payloads";
 const { login, loading, verifyMfa } = useAuth();
 const email = ref<string>("");
 const password = ref<string>("");
-const mfa = ref<MfaVerifyPayload>({ token: null });
+const mfa = ref<MfaVerifyPayload>({ token: null, email: null });
 const valid = ref<boolean>(false);
 const error = ref<string>("");
 
@@ -99,6 +99,7 @@ const onSubmit = async () => {
     (store.displayMfa && mfa.value.token) ||
     (store.qrCode && mfa.value.token)
   ) {
+    mfa.value.email = email.value;
     await verifyMfa(mfa.value);
   }
 };

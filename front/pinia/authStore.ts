@@ -12,8 +12,7 @@ import type {
 export const useAuthStore = defineStore("auth", () => {
   const config = useRuntimeConfig();
   const token = ref<string | null>(null);
-  const mfaSetupToken = ref<string | null>(null);
-  const mfaVerifyToken = ref<string | null>(null);
+  const mfaTempToken = ref<string | null>(null);
   const displayMfa = ref<boolean>(false);
   const configureMfa = ref<boolean>(false);
   const qrCode = ref<string | null>(null);
@@ -29,23 +28,23 @@ export const useAuthStore = defineStore("auth", () => {
 
       // mfa is setup but need to be verified
       if (response?.mfaRequired) {
-        mfaVerifyToken.value = response?.token;
+        mfaTempToken.value = response?.token;
         displayMfa.value = true;
         return;
       }
 
       //mfa need to be setup
       if (response?.mfaSetupRequired) {
-        mfaSetupToken.value = response?.token;
+        mfaTempToken.value = response?.token;
         configureMfa.value = true;
         const setupResponse: MfasetupResponse = await $fetch(
           `${config.public.apiBase}/mfa/setup`,
           {
             method: "POST",
             headers: {
-              Authorization: `Bearer ${mfaSetupToken.value}`,
+              Authorization: `Bearer ${mfaTempToken.value}`,
             },
-            body: { email: payload.email, token: token.value },
+            body: { email: payload.email },
           }
         );
 
@@ -57,20 +56,18 @@ export const useAuthStore = defineStore("auth", () => {
     }
   };
 
-  const verifyMfa = async (mfa: MfaVerifyPayload) => {
+  const verifyMfa = async (mfaPayload: MfaVerifyPayload) => {
     try {
-      const router = useRouter();
-
       token.value = await $fetch(`${config.public.apiBase}/mfa/verify`, {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${mfaSetupToken.value}`,
+          Authorization: `Bearer ${mfaTempToken.value}`,
         },
-        body: mfa,
+        body: mfaPayload,
       });
 
       if (token.value) {
-        router.push("/auboulot/shows");
+        return true;
       }
     } catch (err) {
       console.error(err);

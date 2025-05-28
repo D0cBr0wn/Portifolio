@@ -5,4 +5,5 @@ export type LoginPayload = {
 
 export type MfaVerifyPayload = {
   token?: string | null;
+  email?: string | null;
 };

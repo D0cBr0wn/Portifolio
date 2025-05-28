@@ -11,11 +11,7 @@ export const useAuth = () => {
     try {
       loading.value = true;
 
-      const response = await store.login(loginPayload);
-
-      if (response) {
-        return router.push("/auboulot/shows");
-      }
+      await store.login(loginPayload);
     } catch (error) {
       console.error(error);
     } finally {
@@ -26,7 +22,11 @@ export const useAuth = () => {
   const verifyMfa = async (mfa: MfaVerifyPayload) => {
     try {
       loading.value = true;
-      await store.verifyMfa(mfa);
+      const response = await store.verifyMfa(mfa);
+
+      if (response) {
+        return router.push("/auboulot/shows");
+      }
     } catch (error) {
       console.error(error);
     } finally {

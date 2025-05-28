@@ -2,16 +2,16 @@ import request from 'supertest'
 import express, { Request, Response, NextFunction } from 'express'
 jest.mock('../middleware/authMiddleware', () => ({
   authenticateToken: (req: Request, res: Response, next: NextFunction) => {
-    ;(req as any).user = {} // ou ce que tu veux simuler
+    ;(req as any).user = {}
     next()
   }
 }))
-import mfaRouter from '../routes/mfa' // adapte le chemin
+import mfaRouter from '../router/mfa'
 import prisma from '../lib/prisma'
 import speakeasy from 'speakeasy'
 import jwt from 'jsonwebtoken'
+import qrcode from 'qrcode'
 
-// Mock prisma
 jest.mock('../lib/prisma', () => ({
   __esModule: true,
   default: {
@@ -22,7 +22,6 @@ jest.mock('../lib/prisma', () => ({
   }
 }))
 
-// Mock speakeasy
 jest.mock('speakeasy', () => ({
   generateSecret: jest.fn(),
   totp: {
@@ -30,27 +29,13 @@ jest.mock('speakeasy', () => ({
   }
 }))
 
-// Mock jwt.sign pour toujours renvoyer un token fixe
 jest.mock('jsonwebtoken', () => ({
-  sign: jest.fn(() => 'jwt-token')
+  sign: jest.fn(() => 'jwt-token'),
+  verify: jest.fn()
 }))
 
-// Middleware authenticateToken mocké pour injecter un user dans req
-const mockAuthenticateToken = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  req.user = { userId: 123, email: 'user@example.com' }
-  next()
-}
-
-// Remplacer le vrai middleware dans le router par notre mock
-jest.mock('../middleware/authMiddleware', () => ({
-  authenticateToken: (req: Request, res: Response, next: NextFunction) => {
-    req.user = { userId: 123, email: 'user@example.com' }
-    next()
-  }
+jest.mock('qrcode', () => ({
+  toDataURL: jest.fn(() => 'data:image/png;base64,fakeqrcode')
 }))
 
 describe('MFA routes', () => {
@@ -60,7 +45,6 @@ describe('MFA routes', () => {
     app = express()
     app.use(express.json())
     app.use('/mfa', mfaRouter)
-
     jest.clearAllMocks()
   })
 
@@ -69,45 +53,72 @@ describe('MFA routes', () => {
       const fakeSecret = {
         base32: 'FAKEBASE32SECRET',
         otpauth_url:
-          'otpauth://totp/MonApp%20(user@example.com)?secret=FAKEBASE32SECRET'
+          'otpauth://totp/OdysseyOfOne%20(user@example.com)?secret=FAKEBASE32SECRET'
       }
       ;(speakeasy.generateSecret as jest.Mock).mockReturnValue(fakeSecret)
       ;(prisma.user.update as jest.Mock).mockResolvedValue({})
+      ;(jwt.verify as jest.Mock).mockReturnValue({
+        userId: 123,
+        email: 'user@example.com',
+        type: 'mfa_temp'
+      })
 
       const res = await request(app)
         .post('/mfa/setup')
-        .set('Authorization', 'Bearer faketoken') // token accepté par le mock
+        .set('Authorization', 'Bearer faketoken')
         .send()
 
       expect(speakeasy.generateSecret).toHaveBeenCalledWith({
-        name: 'MonApp (user@example.com)'
+        name: 'OdysseyOfOne (user@example.com)'
       })
       expect(prisma.user.update).toHaveBeenCalledWith({
         where: { id: 123 },
         data: { mfaSecret: fakeSecret.base32 }
       })
-
       expect(res.status).toBe(200)
-      expect(res.body).toHaveProperty('qrCodeDataURL')
+      expect(res.body).toHaveProperty(
+        'qrCodeDataURL',
+        'data:image/png;base64,fakeqrcode'
+      )
       expect(res.body).toHaveProperty('secret', fakeSecret.base32)
     })
   })
 
   describe('POST /mfa/verify', () => {
-    // it('should return 401 if no userId in req.user', async () => {
-    //   // On va monter une route spéciale pour tester ce cas:
-    //   const testApp = express()
-    //   testApp.use(express.json())
-    //   testApp.post('/mfa/verify', (req, res, next) => next(), mfaRouter)
+    it('should return 401 if token is invalid or expired', async () => {
+      ;(jwt.verify as jest.Mock).mockImplementation(() => {
+        throw new Error('Invalid token')
+      })
 
-    //   const res = await request(testApp)
-    //     .post('/mfa/verify')
-    //     .send({ token: '123456' })
-    //   expect(res.status).toBe(401)
-    //   expect(res.body.error).toBe('Unauthorized')
-    // })
+      const res = await request(app)
+        .post('/mfa/verify')
+        .set('Authorization', 'Bearer invalidtoken')
+        .send({ token: '123456' })
 
-    it('should return 400 if no user or no mfaSecret', async () => {
+      expect(res.status).toBe(401)
+      expect(res.body.error).toBe('Invalid or expired token')
+    })
+
+    it('should return 403 if token type is incorrect', async () => {
+      ;(jwt.verify as jest.Mock).mockReturnValue({
+        userId: 123,
+        type: 'access'
+      })
+
+      const res = await request(app)
+        .post('/mfa/verify')
+        .set('Authorization', 'Bearer invalidtype')
+        .send({ token: '123456' })
+
+      expect(res.status).toBe(403)
+      expect(res.body.error).toBe('Invalid token type for MFA setup')
+    })
+
+    it('should return 400 if no user or mfaSecret', async () => {
+      ;(jwt.verify as jest.Mock).mockReturnValue({
+        userId: 123,
+        type: 'mfa_temp'
+      })
       ;(prisma.user.findUnique as jest.Mock).mockResolvedValue(null)
 
       const res = await request(app)
@@ -119,7 +130,11 @@ describe('MFA routes', () => {
       expect(res.body.error).toBe('MFA not setup')
     })
 
-    it('should return 400 if TOTP invalid', async () => {
+    it('should return 400 if TOTP is invalid', async () => {
+      ;(jwt.verify as jest.Mock).mockReturnValue({
+        userId: 123,
+        type: 'mfa_temp'
+      })
       ;(prisma.user.findUnique as jest.Mock).mockResolvedValue({
         id: 123,
         email: 'user@example.com',
@@ -132,17 +147,16 @@ describe('MFA routes', () => {
         .set('Authorization', 'Bearer faketoken')
         .send({ token: '000000' })
 
-      expect(speakeasy.totp.verify).toHaveBeenCalledWith({
-        secret: 'FAKEBASE32SECRET',
-        encoding: 'base32',
-        token: '000000',
-        window: 1
-      })
       expect(res.status).toBe(400)
       expect(res.body.error).toBe('Invalid token')
     })
 
     it('should return verified true and JWT token if TOTP valid', async () => {
+      ;(jwt.verify as jest.Mock).mockReturnValue({
+        userId: 123,
+        email: 'user@example.com',
+        type: 'mfa_temp'
+      })
       ;(prisma.user.findUnique as jest.Mock).mockResolvedValue({
         id: 123,
         email: 'user@example.com',

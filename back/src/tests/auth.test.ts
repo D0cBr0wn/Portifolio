@@ -1,9 +1,9 @@
 import request from 'supertest'
 import express from 'express'
 import { NextFunction, Request, Response } from 'express'
-import router from '../routes/auth' // adapte le chemin
+import router from '../router/auth' // adapte le chemin
 import prisma from '../lib/prisma'
-import * as sendAlerts from '../utils/sendAlerts'
+import * as sendAlerts from '../helpers/sendAlerts'
 import bcrypt from 'bcryptjs'
 
 jest.mock('../lib/prisma', () => ({
