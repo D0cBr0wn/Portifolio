@@ -9,7 +9,7 @@ export async function ipBanCheck(
   const ip = req.ip || req.connection.remoteAddress || ''
   const now = new Date()
 
-  // Purge bans expirés à chaque requête (optionnel, peut être mis en tâche CRON)
+  // Purge expired bans
   await prisma.ipBan.deleteMany({ where: { expiresAt: { lt: now } } })
 
   const ban = await prisma.ipBan.findUnique({ where: { ip } })

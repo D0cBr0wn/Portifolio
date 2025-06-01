@@ -9,6 +9,7 @@ const SECRET = process.env.JWT_SECRET ?? 'fallback_secret'
 export const setup = async (req: Request, res: Response) => {
   try {
     const decoded = getDecodedToken(req, res)
+    if (!decoded) return
     const payload = decoded as JwtPayload
     const userId = payload.userId
     const email = payload.email ?? 'unknown'
@@ -37,6 +38,7 @@ export const setup = async (req: Request, res: Response) => {
 
 export const verify = async (req: Request, res: Response) => {
   const decoded = getDecodedToken(req, res)
+  if (!decoded) return
   const payload = decoded as jwt.JwtPayload
   const userId = payload.userId
 
