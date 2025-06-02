@@ -145,7 +145,6 @@ const deleteVenue = async (id: string) => {
 };
 
 const saveVenue = async () => {
-  console.warn("id = ", currentVenue.value.id);
   if (currentVenue.value.id !== "") {
     await editVenue(currentVenue.value);
   } else {

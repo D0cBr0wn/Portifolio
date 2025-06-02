@@ -12,9 +12,14 @@ export type MfasetupNeededResponse = {
   token: string;
 };
 
-export type MfasetupResponse = {
+export type MfaSetupResponse = {
   qrCodeDataURL: string;
   secret: string;
+};
+
+export type MfaVerifiedResponse = {
+  verified: boolean;
+  token: string;
 };
 
 export type LoginResponse = {

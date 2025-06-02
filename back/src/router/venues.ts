@@ -11,5 +11,5 @@ export default (router: express.Router) => {
   router.get('/venues', getAllVenues)
   router.post('/venues', authenticateToken, createVenue)
   router.put('/venues/:id', authenticateToken, updateVenue)
-  router.delete('/venues/:id', deleteVenue)
+  router.delete('/venues/:id', authenticateToken, deleteVenue)
 }

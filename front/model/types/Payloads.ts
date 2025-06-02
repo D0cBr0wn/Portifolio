@@ -4,6 +4,6 @@ export type LoginPayload = {
 };
 
 export type MfaVerifyPayload = {
-  token?: string | null;
+  token?: string | undefined;
   email?: string | null;
 };

@@ -21,7 +21,7 @@
     </div>
 
     <div class="content">
-      <div class="inner-content"><sideBar /> <slot /></div>
+      <slot />
     </div>
     <!-- <footer-module /> -->
   </div>
@@ -30,7 +30,7 @@
 <script setup>
 // import FooterModule from '@/components/FooterModule.vue'
 import { useNotificationStore } from "../pinia/notificationsStore";
-import sideBar from "~/components/admin/Sidebar.vue";
+
 const notificationStore = useNotificationStore();
 </script>
 
@@ -67,10 +67,5 @@ const notificationStore = useNotificationStore();
   justify-content: flex-start;
   padding: 2rem;
   height: 100%;
-}
-
-.inner-content {
-  display: flex;
-  gap: 2rem;
 }
 </style>

@@ -1,10 +1,11 @@
 <template>
   <div class="form-wrapper">
     <v-card class="login-form" elevation="6">
-      <v-card-title class="text-h6">Please Login</v-card-title>
+      <v-card-title class="text-h6">Admin access</v-card-title>
       <v-card-text>
         <v-form ref="form" v-model="valid" @submit.prevent="onSubmit">
-          <div v-if="!store.displayMfa && !store.qrCode" class="login-part">
+          <div v-if="!isMfa" class="login-part">
+            <alert :msg="authError" />
             <v-text-field
               v-model="email"
               label="Email"
@@ -12,6 +13,7 @@
               prepend-icon="mdi-email"
               type="email"
               required
+              @input="authError = undefined"
             />
             <v-text-field
               v-model="password"
@@ -20,32 +22,19 @@
               prepend-icon="mdi-lock"
               type="password"
               required
-            />
-          </div>
-          <div v-if="store.qrCode" class="mfa-setup">
-            <pre>coucou {{ store.displayMfa }} {{ mfa.token }}</pre>
-            <img :src="store.qrCode" alt="QR Code MFA" class="w-48 h-48" />
-            <v-text-field
-              v-model="mfa.token"
-              label="MCode de vérification"
-              :rules="mfaRules"
-              prepend-icon="mdi-lock"
-              type="number"
-              required
+              @input="authError = undefined"
             />
           </div>
 
-          <div v-if="store.displayMfa" class="mfa">
-            mfa
-            <v-text-field
-              v-model="mfa.token"
-              label="MCode de vérification"
-              :rules="mfaRules"
-              prepend-icon="mdi-lock"
-              type="number"
-              required
-            />
-          </div>
+          <!-- MFA handling -->
+          <mfa-handler
+            v-else
+            v-model="mfaPayload.token"
+            :auth-error="authError"
+            :qr-code="store.qrCode"
+            @back="back()"
+          />
+
           <v-btn
             :loading="loading"
             color="primary"
@@ -55,9 +44,6 @@
           >
             Se connecter
           </v-btn>
-          <v-alert v-if="error" type="error" class="mt-4" dense>{{
-            error
-          }}</v-alert>
         </v-form>
       </v-card-text>
     </v-card>
@@ -65,28 +51,37 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { useAuthStore } from "~/pinia/authStore";
 import { useAuth } from "../../composables/authComposable";
-import type { MfaVerifyPayload } from "~/model/types/Payloads";
+import Alert from "../adapters/Alert.vue";
 
-const { login, loading, verifyMfa } = useAuth();
+// store
+const store = useAuthStore();
+// composables
+const { login, loading, verifyMfa, authError, mfaPayload, logout } = useAuth();
+
+// datas
 const email = ref<string>("");
 const password = ref<string>("");
-const mfa = ref<MfaVerifyPayload>({ token: null, email: null });
 const valid = ref<boolean>(false);
 const error = ref<string>("");
-
-const store = useAuthStore();
-
-const emailRules = [(v: string) => !!v || "Email requis"];
+const emailRules = [
+  (v: string) => !!v || "Email requis",
+  (v: string) =>
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) || "Adresse email invalide",
+];
 const passwordRules = [(v: string) => !!v || "Mot de passe requis"];
-const mfaRules = [(v: number) => !!v || "Code de verification requis"];
 
+// computed
+const isMfa = computed(() => {
+  return store.displayMfa || store.qrCode;
+});
+
+// methods
 const onSubmit = async () => {
   if (!valid.value) return;
-
-  error.value = "";
+  authError.value = undefined;
 
   if (!store.displayMfa && !store.qrCode) {
     return await login({
@@ -96,12 +91,17 @@ const onSubmit = async () => {
   }
 
   if (
-    (store.displayMfa && mfa.value.token) ||
-    (store.qrCode && mfa.value.token)
+    (store.displayMfa && mfaPayload.value.token) ||
+    (store.qrCode && mfaPayload.value.token)
   ) {
-    mfa.value.email = email.value;
-    await verifyMfa(mfa.value);
+    mfaPayload.value.email = email.value;
+    await verifyMfa(mfaPayload.value);
   }
+};
+
+const back = () => {
+  authError.value = undefined;
+  logout();
 };
 </script>
 
@@ -113,5 +113,9 @@ const onSubmit = async () => {
 }
 .login-form {
   width: 40rem;
+}
+
+.error-alert {
+  margin-bottom: 2rem;
 }
 </style>
