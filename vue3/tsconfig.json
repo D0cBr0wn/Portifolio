@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext", // ✅ Nécessaire pour import.meta
+    "moduleResolution": "node", // Recommandé
+    "lib": ["dom", "esnext"], // Optionnel mais conseillé
+    "include": ["src/**/*.ts", "src/**/*.vue"]
+  }
+}
