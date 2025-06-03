@@ -1,12 +1,13 @@
 <template>
-  <v-alert
-    v-if="msg"
-    class="alert"
-    :title="title"
-    :text="msg"
-    :type="type"
-    variant="tonal"
-  ></v-alert>
+  <div class="alert">
+    <v-alert
+      v-if="msg"
+      :title="title"
+      :text="msg"
+      :type="type"
+      variant="tonal"
+    ></v-alert>
+  </div>
 </template>
 
 <script lang="ts" setup>
