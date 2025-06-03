@@ -11,6 +11,7 @@ const showSchema = z.object({
 })
 
 export const getAllShows = async (req: Request, res: Response) => {
+  // try catch to event is too simple
   const shows = await prisma.show.findMany({ include: { venue: true } })
   res.json(shows)
   return
@@ -18,7 +19,9 @@ export const getAllShows = async (req: Request, res: Response) => {
 
 export const createShow = async (req: Request, res: Response) => {
   try {
-    const data = showSchema.parse(req.body)
+    const data = showSchema.parse(req.body) 
+
+    // No Class ? no check of data ? 
     const show = await prisma.show.create({
       data: {
         label: data.label,
@@ -28,8 +31,8 @@ export const createShow = async (req: Request, res: Response) => {
     })
     res.status(201).json(show)
     return
-  } catch (err) {
-    res.status(400).json({ error: err })
+  } catch (error) {
+    res.status(400).json({ error })
     return
   }
 }
@@ -43,14 +46,15 @@ export const updateShow = async (req: Request, res: Response) => {
 
   try {
     const data = showSchema.parse(req.body)
+    // No Class ? No trust F-E ^^ 
     const updatedShow = await prisma.show.update({
       where: { id },
       data
     })
     res.json(updatedShow)
     return
-  } catch (err) {
-    res.status(400).json({ error: err })
+  } catch (error) {
+    res.status(400).json({ error })
     return
   }
 }
@@ -68,8 +72,8 @@ export const deleteShow = async (req: Request, res: Response) => {
     })
     res.status(204).send() // No content
     return
-  } catch (err) {
-    res.status(400).json({ error: err })
+  } catch (error) {
+    res.status(400).json({ error })
     return
   }
 }

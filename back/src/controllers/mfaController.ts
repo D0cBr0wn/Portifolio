@@ -39,6 +39,7 @@ export const setup = async (req: Request, res: Response) => {
 export const verify = async (req: Request, res: Response) => {
   const decoded = getDecodedToken(req, res)
   if (!decoded) return
+
   const payload = decoded as jwt.JwtPayload
   const userId = payload.userId
 
@@ -97,9 +98,10 @@ const getDecodedToken = (req: Request, res: Response) => {
       res.status(403).json({ error: 'Invalid token type for MFA setup' })
       return
     }
+
     return decoded
   } catch {
-    res.status(401).json({ error: 'Invalid or expired token' })
+    res.status(401).json({ error: 'Invalid or expired token' }) 
     return
   }
 }

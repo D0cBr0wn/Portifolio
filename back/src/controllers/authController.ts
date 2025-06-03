@@ -4,9 +4,9 @@ import { z } from 'zod'
 import prisma from '../lib/prisma'
 import {
   handleFailedLogin,
-  shouldBanEmail
-} from '../helpers/loginAttemptHelper'
-import { createMfaTempToken } from '../helpers/mfaHelper'
+  shouldBanEmail,
+  createMfaTempToken
+} from '../helpers'
 
 const authSchema = z.object({
   email: z.string().email(),
@@ -31,19 +31,18 @@ export const login = async (req: Request, res: Response) => {
     const { email, password } = authSchema.parse(req.body)
     const ip = req.ip || req.connection.remoteAddress || ''
     const user = await prisma.user.findUnique({ where: { email } })
-    const emailbanned = await shouldBanEmail(email, ip)
 
     // user unknown or bad password
     if (!user || !(await bcrypt.compare(password, user.password))) {
-      await handleFailedLogin(ip, email)
+      handleFailedLogin(ip, email) // no need to await this
       res.status(401).json({ error: 'Access denied' })
       return
     }
 
     // user banned for security reason
-    if ((user.banUntil && user.banUntil > new Date()) || emailbanned) {
+    if ((user.banUntil && user.banUntil > new Date()) || await shouldBanEmail(email, ip)) {
       res.status(403).json({ error: 'Access denied' })
-      return
+      return 
     }
 
     // MFA handling
@@ -53,22 +52,23 @@ export const login = async (req: Request, res: Response) => {
     if (user.mfaSecret && !req.body.mfaCode) {
       // answering the MFA need flag and temp token
 
-      res.status(206).json({
+       res.status(206).json({
         mfaRequired: true,
         token,
         message: 'MFA required'
-      })
-      return
+       })
+       return
     }
 
     // MFA setup needed
     // answering the need to configure flag and the temp token
-    res.status(203).json({
+     res.status(203).json({
       mfaSetupRequired: true,
       token,
       message: 'MFA setup required'
-    })
-    return
+     })
+     return
+
   } catch (err) {
     res.status(400).json({ error: 'Invalid input' })
     return

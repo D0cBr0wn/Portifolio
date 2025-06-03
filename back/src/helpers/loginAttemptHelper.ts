@@ -49,6 +49,7 @@ export const shouldBanEmail = async (email: string, ip: string) => {
 
 // Fonctions à appeler dans le controller login en cas d’échec:
 export async function handleFailedLogin(ip: string, emailTried: string) {
+  // no try catch here ? 
   await recordFailedAttempt(ip, emailTried)
   const attempts = await countRecentFailedAttempts(ip)
 
@@ -56,18 +57,22 @@ export async function handleFailedLogin(ip: string, emailTried: string) {
     await banIp(ip, `Too many failed login attempts (${attempts})`)
 
     // ban user si existant
-    const user = await prisma.user.findUnique({ where: { email: emailTried } })
-    if (user) {
-      await prisma.user.update({
-        where: { id: user.id },
-        data: { banUntil: new Date(Date.now() + BAN_DURATION_MS) }
-      })
-    }
+
+    // I removed "await" because in this case, there's no need to wait for each end 
+    // of function , all can be done in side by side
+    prisma.user.findUnique({ where: { email: emailTried } })
+      .then(user => (
+        user && prisma.user.update({
+          where: { id: user.id },
+          data: { banUntil: new Date(Date.now() + BAN_DURATION_MS) }
+        })
+      )).catch(err => console.error(err))
+    
 
     // Envoi mail admin
-    await sendAdminBanAlert(ip, emailTried, 'Failed login')
+    sendAdminBanAlert(ip, emailTried, 'Failed login')
   }
 
   // Nettoyage
-  await cleanOldAttempts(ip)
+   cleanOldAttempts(ip)
 }
