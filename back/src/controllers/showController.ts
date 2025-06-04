@@ -11,9 +11,14 @@ const showSchema = z.object({
 })
 
 export const getAllShows = async (req: Request, res: Response) => {
-  const shows = await prisma.show.findMany({ include: { venue: true } })
-  res.json(shows)
-  return
+  try {
+    const shows = await prisma.show.findMany({ include: { venue: true } })
+    res.json(shows)
+    return
+  } catch (error) {
+    res.status(500).json({ error: error })
+    return
+  }
 }
 
 export const createShow = async (req: Request, res: Response) => {
@@ -28,8 +33,8 @@ export const createShow = async (req: Request, res: Response) => {
     })
     res.status(201).json(show)
     return
-  } catch (err) {
-    res.status(400).json({ error: err })
+  } catch (error) {
+    res.status(400).json({ error: error })
     return
   }
 }
@@ -49,8 +54,8 @@ export const updateShow = async (req: Request, res: Response) => {
     })
     res.json(updatedShow)
     return
-  } catch (err) {
-    res.status(400).json({ error: err })
+  } catch (error) {
+    res.status(400).json({ error: error })
     return
   }
 }
@@ -68,8 +73,8 @@ export const deleteShow = async (req: Request, res: Response) => {
     })
     res.status(204).send() // No content
     return
-  } catch (err) {
-    res.status(400).json({ error: err })
+  } catch (error) {
+    res.status(400).json({ error: error })
     return
   }
 }

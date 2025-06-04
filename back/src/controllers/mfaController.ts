@@ -31,7 +31,7 @@ export const setup = async (req: Request, res: Response) => {
     // return the secret and qrCode
     res.json({ qrCodeDataURL, secret: secret.base32 })
     return
-  } catch (err) {
+  } catch (error) {
     res.status(500).json({ error: 'Internal server error' })
   }
 }
@@ -39,6 +39,7 @@ export const setup = async (req: Request, res: Response) => {
 export const verify = async (req: Request, res: Response) => {
   const decoded = getDecodedToken(req, res)
   if (!decoded) return
+
   const payload = decoded as jwt.JwtPayload
   const userId = payload.userId
 

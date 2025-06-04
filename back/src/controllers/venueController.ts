@@ -11,9 +11,14 @@ const venueSchema = z.object({
 })
 
 export const getAllVenues = async (req: Request, res: Response) => {
-  const venues = await prisma.venue.findMany()
-  res.json(venues)
-  return
+  try {
+    const venues = await prisma.venue.findMany()
+    res.json(venues)
+    return
+  } catch (error) {
+    res.status(500).json({ error: error })
+    return
+  }
 }
 
 export const createVenue = async (req: Request, res: Response) => {
@@ -22,8 +27,8 @@ export const createVenue = async (req: Request, res: Response) => {
     const venue = await prisma.venue.create({ data })
     res.status(201).json(venue)
     return
-  } catch (err) {
-    res.status(400).json({ error: err })
+  } catch (error) {
+    res.status(400).json({ error: error })
     return
   }
 }
@@ -43,8 +48,8 @@ export const updateVenue = async (req: Request, res: Response) => {
     })
     res.json(updatedVenue)
     return
-  } catch (err) {
-    res.status(400).json({ error: err })
+  } catch (error) {
+    res.status(400).json({ error: error })
     return
   }
 }
@@ -62,8 +67,8 @@ export const deleteVenue = async (req: Request, res: Response) => {
     })
     res.status(204).send() // No content
     return
-  } catch (err) {
-    res.status(400).json({ error: err })
+  } catch (error) {
+    res.status(400).json({ error: error })
     return
   }
 }
