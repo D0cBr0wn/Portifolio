@@ -2,10 +2,7 @@ import { Request, Response } from 'express'
 import bcrypt from 'bcryptjs'
 import { z } from 'zod'
 import prisma from '../lib/prisma'
-import {
-  handleFailedLogin,
-  shouldBanEmail
-} from '../helpers/loginAttemptHelper'
+import { handleFailedLogin, shouldBanEmail } from '../helpers'
 import { createMfaTempToken } from '../helpers/mfaHelper'
 
 const authSchema = z.object({
@@ -31,7 +28,6 @@ export const login = async (req: Request, res: Response) => {
     const { email, password } = authSchema.parse(req.body)
     const ip = req.ip || req.connection.remoteAddress || ''
     const user = await prisma.user.findUnique({ where: { email } })
-    const emailbanned = await shouldBanEmail(email, ip)
 
     // user unknown or bad password
     if (!user || !(await bcrypt.compare(password, user.password))) {
@@ -41,7 +37,10 @@ export const login = async (req: Request, res: Response) => {
     }
 
     // user banned for security reason
-    if ((user.banUntil && user.banUntil > new Date()) || emailbanned) {
+    if (
+      (user.banUntil && user.banUntil > new Date()) ||
+      (await shouldBanEmail(email, ip))
+    ) {
       res.status(403).json({ error: 'Access denied' })
       return
     }
