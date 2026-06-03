@@ -1,6 +1,10 @@
 node_modules
 dist
+generated
 npm-debug.log
 Dockerfile
 docker-compose.yml
 .git
+.env
+src/__tests__
+jest.config.ts
