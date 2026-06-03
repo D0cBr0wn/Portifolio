@@ -2,6 +2,7 @@ import request from 'supertest'
 import jwt from 'jsonwebtoken'
 
 jest.mock('../../lib/prisma', () => ({
+  __esModule: true,
   default: {
     venue: { findMany: jest.fn(), create: jest.fn() },
     ipBan: {
@@ -14,7 +15,7 @@ jest.mock('../../lib/prisma', () => ({
 import prisma from '../../lib/prisma'
 import { buildTestApp } from '../helpers/testApp'
 
-const mockPrisma = prisma as jest.Mocked<typeof prisma>
+const venueMock = prisma.venue as unknown as { findMany: jest.Mock; create: jest.Mock }
 const app = buildTestApp()
 
 const SECRET = 'test-secret-for-jest-at-least-32-chars'
@@ -28,9 +29,9 @@ describe('GET /api/venues', () => {
   beforeEach(() => jest.clearAllMocks())
 
   it('retourne la liste des venues (public, sans auth)', async () => {
-    mockPrisma.venue.findMany.mockResolvedValue([
+    venueMock.findMany.mockResolvedValue([
       { id: 1, name: 'Le Zénith', city: 'Paris', address1: null, address2: null, zipCode: null },
-    ] as never)
+    ])
 
     const res = await request(app).get('/api/venues')
 
@@ -49,12 +50,12 @@ describe('POST /api/venues', () => {
       .send({ name: 'Le Bataclan', city: 'Paris' })
 
     expect(res.status).toBe(401)
-    expect(mockPrisma.venue.create).not.toHaveBeenCalled()
+    expect(venueMock.create).not.toHaveBeenCalled()
   })
 
   it('crée une venue et retourne 201 avec token valide', async () => {
-    mockPrisma.venue.create.mockResolvedValue(
-      { id: 1, name: 'Le Bataclan', city: 'Paris', address1: null, address2: null, zipCode: null } as never
+    venueMock.create.mockResolvedValue(
+      { id: 1, name: 'Le Bataclan', city: 'Paris', address1: null, address2: null, zipCode: null }
     )
 
     const res = await request(app)
@@ -68,7 +69,7 @@ describe('POST /api/venues', () => {
 
   it('accepte les champs optionnels address1, address2, zipCode', async () => {
     const payload = { name: 'Le Zénith', city: 'Paris', address1: '211 Av. Jean Jaurès', zipCode: '75019' }
-    mockPrisma.venue.create.mockResolvedValue({ id: 2, ...payload, address2: null } as never)
+    venueMock.create.mockResolvedValue({ id: 2, ...payload, address2: null })
 
     const res = await request(app)
       .post('/api/venues')
@@ -76,7 +77,7 @@ describe('POST /api/venues', () => {
       .send(payload)
 
     expect(res.status).toBe(201)
-    expect(mockPrisma.venue.create).toHaveBeenCalledWith(
+    expect(venueMock.create).toHaveBeenCalledWith(
       expect.objectContaining({ data: expect.objectContaining({ address1: '211 Av. Jean Jaurès' }) })
     )
   })
@@ -88,7 +89,7 @@ describe('POST /api/venues', () => {
       .send({ city: 'Paris' })
 
     expect(res.status).toBe(400)
-    expect(mockPrisma.venue.create).not.toHaveBeenCalled()
+    expect(venueMock.create).not.toHaveBeenCalled()
   })
 
   it('retourne 400 si city vide', async () => {
@@ -100,7 +101,7 @@ describe('POST /api/venues', () => {
     expect(res.status).toBe(400)
   })
 
-  it('retourne 400 si token expiré (rate limiting simulé)', async () => {
+  it('retourne 403 si token expiré', async () => {
     const expiredToken = jwt.sign({ userId: 1, email: 'u@t.com' }, SECRET, { expiresIn: -1 })
 
     const res = await request(app)

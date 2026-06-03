@@ -49,12 +49,10 @@ describe('authMiddleware — authenticateToken', () => {
     const req = makeReq('Bearer ') as Request
     const res = makeRes() as unknown as Response
 
-    // jwt.verify sera appelé avec un token vide → exception
-    mockJwt.verify.mockImplementation(() => { throw new Error('invalid') })
-
     await authenticateToken(req, res, next)
 
-    expect(res.status).toHaveBeenCalledWith(403)
+    // "Bearer ".split(' ')[1] === "" → falsy → 401 (pas de token)
+    expect(res.status).toHaveBeenCalledWith(401)
     expect(next).not.toHaveBeenCalled()
   })
 
