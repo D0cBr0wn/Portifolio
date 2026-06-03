@@ -1,9 +1,18 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect } from 'vitest'
 import { mount } from '@vue/test-utils'
 import VenueForm from '../../components/backoffice/VenueForm.vue'
 
+// VForm rendu en <div> pour éviter la soumission native jsdom (requestSubmit non supporté)
+// + méthode validate() exposée pour que le composant puisse y accéder via ref
+const VFormStub = {
+  template: '<div><slot /></div>',
+  methods: {
+    validate: () => Promise.resolve({ valid: false }),
+  },
+}
+
 const vuetifyStubs = {
-  VForm: { template: '<form @submit.prevent="$emit(\'submit\')"><slot /></form>', emits: ['submit'] },
+  VForm: VFormStub,
   VRow: { template: '<div><slot /></div>' },
   VCol: { template: '<div><slot /></div>' },
   VTextField: {
@@ -12,7 +21,7 @@ const vuetifyStubs = {
     emits: ['update:modelValue'],
   },
   VBtn: {
-    template: '<button :disabled="loading" type="submit" @click="$emit(\'click\')"><slot /></button>',
+    template: '<button :type="type || \'button\'" :disabled="loading" @click="$emit(\'click\')"><slot /></button>',
     props: ['loading', 'type', 'color', 'variant'],
     emits: ['click'],
   },
@@ -22,15 +31,13 @@ function mountForm(props = {}) {
   return mount(VenueForm, {
     props,
     global: { stubs: vuetifyStubs },
-    attachTo: document.body,
   })
 }
 
 describe('VenueForm', () => {
   it('affiche les champs du formulaire', () => {
     const wrapper = mountForm()
-    const inputs = wrapper.findAll('input')
-    expect(inputs.length).toBeGreaterThanOrEqual(2)
+    expect(wrapper.findAll('input').length).toBeGreaterThanOrEqual(2)
   })
 
   it('émet "cancel" au clic sur Annuler', async () => {
@@ -40,14 +47,15 @@ describe('VenueForm', () => {
     expect(wrapper.emitted('cancel')).toBeTruthy()
   })
 
-  it('n\'émet pas "submit" si les champs requis sont vides', async () => {
+  it('n\'émet pas "submit" si les champs requis sont vides (validate retourne invalid)', async () => {
     const wrapper = mountForm()
+    // Le stub VForm retourne { valid: false } → submit() s'arrête avant d'émettre
     const submitBtn = wrapper.findAll('button').find(b => b.text().includes('Enregistrer'))
     await submitBtn?.trigger('click')
     expect(wrapper.emitted('submit')).toBeFalsy()
   })
 
-  it('passe la prop loading sans erreur de rendu', () => {
+  it('désactive le bouton submit quand loading=true', () => {
     const wrapper = mountForm({ loading: true })
     const btn = wrapper.findAll('button').find(b => b.text().includes('Enregistrer'))
     expect(btn?.attributes('disabled')).toBeDefined()
