@@ -7,7 +7,6 @@ import speakeasy from 'speakeasy'
 import qrcode from 'qrcode'
 
 const router = Router()
-const SECRET = process.env.JWT_SECRET!
 
 router.post('/setup', authenticateToken, async (req: Request, res: Response) => {
   const userId = req.user?.userId
@@ -53,7 +52,7 @@ router.post('/verify', authenticateToken, async (req: Request, res: Response) =>
     return
   }
 
-  const finalToken = jwt.sign({ userId: user.id, email: user.email }, SECRET, { expiresIn: '1h' })
+  const finalToken = jwt.sign({ userId: user.id, email: user.email }, process.env.JWT_SECRET!, { expiresIn: '1h' })
   res.json({ verified: true, token: finalToken })
 })
 

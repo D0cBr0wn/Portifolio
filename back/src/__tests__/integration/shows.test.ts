@@ -2,6 +2,7 @@ import request from 'supertest'
 import jwt from 'jsonwebtoken'
 
 jest.mock('../../lib/prisma', () => ({
+  __esModule: true,
   default: {
     show: { findMany: jest.fn(), create: jest.fn() },
     ipBan: {
@@ -14,7 +15,7 @@ jest.mock('../../lib/prisma', () => ({
 import prisma from '../../lib/prisma'
 import { buildTestApp } from '../helpers/testApp'
 
-const mockPrisma = prisma as jest.Mocked<typeof prisma>
+const showMock = prisma.show as unknown as { findMany: jest.Mock; create: jest.Mock }
 const app = buildTestApp()
 
 const SECRET = 'test-secret-for-jest-at-least-32-chars'
@@ -33,7 +34,7 @@ describe('GET /api/shows', () => {
   beforeEach(() => jest.clearAllMocks())
 
   it('retourne la liste des shows (public, sans auth)', async () => {
-    mockPrisma.show.findMany.mockResolvedValue([fakeShow] as never)
+    showMock.findMany.mockResolvedValue([fakeShow])
 
     const res = await request(app).get('/api/shows')
 
@@ -43,7 +44,7 @@ describe('GET /api/shows', () => {
   })
 
   it('inclut les données de venue', async () => {
-    mockPrisma.show.findMany.mockResolvedValue([fakeShow] as never)
+    showMock.findMany.mockResolvedValue([fakeShow])
 
     const res = await request(app).get('/api/shows')
 
@@ -59,11 +60,11 @@ describe('POST /api/shows', () => {
   it('retourne 401 sans token', async () => {
     const res = await request(app).post('/api/shows').send(validPayload)
     expect(res.status).toBe(401)
-    expect(mockPrisma.show.create).not.toHaveBeenCalled()
+    expect(showMock.create).not.toHaveBeenCalled()
   })
 
   it('crée un show et retourne 201 avec token valide', async () => {
-    mockPrisma.show.create.mockResolvedValue({ id: 2, ...validPayload } as never)
+    showMock.create.mockResolvedValue({ id: 2, ...validPayload })
 
     const res = await request(app)
       .post('/api/shows')
@@ -81,7 +82,7 @@ describe('POST /api/shows', () => {
       .send({ date: '2025-08-01T20:00:00.000Z', venueId: 1 })
 
     expect(res.status).toBe(400)
-    expect(mockPrisma.show.create).not.toHaveBeenCalled()
+    expect(showMock.create).not.toHaveBeenCalled()
   })
 
   it('retourne 400 si date invalide', async () => {

@@ -2,6 +2,7 @@ import request from 'supertest'
 import jwt from 'jsonwebtoken'
 
 jest.mock('../../lib/prisma', () => ({
+  __esModule: true,
   default: {
     user: { findUnique: jest.fn(), update: jest.fn() },
     ipBan: {
@@ -14,11 +15,9 @@ jest.mock('../../lib/prisma', () => ({
 jest.mock('speakeasy', () => ({
   generateSecret: jest.fn().mockReturnValue({
     base32: 'JBSWY3DPEHPK3PXP',
-    otpauth_url: 'otpauth://totp/Auboulot%20(test%40test.com)?secret=JBSWY3DPEHPK3PXP',
+    otpauth_url: 'otpauth://totp/test',
   }),
-  totp: {
-    verify: jest.fn(),
-  },
+  totp: { verify: jest.fn() },
 }))
 
 jest.mock('qrcode', () => ({
@@ -26,11 +25,10 @@ jest.mock('qrcode', () => ({
 }))
 
 import prisma from '../../lib/prisma'
-import speakeasy from 'speakeasy'
 import { buildTestApp } from '../helpers/testApp'
 
-const mockPrisma = prisma as jest.Mocked<typeof prisma>
-const mockSpeakeasy = speakeasy as jest.Mocked<typeof speakeasy>
+const userMock = prisma.user as unknown as { findUnique: jest.Mock; update: jest.Mock }
+const speakeasy = require('speakeasy')
 const app = buildTestApp()
 
 const SECRET = 'test-secret-for-jest-at-least-32-chars'
@@ -49,7 +47,7 @@ describe('POST /api/mfa/setup', () => {
   })
 
   it('retourne le QR code et le secret avec un token valide', async () => {
-    mockPrisma.user.update.mockResolvedValue({} as never)
+    userMock.update.mockResolvedValue({})
 
     const token = makeToken(1, 'test@test.com')
     const res = await request(app)
@@ -59,7 +57,7 @@ describe('POST /api/mfa/setup', () => {
     expect(res.status).toBe(200)
     expect(res.body.qrCodeDataURL).toBe('data:image/png;base64,fake')
     expect(res.body.secret).toBe('JBSWY3DPEHPK3PXP')
-    expect(mockPrisma.user.update).toHaveBeenCalledWith(
+    expect(userMock.update).toHaveBeenCalledWith(
       expect.objectContaining({ data: { mfaSecret: 'JBSWY3DPEHPK3PXP' } })
     )
   })
@@ -74,7 +72,7 @@ describe('POST /api/mfa/verify', () => {
   })
 
   it('retourne 400 si MFA non configuré pour l\'utilisateur', async () => {
-    mockPrisma.user.findUnique.mockResolvedValue({
+    userMock.findUnique.mockResolvedValue({
       id: 1, email: 'test@test.com', password: '', mfaSecret: null, banUntil: null,
     })
 
@@ -88,10 +86,10 @@ describe('POST /api/mfa/verify', () => {
   })
 
   it('retourne 401 si code TOTP invalide', async () => {
-    mockPrisma.user.findUnique.mockResolvedValue({
+    userMock.findUnique.mockResolvedValue({
       id: 1, email: 'test@test.com', password: '', mfaSecret: 'JBSWY3DPEHPK3PXP', banUntil: null,
     })
-    mockSpeakeasy.totp.verify.mockReturnValue(false)
+    speakeasy.totp.verify.mockReturnValue(false)
 
     const token = makeToken(1, 'test@test.com')
     const res = await request(app)
@@ -104,10 +102,10 @@ describe('POST /api/mfa/verify', () => {
   })
 
   it('retourne un JWT final si code TOTP valide', async () => {
-    mockPrisma.user.findUnique.mockResolvedValue({
+    userMock.findUnique.mockResolvedValue({
       id: 1, email: 'test@test.com', password: '', mfaSecret: 'JBSWY3DPEHPK3PXP', banUntil: null,
     })
-    mockSpeakeasy.totp.verify.mockReturnValue(true)
+    speakeasy.totp.verify.mockReturnValue(true)
 
     const token = makeToken(1, 'test@test.com')
     const res = await request(app)

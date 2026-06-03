@@ -1,6 +1,7 @@
 import request from 'supertest'
 
 jest.mock('../../lib/prisma', () => ({
+  __esModule: true,
   default: {
     user: {
       create: jest.fn(),
@@ -22,7 +23,6 @@ jest.mock('../../lib/prisma', () => ({
 
 jest.mock('../../utils/sendAlerts', () => ({ sendAdminBanAlert: jest.fn() }))
 
-// Désactiver le rate limiter en test
 jest.mock('../../middleware/rateLimiterMiddleware', () => ({
   loginLimiter: (_req: unknown, _res: unknown, next: () => void) => next(),
 }))
@@ -30,7 +30,7 @@ jest.mock('../../middleware/rateLimiterMiddleware', () => ({
 import prisma from '../../lib/prisma'
 import { buildTestApp } from '../helpers/testApp'
 
-const mockPrisma = prisma as jest.Mocked<typeof prisma>
+const userMock = prisma.user as unknown as { create: jest.Mock; findUnique: jest.Mock; update: jest.Mock }
 const app = buildTestApp()
 
 process.env.JWT_SECRET = 'test-secret-for-jest-at-least-32-chars'
@@ -39,7 +39,7 @@ describe('POST /api/auth/register', () => {
   beforeEach(() => jest.clearAllMocks())
 
   it('crée un utilisateur et retourne 201', async () => {
-    mockPrisma.user.create.mockResolvedValue({ id: 1, email: 'new@test.com', password: 'hash', mfaSecret: null, banUntil: null })
+    userMock.create.mockResolvedValue({ id: 1, email: 'new@test.com', password: 'hash', mfaSecret: null, banUntil: null })
 
     const res = await request(app)
       .post('/api/auth/register')
@@ -56,7 +56,7 @@ describe('POST /api/auth/register', () => {
       .send({ email: 'not-an-email', password: 'password123' })
 
     expect(res.status).toBe(400)
-    expect(mockPrisma.user.create).not.toHaveBeenCalled()
+    expect(userMock.create).not.toHaveBeenCalled()
   })
 
   it('retourne 400 si mot de passe trop court', async () => {
@@ -68,7 +68,7 @@ describe('POST /api/auth/register', () => {
   })
 
   it('retourne 400 (message générique) si email déjà utilisé', async () => {
-    mockPrisma.user.create.mockRejectedValue(new Error('Unique constraint'))
+    userMock.create.mockRejectedValue(new Error('Unique constraint'))
 
     const res = await request(app)
       .post('/api/auth/register')
@@ -86,7 +86,7 @@ describe('POST /api/auth/login', () => {
     const bcrypt = await import('bcryptjs')
     const hash = await bcrypt.hash('password123', 1)
 
-    mockPrisma.user.findUnique.mockResolvedValue({
+    userMock.findUnique.mockResolvedValue({
       id: 1, email: 'user@test.com', password: hash, mfaSecret: null, banUntil: null,
     })
 
@@ -102,7 +102,7 @@ describe('POST /api/auth/login', () => {
     const bcrypt = await import('bcryptjs')
     const hash = await bcrypt.hash('password123', 1)
 
-    mockPrisma.user.findUnique.mockResolvedValue({
+    userMock.findUnique.mockResolvedValue({
       id: 1, email: 'user@test.com', password: hash, mfaSecret: 'JBSWY3DPEHPK3PXP', banUntil: null,
     })
 
@@ -120,20 +120,20 @@ describe('POST /api/auth/login', () => {
     const bcrypt = await import('bcryptjs')
     const hash = await bcrypt.hash('correct', 1)
 
-    mockPrisma.user.findUnique.mockResolvedValue({
+    userMock.findUnique.mockResolvedValue({
       id: 1, email: 'user@test.com', password: hash, mfaSecret: null, banUntil: null,
     })
 
     const res = await request(app)
       .post('/api/auth/login')
-      .send({ email: 'user@test.com', password: 'wrong' })
+      .send({ email: 'user@test.com', password: 'wrong-password' })
 
     expect(res.status).toBe(401)
     expect(res.body.error).toBe('Identifiants invalides')
   })
 
   it('retourne 401 avec message générique si utilisateur inconnu', async () => {
-    mockPrisma.user.findUnique.mockResolvedValue(null)
+    userMock.findUnique.mockResolvedValue(null)
 
     const res = await request(app)
       .post('/api/auth/login')
@@ -156,7 +156,7 @@ describe('POST /api/auth/login', () => {
     const bcrypt = await import('bcryptjs')
     const hash = await bcrypt.hash('password123', 1)
 
-    mockPrisma.user.findUnique.mockResolvedValue({
+    userMock.findUnique.mockResolvedValue({
       id: 1, email: 'user@test.com', password: hash, mfaSecret: null,
       banUntil: new Date(Date.now() + 3_600_000),
     })
