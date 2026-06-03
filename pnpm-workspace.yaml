@@ -1,0 +1,5 @@
+packages:
+  - 'back'
+  - 'front_vue'
+  - 'front_nuxt'
+  - 'packages/*'
