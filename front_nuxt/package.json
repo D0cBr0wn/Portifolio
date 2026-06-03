@@ -1,5 +1,5 @@
 {
-  "name": "nuxt-app",
+  "name": "@portfolio/front-nuxt",
   "private": true,
   "type": "module",
   "scripts": {
