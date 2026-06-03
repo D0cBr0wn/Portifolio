@@ -17,7 +17,7 @@ app.use(cors({ origin: process.env.FRONTEND_URL ?? 'http://localhost:5173' }))
 app.use(express.json())
 app.use(ipBanCheck)
 
-app.get('/', (_req, res) => res.json({ status: 'ok' }))
+app.get('/', (_req, res) => { res.json({ status: 'ok' }) })
 
 app.use('/api/auth', authRoutes)
 app.use('/api/mfa', mfaRoutes)

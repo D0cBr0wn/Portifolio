@@ -9,8 +9,10 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
+  css: { modules: { classNameStrategy: 'non-scoped' } },
   test: {
     environment: 'jsdom',
+    server: { deps: { inline: ['vuetify'] } },
     include: ['src/**/__tests__/**/*.test.ts'],
     coverage: {
       provider: 'v8',
