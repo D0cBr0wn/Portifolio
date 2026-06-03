@@ -15,7 +15,6 @@ const authSchema = z.object({
   password: z.string().min(6),
 })
 
-const SECRET = process.env.JWT_SECRET!
 
 router.post('/register', async (req: Request, res: Response) => {
   try {
@@ -58,7 +57,7 @@ router.post('/login', loginLimiter, async (req: Request, res: Response): Promise
       return
     }
 
-    const token = jwt.sign({ userId: user.id, email: user.email }, SECRET, { expiresIn: '1h' })
+    const token = jwt.sign({ userId: user.id, email: user.email }, process.env.JWT_SECRET!, { expiresIn: '1h' })
     res.json({ token })
   } catch {
     res.status(400).json({ error: 'Identifiants invalides' })

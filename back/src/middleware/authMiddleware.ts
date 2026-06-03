@@ -2,8 +2,6 @@ import type { Request, Response, NextFunction } from 'express'
 import jwt from 'jsonwebtoken'
 import type { JwtUserPayload } from '../types/express/index.js'
 
-const SECRET = process.env.JWT_SECRET!
-
 export async function authenticateToken(req: Request, res: Response, next: NextFunction): Promise<void> {
   const authHeader = req.headers['authorization']
   const token = authHeader?.split(' ')[1]
@@ -14,7 +12,7 @@ export async function authenticateToken(req: Request, res: Response, next: NextF
   }
 
   try {
-    const payload = jwt.verify(token, SECRET) as JwtUserPayload
+    const payload = jwt.verify(token, process.env.JWT_SECRET!) as JwtUserPayload
     req.user = payload
     next()
   } catch {
