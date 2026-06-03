@@ -1,4 +1,20 @@
 {
   "name": "portfolio",
-  "private": true
+  "private": true,
+  "scripts": {
+    "dev:back": "pnpm --filter @portfolio/back dev",
+    "dev:vue": "pnpm --filter @portfolio/front-vue dev",
+    "dev:nuxt": "pnpm --filter @portfolio/front-nuxt dev",
+    "test": "pnpm -r test",
+    "test:back": "pnpm --filter @portfolio/back test",
+    "test:vue": "pnpm --filter @portfolio/front-vue test",
+    "test:shared": "pnpm --filter @portfolio/shared test",
+    "lint": "pnpm -r lint",
+    "build": "pnpm -r build",
+    "build:shared": "pnpm --filter @portfolio/shared build"
+  },
+  "engines": {
+    "node": ">=20",
+    "pnpm": ">=9"
+  }
 }
