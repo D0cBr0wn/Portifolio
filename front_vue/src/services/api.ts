@@ -16,7 +16,9 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
 
   const response = await fetch(`${API_BASE}${path}`, { ...options, headers })
 
-  if (response.status === 401) {
+  // Rediriger vers /login seulement si on avait un token (session expirée)
+  // Pas si on n'avait pas de token (ex: tentative de login avec mauvais credentials)
+  if (response.status === 401 && auth.token) {
     auth.logout()
     window.location.href = '/login'
     throw new Error('Session expirée')
