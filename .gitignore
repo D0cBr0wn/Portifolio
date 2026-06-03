@@ -1,0 +1,16 @@
+node_modules/
+dist/
+.env
+*.local
+
+# pnpm
+pnpm-lock.yaml
+
+# Nuxt
+.nuxt/
+.output/
+.nuxtrc
+
+# IDE
+.vscode/
+.idea/
