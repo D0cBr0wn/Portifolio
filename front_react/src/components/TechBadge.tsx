@@ -1,11 +1,5 @@
-const BADGE_STYLE: React.CSSProperties = {
-  width: 28,
-  opacity: 0.35,
-  transition: 'opacity 0.2s',
-  display: 'block',
-}
-
-const HOVER_STYLE: React.CSSProperties = { opacity: 0.8 }
+const BASE: React.CSSProperties = { width: 28, opacity: 0.35, transition: 'opacity 0.2s', display: 'block' }
+const ACTIVE: React.CSSProperties = { ...BASE, opacity: 0.7 }
 
 function VueLogo() {
   return (
@@ -29,27 +23,30 @@ function ReactLogo() {
   )
 }
 
+function Badge({ href, title, active, children }: { href: string; title: string; active?: boolean; children: React.ReactNode }) {
+  const base = active ? ACTIVE : BASE
+  return (
+    <a
+      href={href}
+      title={title}
+      style={base}
+      onMouseEnter={(e) => Object.assign((e.currentTarget as HTMLElement).style, { opacity: 1 })}
+      onMouseLeave={(e) => Object.assign((e.currentTarget as HTMLElement).style, { opacity: String(base.opacity) })}
+    >
+      {children}
+    </a>
+  )
+}
+
 export default function TechBadge() {
   return (
     <div style={{ position: 'fixed', bottom: '1rem', right: '1rem', display: 'flex', gap: '0.5rem', zIndex: 9999 }}>
-      <a
-        href="http://localhost:5173"
-        title="Vue.js version"
-        style={BADGE_STYLE}
-        onMouseEnter={(e) => Object.assign((e.currentTarget as HTMLElement).style, HOVER_STYLE)}
-        onMouseLeave={(e) => Object.assign((e.currentTarget as HTMLElement).style, BADGE_STYLE)}
-      >
+      <Badge href="http://localhost:5173" title="Vue.js version">
         <VueLogo />
-      </a>
-      <a
-        href="http://localhost:5174"
-        title="React version"
-        style={{ ...BADGE_STYLE, opacity: 0.8 }}
-        onMouseEnter={(e) => Object.assign((e.currentTarget as HTMLElement).style, { ...BADGE_STYLE, opacity: 1 })}
-        onMouseLeave={(e) => Object.assign((e.currentTarget as HTMLElement).style, { ...BADGE_STYLE, opacity: 0.8 })}
-      >
+      </Badge>
+      <Badge href="http://localhost:5174" title="React version" active>
         <ReactLogo />
-      </a>
+      </Badge>
     </div>
   )
 }

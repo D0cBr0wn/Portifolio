@@ -2,7 +2,7 @@
   <div class="tech-badge-container">
     <a
       href="http://localhost:5173"
-      class="tech-badge"
+      class="tech-badge active"
       title="Vue.js version"
     >
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 261.76 226.69" aria-label="Vue.js">
@@ -12,7 +12,7 @@
     </a>
     <a
       href="http://localhost:5174"
-      class="tech-badge react-badge"
+      class="tech-badge"
       title="React version"
     >
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="-11.5 -10.23174 23 20.46348" aria-label="React">
@@ -44,12 +44,12 @@
   display: block;
 }
 
-.tech-badge:hover {
-  opacity: 0.8;
+.tech-badge.active {
+  opacity: 0.7;
 }
 
-.react-badge {
-  opacity: 0.35;
+.tech-badge:hover {
+  opacity: 1;
 }
 
 .tech-badge svg {
