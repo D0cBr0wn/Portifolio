@@ -1,0 +1,11 @@
+/* ── Variables ───────────────────────────────────────────────── */
+:root {
+  --color-accent: #c59a47;       /* accentuation principale */
+  --color-accent-alt: #bb86fc;   /* accentuation secondaire */
+  --color-accent-menu: #000000;  /* accentuation du menu (hover, active) */
+}
+
+/* ── Règles globales ─────────────────────────────────────────── */
+h1.page-title {
+  font-family: "Arial", sans-serif;
+}
