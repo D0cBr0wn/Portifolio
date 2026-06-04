@@ -80,12 +80,12 @@
           </v-btn>
         </v-form>
       </v-card-text>
+      <v-card-text class="text-center pt-0 pb-4">
+        <router-link to="/register" class="text-caption" style="color: #888;">
+          Créer un compte (démo)
+        </router-link>
+      </v-card-text>
     </v-card>
-    <div class="mt-4 text-center">
-      <router-link to="/register" class="text-caption" style="color: #888;">
-        Créer un compte (démo)
-      </router-link>
-    </div>
   </div>
 </template>
 
