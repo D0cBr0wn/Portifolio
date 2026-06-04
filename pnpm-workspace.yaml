@@ -1,8 +1,8 @@
 packages:
   - 'back'
   - 'front_vue'
-  - 'front_nuxt'
   - 'front_react'
+  - 'front_angular'
   - 'packages/*'
 
 allowBuilds:
@@ -10,6 +10,9 @@ allowBuilds:
   '@prisma/client': true
   '@prisma/engines': true
   esbuild: true
+  lmdb: true
+  msgpackr-extract: true
+  nice-napi: true
   prisma: true
   unrs-resolver: true
   vue-demi: true
