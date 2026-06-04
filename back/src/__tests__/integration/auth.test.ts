@@ -78,6 +78,18 @@ describe('POST /api/auth/register', () => {
     expect(res.status).toBe(400)
     expect(res.body.error).toBe('Identifiants invalides')
   })
+
+  it('crée un ADMIN si isAdmin=true', async () => {
+    userMock.create.mockResolvedValue({ id: 2, email: 'admin@demo.com', password: 'hash', role: 'ADMIN', mfaSecret: null, banUntil: null })
+
+    await request(app)
+      .post('/api/auth/register')
+      .send({ email: 'admin@demo.com', password: 'password123', isAdmin: true })
+
+    expect(userMock.create).toHaveBeenCalledWith(
+      expect.objectContaining({ data: expect.objectContaining({ role: 'ADMIN' }) })
+    )
+  })
 })
 
 describe('POST /api/auth/login', () => {

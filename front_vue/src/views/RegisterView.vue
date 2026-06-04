@@ -51,6 +51,15 @@
             class="mb-4"
             @click:append-inner="showConfirm = !showConfirm"
           />
+          <v-checkbox
+            v-model="isAdmin"
+            color="warning"
+            class="mb-1"
+          >
+            <template #label>
+              <span>Créer en tant qu'<strong>ADMIN</strong> <span class="text-caption text-medium-emphasis">(démo uniquement)</span></span>
+            </template>
+          </v-checkbox>
           <v-alert v-if="serverError" type="error" density="compact" class="mb-4">
             {{ serverError }}
           </v-alert>
@@ -76,6 +85,7 @@ import { authService } from '@/services/authService'
 const email = ref('')
 const password = ref('')
 const confirm = ref('')
+const isAdmin = ref(false)
 const showPassword = ref(false)
 const showConfirm = ref(false)
 const loading = ref(false)
@@ -96,7 +106,7 @@ async function submit() {
   loading.value = true
   serverError.value = ''
   try {
-    await authService.register(email.value, password.value)
+    await authService.register(email.value, password.value, isAdmin.value)
     success.value = true
   } catch (e: unknown) {
     serverError.value = e instanceof Error ? e.message : 'Erreur lors de la création du compte.'
