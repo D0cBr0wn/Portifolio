@@ -7,6 +7,7 @@ jest.mock('../../lib/prisma', () => ({
       create: jest.fn(),
       findUnique: jest.fn(),
       update: jest.fn(),
+      count: jest.fn().mockResolvedValue(1),
     },
     failedLoginAttempt: {
       create: jest.fn(),
@@ -30,7 +31,7 @@ jest.mock('../../middleware/rateLimiterMiddleware', () => ({
 import prisma from '../../lib/prisma'
 import { buildTestApp } from '../helpers/testApp'
 
-const userMock = prisma.user as unknown as { create: jest.Mock; findUnique: jest.Mock; update: jest.Mock }
+const userMock = prisma.user as unknown as { create: jest.Mock; findUnique: jest.Mock; update: jest.Mock; count: jest.Mock }
 const app = buildTestApp()
 
 process.env.JWT_SECRET = 'test-secret-for-jest-at-least-32-chars'
@@ -39,7 +40,7 @@ describe('POST /api/auth/register', () => {
   beforeEach(() => jest.clearAllMocks())
 
   it('crée un utilisateur et retourne 201', async () => {
-    userMock.create.mockResolvedValue({ id: 1, email: 'new@test.com', password: 'hash', mfaSecret: null, banUntil: null })
+    userMock.create.mockResolvedValue({ id: 1, email: 'new@test.com', password: 'hash', role: 'USER', mfaSecret: null, banUntil: null })
 
     const res = await request(app)
       .post('/api/auth/register')
@@ -87,7 +88,7 @@ describe('POST /api/auth/login', () => {
     const hash = await bcrypt.hash('password123', 1)
 
     userMock.findUnique.mockResolvedValue({
-      id: 1, email: 'user@test.com', password: hash, mfaSecret: null, banUntil: null,
+      id: 1, email: 'user@test.com', password: hash, role: 'USER', mfaSecret: null, banUntil: null,
     })
 
     const res = await request(app)
@@ -96,6 +97,10 @@ describe('POST /api/auth/login', () => {
 
     expect(res.status).toBe(200)
     expect(res.body.token).toBeDefined()
+
+    const jwt = await import('jsonwebtoken')
+    const decoded = jwt.verify(res.body.token, process.env.JWT_SECRET!) as { userId: number; role: string }
+    expect(decoded.role).toBe('USER')
   })
 
   it('retourne 206 + mfaRequired si MFA activé', async () => {
@@ -103,7 +108,7 @@ describe('POST /api/auth/login', () => {
     const hash = await bcrypt.hash('password123', 1)
 
     userMock.findUnique.mockResolvedValue({
-      id: 1, email: 'user@test.com', password: hash, mfaSecret: 'JBSWY3DPEHPK3PXP', banUntil: null,
+      id: 1, email: 'user@test.com', password: hash, role: 'USER', mfaSecret: 'JBSWY3DPEHPK3PXP', banUntil: null,
     })
 
     const res = await request(app)
@@ -121,7 +126,7 @@ describe('POST /api/auth/login', () => {
     const hash = await bcrypt.hash('correct', 1)
 
     userMock.findUnique.mockResolvedValue({
-      id: 1, email: 'user@test.com', password: hash, mfaSecret: null, banUntil: null,
+      id: 1, email: 'user@test.com', password: hash, role: 'USER', mfaSecret: null, banUntil: null,
     })
 
     const res = await request(app)
@@ -157,7 +162,7 @@ describe('POST /api/auth/login', () => {
     const hash = await bcrypt.hash('password123', 1)
 
     userMock.findUnique.mockResolvedValue({
-      id: 1, email: 'user@test.com', password: hash, mfaSecret: null,
+      id: 1, email: 'user@test.com', password: hash, role: 'USER', mfaSecret: null,
       banUntil: new Date(Date.now() + 3_600_000),
     })
 
