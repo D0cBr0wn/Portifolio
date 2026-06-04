@@ -7,6 +7,7 @@ import venueRoutes from './routes/venue'
 import authRoutes from './routes/auth'
 import mfaRoutes from './routes/mfa'
 import userRoutes from './routes/users'
+import backofficeRoutes from './routes/backoffice'
 import { ipBanCheck } from './middleware/ipBanMiddleware'
 import logger from './logger'
 
@@ -25,6 +26,7 @@ app.use('/api/mfa', mfaRoutes)
 app.use('/api/shows', showRoutes)
 app.use('/api/venues', venueRoutes)
 app.use('/api/users', userRoutes)
+app.use('/api/backoffice', backofficeRoutes)
 
 app.listen(port, () => {
   logger.info(`Server running on port ${port}`)

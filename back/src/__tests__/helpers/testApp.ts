@@ -4,6 +4,7 @@ import mfaRoutes from '../../routes/mfa'
 import showRoutes from '../../routes/show'
 import venueRoutes from '../../routes/venue'
 import userRoutes from '../../routes/users'
+import backofficeRoutes from '../../routes/backoffice'
 import { ipBanCheck } from '../../middleware/ipBanMiddleware'
 
 export function buildTestApp() {
@@ -15,5 +16,6 @@ export function buildTestApp() {
   app.use('/api/shows', showRoutes)
   app.use('/api/venues', venueRoutes)
   app.use('/api/users', userRoutes)
+  app.use('/api/backoffice', backofficeRoutes)
   return app
 }
