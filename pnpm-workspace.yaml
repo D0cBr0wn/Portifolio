@@ -2,6 +2,7 @@ packages:
   - 'back'
   - 'front_vue'
   - 'front_nuxt'
+  - 'front_react'
   - 'packages/*'
 
 allowBuilds:
