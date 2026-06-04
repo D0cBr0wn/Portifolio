@@ -3,7 +3,8 @@
     <v-card class="login-card" elevation="8">
       <v-card-title class="login-title">
         <span v-if="step === 'credentials'">Connexion</span>
-        <span v-else>Vérification MFA</span>
+        <span v-else-if="step === 'mfa'">Vérification MFA</span>
+        <span v-else>Configuration MFA</span>
       </v-card-title>
 
       <!-- Étape 1 : email + mot de passe -->
@@ -22,12 +23,14 @@
           <v-text-field
             v-model="password"
             label="Mot de passe"
-            type="password"
+            :type="showPassword ? 'text' : 'password'"
             variant="outlined"
             density="comfortable"
             autocomplete="current-password"
             :error-messages="errors.password"
+            :append-inner-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
             class="mb-4"
+            @click:append-inner="showPassword = !showPassword"
           />
           <v-alert v-if="serverError" type="error" density="compact" class="mb-4">
             {{ serverError }}
@@ -42,6 +45,44 @@
             Se connecter
           </v-btn>
         </v-form>
+      </v-card-text>
+
+      <!-- Étape 2b : configuration initiale MFA (admin a forcé le MFA) -->
+      <v-card-text v-else-if="step === 'mfa-setup'">
+        <template v-if="!qrCodeDataURL">
+          <p class="mfa-hint">Votre administrateur a activé le MFA sur votre compte. Chargement du QR code…</p>
+          <v-progress-circular indeterminate color="primary" class="d-flex mx-auto" />
+        </template>
+        <template v-else>
+          <p class="mfa-hint">
+            Scannez ce QR code avec Google Authenticator ou une application TOTP compatible, puis entrez le code généré.
+          </p>
+          <div class="d-flex justify-center mb-4">
+            <img :src="qrCodeDataURL" alt="QR Code MFA" width="180" height="180" />
+          </div>
+          <v-form @submit.prevent="submitMfaSetup">
+            <v-otp-input
+              ref="otpSetupRef"
+              v-model="mfaSetupCode"
+              length="6"
+              type="number"
+              class="mb-4"
+            />
+            <v-alert v-if="serverError" type="error" density="compact" class="mb-4">
+              {{ serverError }}
+            </v-alert>
+            <v-btn
+              type="submit"
+              color="primary"
+              block
+              size="large"
+              :loading="loading"
+              :disabled="mfaSetupCode.length < 6"
+            >
+              Confirmer
+            </v-btn>
+          </v-form>
+        </template>
       </v-card-text>
 
       <!-- Étape 2 : code Google Authenticator -->
@@ -99,19 +140,25 @@ import { authService } from '@/services/authService'
 const router = useRouter()
 const authStore = useAuthStore()
 
-const step = ref<'credentials' | 'mfa'>('credentials')
+const step = ref<'credentials' | 'mfa' | 'mfa-setup'>('credentials')
+const showPassword = ref(false)
 const email = ref('')
 const password = ref('')
 const mfaCode = ref('')
+const mfaSetupCode = ref('')
+const qrCodeDataURL = ref('')
+const pendingSetupToken = ref('')
 const loading = ref(false)
 const serverError = ref('')
 const pendingUserId = ref<number | null>(null)
 
 const errors = ref({ email: '', password: '' })
 const otpInputRef = ref<{ focus: () => void } | null>(null)
+const otpSetupRef = ref<{ focus: () => void } | null>(null)
 
 watch(step, (val) => {
   if (val === 'mfa') nextTick(() => otpInputRef.value?.focus())
+  if (val === 'mfa-setup') nextTick(() => otpSetupRef.value?.focus())
 })
 
 function validate(): boolean {
@@ -127,7 +174,12 @@ async function submitCredentials() {
   serverError.value = ''
   try {
     const res = await authService.login(email.value, password.value)
-    if (res.mfaRequired && res.userId) {
+    if (res.mfaSetupRequired && res.setupToken) {
+      pendingSetupToken.value = res.setupToken
+      step.value = 'mfa-setup'
+      const setup = await authService.setupMfaWithToken(res.setupToken)
+      qrCodeDataURL.value = setup.qrCodeDataURL
+    } else if (res.mfaRequired && res.userId) {
       pendingUserId.value = res.userId
       step.value = 'mfa'
     } else if (res.token) {
@@ -136,6 +188,22 @@ async function submitCredentials() {
     }
   } catch {
     serverError.value = 'Identifiants invalides.'
+  } finally {
+    loading.value = false
+  }
+}
+
+async function submitMfaSetup() {
+  if (!pendingSetupToken.value || mfaSetupCode.value.length < 6) return
+  loading.value = true
+  serverError.value = ''
+  try {
+    const res = await authService.confirmMfaWithToken(mfaSetupCode.value, pendingSetupToken.value)
+    authStore.setToken(res.token)
+    router.push('/backoffice/venues')
+  } catch {
+    serverError.value = 'Code invalide. Réessayez.'
+    mfaSetupCode.value = ''
   } finally {
     loading.value = false
   }

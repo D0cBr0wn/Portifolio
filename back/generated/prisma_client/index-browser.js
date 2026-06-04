@@ -126,7 +126,10 @@ exports.Prisma.ShowScalarFieldEnum = {
   label: 'label',
   details: 'details',
   date: 'date',
-  venueId: 'venueId'
+  venueId: 'venueId',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.VenueScalarFieldEnum = {
@@ -135,15 +138,22 @@ exports.Prisma.VenueScalarFieldEnum = {
   city: 'city',
   address1: 'address1',
   address2: 'address2',
-  zipCode: 'zipCode'
+  zipCode: 'zipCode',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
   email: 'email',
   password: 'password',
+  role: 'role',
   mfaSecret: 'mfaSecret',
-  banUntil: 'banUntil'
+  mfaRequired: 'mfaRequired',
+  banUntil: 'banUntil',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.IpBanScalarFieldEnum = {
@@ -173,7 +183,10 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
-
+exports.Role = exports.$Enums.Role = {
+  USER: 'USER',
+  ADMIN: 'ADMIN'
+};
 
 exports.Prisma.ModelName = {
   Show: 'Show',

@@ -1,12 +1,26 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import type { Venue, VenueData } from '@portfolio/shared'
+import type { Venue, VenueData, VenueWithCreator } from '@portfolio/shared'
 import { venueService } from '@/services/venueService'
+import { backofficeService } from '@/services/backofficeService'
 
 export const useVenueStore = defineStore('venue', () => {
   const venues = ref<Venue[]>([])
+  const backofficeVenues = ref<VenueWithCreator[]>([])
   const loading = ref(false)
   const error = ref<string | null>(null)
+
+  async function loadBackoffice() {
+    loading.value = true
+    error.value = null
+    try {
+      backofficeVenues.value = await backofficeService.getVenues()
+    } catch {
+      error.value = 'Impossible de charger les lieux (backoffice).'
+    } finally {
+      loading.value = false
+    }
+  }
 
   async function load() {
     loading.value = true
@@ -64,5 +78,5 @@ export const useVenueStore = defineStore('venue', () => {
     }
   }
 
-  return { venues, loading, error, load, create, update, remove }
+  return { venues, backofficeVenues, loading, error, load, loadBackoffice, create, update, remove }
 })

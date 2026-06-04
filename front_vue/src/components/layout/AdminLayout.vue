@@ -23,6 +23,12 @@
           prepend-icon="mdi-shield-key"
           to="/backoffice/mfa-setup"
         />
+        <v-list-item
+          v-if="auth.isAdmin"
+          title="Utilisateurs"
+          prepend-icon="mdi-account-multiple"
+          to="/backoffice/users"
+        />
       </v-list>
     </v-navigation-drawer>
     <v-main>

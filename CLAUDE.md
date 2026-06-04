@@ -39,6 +39,10 @@ npm run preview    # preview production build
 
 Modules: `@nuxt/ui`, `@nuxt/icon`, `@nuxt/eslint`, `@nuxt/test-utils`.
 
+## Plans
+
+Always write plans in `.claude/plans/` (project root), never in `~/.claude/plans/` or any other location.
+
 ## Architecture
 
 - **Backend**: Express 5 + TypeScript. Routes in `src/routes/` are mounted at `/shows` and `/venues`. Each route file instantiates its own `PrismaClient`. Request bodies validated with Zod schemas before hitting Prisma. Logging via Pino (`src/logger.ts`).

@@ -19,11 +19,31 @@ export interface ShowData {
 export interface AuthResponse {
   token?: string
   mfaRequired?: boolean
+  mfaSetupRequired?: boolean
   userId?: number
+  setupToken?: string
   message?: string
 }
 
 export interface MfaVerifyResponse {
   verified: boolean
   token: string
+}
+
+export interface ShowWithCreator extends ShowData {
+  createdBy: { email: string } | null
+  createdAt: string
+}
+
+export interface VenueWithCreator extends VenueData {
+  createdBy: { email: string } | null
+  createdAt: string
+}
+
+export interface UserData {
+  id: number
+  email: string
+  role: 'USER' | 'ADMIN'
+  mfaEnabled: boolean
+  createdAt: string
 }

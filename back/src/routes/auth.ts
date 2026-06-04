@@ -15,12 +15,18 @@ const authSchema = z.object({
   password: z.string().min(6),
 })
 
+const registerSchema = authSchema.extend({
+  isAdmin: z.boolean().optional(),
+})
+
 
 router.post('/register', async (req: Request, res: Response) => {
   try {
-    const { email, password } = authSchema.parse(req.body)
+    const { email, password, isAdmin } = registerSchema.parse(req.body)
     const hash = await bcrypt.hash(password, 12)
-    const user = await prisma.user.create({ data: { email, password: hash } })
+    const count = await prisma.user.count()
+    const role = isAdmin || count === 0 ? 'ADMIN' : 'USER'
+    const user = await prisma.user.create({ data: { email, password: hash, role } })
     res.status(201).json({ id: user.id, email: user.email })
   } catch {
     res.status(400).json({ error: 'Identifiants invalides' })
@@ -52,12 +58,22 @@ router.post('/login', loginLimiter, async (req: Request, res: Response): Promise
       return
     }
 
+    if (user.mfaRequired && !user.mfaSecret) {
+      const setupToken = jwt.sign(
+        { userId: user.id, email: user.email, role: user.role, scope: 'mfa-setup' },
+        process.env.JWT_SECRET!,
+        { expiresIn: '15m' }
+      )
+      res.status(206).json({ mfaSetupRequired: true, userId: user.id, setupToken })
+      return
+    }
+
     if (user.mfaSecret) {
       res.status(206).json({ mfaRequired: true, userId: user.id, message: 'MFA required' })
       return
     }
 
-    const token = jwt.sign({ userId: user.id, email: user.email }, process.env.JWT_SECRET!, { expiresIn: '1h' })
+    const token = jwt.sign({ userId: user.id, email: user.email, role: user.role }, process.env.JWT_SECRET!, { expiresIn: '1h' })
     res.json({ token })
   } catch {
     res.status(400).json({ error: 'Identifiants invalides' })

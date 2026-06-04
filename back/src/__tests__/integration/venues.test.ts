@@ -27,7 +27,7 @@ const SECRET = 'test-secret-for-jest-at-least-32-chars'
 process.env.JWT_SECRET = SECRET
 
 function authHeader() {
-  return `Bearer ${jwt.sign({ userId: 1, email: 'user@test.com' }, SECRET, { expiresIn: '1h' })}`
+  return `Bearer ${jwt.sign({ userId: 1, email: 'user@test.com', role: 'USER' }, SECRET, { expiresIn: '1h' })}`
 }
 
 const fakeVenue = { id: 1, name: 'Le Zénith', city: 'Paris', address1: null, address2: null, zipCode: null }
@@ -68,6 +68,9 @@ describe('POST /api/venues', () => {
 
     expect(res.status).toBe(201)
     expect(res.body.name).toBe('Le Zénith')
+    expect(venueMock.create).toHaveBeenCalledWith(
+      expect.objectContaining({ data: expect.objectContaining({ createdById: 1 }) })
+    )
   })
 
   it('accepte les champs optionnels address1, address2, zipCode', async () => {

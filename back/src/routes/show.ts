@@ -20,6 +20,7 @@ router.post('/', authenticateToken, async (req, res) => {
         details: data.details,
         date: new Date(data.date),
         venueId: data.venueId,
+        createdById: req.user!.userId,
       },
       include: { venue: true },
     })

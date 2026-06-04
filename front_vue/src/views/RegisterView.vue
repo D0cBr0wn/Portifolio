@@ -30,23 +30,36 @@
           <v-text-field
             v-model="password"
             label="Mot de passe"
-            type="password"
+            :type="showPassword ? 'text' : 'password'"
             variant="outlined"
             density="comfortable"
             autocomplete="new-password"
             :error-messages="errors.password"
+            :append-inner-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
             class="mb-3"
+            @click:append-inner="showPassword = !showPassword"
           />
           <v-text-field
             v-model="confirm"
             label="Confirmer le mot de passe"
-            type="password"
+            :type="showConfirm ? 'text' : 'password'"
             variant="outlined"
             density="comfortable"
             autocomplete="new-password"
             :error-messages="errors.confirm"
+            :append-inner-icon="showConfirm ? 'mdi-eye-off' : 'mdi-eye'"
             class="mb-4"
+            @click:append-inner="showConfirm = !showConfirm"
           />
+          <v-checkbox
+            v-model="isAdmin"
+            color="warning"
+            class="mb-1"
+          >
+            <template #label>
+              <span>Créer en tant qu'<strong>ADMIN</strong> <span class="text-caption text-medium-emphasis">(démo uniquement)</span></span>
+            </template>
+          </v-checkbox>
           <v-alert v-if="serverError" type="error" density="compact" class="mb-4">
             {{ serverError }}
           </v-alert>
@@ -72,6 +85,9 @@ import { authService } from '@/services/authService'
 const email = ref('')
 const password = ref('')
 const confirm = ref('')
+const isAdmin = ref(false)
+const showPassword = ref(false)
+const showConfirm = ref(false)
 const loading = ref(false)
 const serverError = ref('')
 const success = ref(false)
@@ -90,7 +106,7 @@ async function submit() {
   loading.value = true
   serverError.value = ''
   try {
-    await authService.register(email.value, password.value)
+    await authService.register(email.value, password.value, isAdmin.value)
     success.value = true
   } catch (e: unknown) {
     serverError.value = e instanceof Error ? e.message : 'Erreur lors de la création du compte.'
