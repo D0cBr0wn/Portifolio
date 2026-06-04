@@ -1,12 +1,26 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import type { Show, ShowData } from '@portfolio/shared'
+import type { Show, ShowData, ShowWithCreator } from '@portfolio/shared'
 import { showService } from '@/services/showService'
+import { backofficeService } from '@/services/backofficeService'
 
 export const useShowStore = defineStore('show', () => {
   const shows = ref<Show[]>([])
+  const backofficeShows = ref<ShowWithCreator[]>([])
   const loading = ref(false)
   const error = ref<string | null>(null)
+
+  async function loadBackoffice() {
+    loading.value = true
+    error.value = null
+    try {
+      backofficeShows.value = await backofficeService.getShows()
+    } catch {
+      error.value = 'Impossible de charger les concerts (backoffice).'
+    } finally {
+      loading.value = false
+    }
+  }
 
   async function load() {
     loading.value = true
@@ -64,5 +78,5 @@ export const useShowStore = defineStore('show', () => {
     }
   }
 
-  return { shows, loading, error, load, create, update, remove }
+  return { shows, backofficeShows, loading, error, load, loadBackoffice, create, update, remove }
 })

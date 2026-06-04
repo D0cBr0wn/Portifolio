@@ -150,6 +150,7 @@ exports.Prisma.UserScalarFieldEnum = {
   password: 'password',
   role: 'role',
   mfaSecret: 'mfaSecret',
+  mfaRequired: 'mfaRequired',
   banUntil: 'banUntil',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
