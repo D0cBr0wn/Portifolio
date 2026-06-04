@@ -20,7 +20,9 @@ router.post('/register', async (req: Request, res: Response) => {
   try {
     const { email, password } = authSchema.parse(req.body)
     const hash = await bcrypt.hash(password, 12)
-    const user = await prisma.user.create({ data: { email, password: hash } })
+    const count = await prisma.user.count()
+    const role = count === 0 ? 'ADMIN' : 'USER'
+    const user = await prisma.user.create({ data: { email, password: hash, role } })
     res.status(201).json({ id: user.id, email: user.email })
   } catch {
     res.status(400).json({ error: 'Identifiants invalides' })
@@ -57,7 +59,7 @@ router.post('/login', loginLimiter, async (req: Request, res: Response): Promise
       return
     }
 
-    const token = jwt.sign({ userId: user.id, email: user.email }, process.env.JWT_SECRET!, { expiresIn: '1h' })
+    const token = jwt.sign({ userId: user.id, email: user.email, role: user.role }, process.env.JWT_SECRET!, { expiresIn: '1h' })
     res.json({ token })
   } catch {
     res.status(400).json({ error: 'Identifiants invalides' })
