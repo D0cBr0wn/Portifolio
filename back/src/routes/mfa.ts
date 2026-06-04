@@ -25,6 +25,36 @@ router.post('/setup', authenticateToken, async (req: Request, res: Response) => 
   res.json({ qrCodeDataURL, secret: secret.base32 })
 })
 
+router.post('/login', async (req: Request, res: Response) => {
+  const { userId, token } = req.body
+
+  if (!userId || !token) {
+    res.status(400).json({ error: 'Données invalides' })
+    return
+  }
+
+  const user = await prisma.user.findUnique({ where: { id: Number(userId) } })
+  if (!user?.mfaSecret) {
+    res.status(400).json({ error: 'MFA non configuré' })
+    return
+  }
+
+  const verified = speakeasy.totp.verify({
+    secret: user.mfaSecret,
+    encoding: 'base32',
+    token,
+    window: 1,
+  })
+
+  if (!verified) {
+    res.status(401).json({ error: 'Code invalide' })
+    return
+  }
+
+  const finalToken = jwt.sign({ userId: user.id, email: user.email }, process.env.JWT_SECRET!, { expiresIn: '1h' })
+  res.json({ verified: true, token: finalToken })
+})
+
 router.post('/verify', authenticateToken, async (req: Request, res: Response) => {
   const userId = req.user?.userId
   const { token } = req.body

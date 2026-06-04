@@ -3,7 +3,8 @@ import { Venue } from './Venue.js'
 
 export class Show {
   id: number
-  label: string
+  label?: string
+  details?: string
   date: Date
   venueId: number
   venue?: Venue
@@ -11,6 +12,7 @@ export class Show {
   constructor(data: ShowData) {
     this.id = data.id
     this.label = data.label
+    this.details = data.details
     this.date = new Date(data.date)
     this.venueId = data.venueId
     this.venue = data.venue ? new Venue(data.venue) : undefined

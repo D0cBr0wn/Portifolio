@@ -17,6 +17,10 @@ const router = createRouter({
       component: () => import('@/views/LoginView.vue'),
     },
     {
+      path: '/register',
+      component: () => import('@/views/RegisterView.vue'),
+    },
+    {
       path: '/backoffice',
       meta: { requiresAuth: true },
       children: [
@@ -27,6 +31,10 @@ const router = createRouter({
         {
           path: 'shows',
           component: () => import('@/views/backoffice/ShowsView.vue'),
+        },
+        {
+          path: 'mfa-setup',
+          component: () => import('@/views/backoffice/MfaSetupView.vue'),
         },
       ],
     },
