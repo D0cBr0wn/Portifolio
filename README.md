@@ -129,18 +129,18 @@ docker-compose up --build
 ### Tests unitaires
 
 ```bash
-# Tous les workspaces d'un coup
-pnpm test
-
-# Par workspace
+# Par workspace (toujours disponible)
 pnpm test:back     # Jest + Supertest (142 tests, seuil 70 %)
 pnpm test:vue      # Vitest + Vue Test Utils
 pnpm test:react    # Vitest + Testing Library
 pnpm test:angular  # Jest + jest-preset-angular
 pnpm test:shared   # Vitest (classes Show et Venue)
+
+# Tous les workspaces d'un coup (nécessite que les PRs de tests soient mergées sur dev)
+pnpm test
 ```
 
-> `pnpm test` nécessite que le backend PostgreSQL soit accessible (`DATABASE_URL` configuré).
+> `pnpm test` (et `test:back`) nécessitent que le backend PostgreSQL soit accessible (`DATABASE_URL` configuré).
 
 ### Tests E2E Playwright
 
