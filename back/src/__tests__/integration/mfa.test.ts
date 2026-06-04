@@ -34,8 +34,8 @@ const app = buildTestApp()
 const SECRET = 'test-secret-for-jest-at-least-32-chars'
 process.env.JWT_SECRET = SECRET
 
-function makeToken(userId: number, email: string) {
-  return jwt.sign({ userId, email }, SECRET, { expiresIn: '1h' })
+function makeToken(userId: number, email: string, role: 'USER' | 'ADMIN' = 'USER') {
+  return jwt.sign({ userId, email, role }, SECRET, { expiresIn: '1h' })
 }
 
 describe('POST /api/mfa/login', () => {
@@ -48,7 +48,7 @@ describe('POST /api/mfa/login', () => {
 
   it('retourne 400 si MFA non configuré pour l\'utilisateur', async () => {
     userMock.findUnique.mockResolvedValue({
-      id: 1, email: 'test@test.com', password: '', mfaSecret: null, banUntil: null,
+      id: 1, email: 'test@test.com', password: '', role: 'USER', mfaSecret: null, banUntil: null,
     })
 
     const res = await request(app)
@@ -60,7 +60,7 @@ describe('POST /api/mfa/login', () => {
 
   it('retourne 401 si code TOTP invalide', async () => {
     userMock.findUnique.mockResolvedValue({
-      id: 1, email: 'test@test.com', password: '', mfaSecret: 'JBSWY3DPEHPK3PXP', banUntil: null,
+      id: 1, email: 'test@test.com', password: '', role: 'USER', mfaSecret: 'JBSWY3DPEHPK3PXP', banUntil: null,
     })
     speakeasy.totp.verify.mockReturnValue(false)
 
@@ -73,7 +73,7 @@ describe('POST /api/mfa/login', () => {
 
   it('retourne un JWT final si code TOTP valide', async () => {
     userMock.findUnique.mockResolvedValue({
-      id: 1, email: 'test@test.com', password: '', mfaSecret: 'JBSWY3DPEHPK3PXP', banUntil: null,
+      id: 1, email: 'test@test.com', password: '', role: 'USER', mfaSecret: 'JBSWY3DPEHPK3PXP', banUntil: null,
     })
     speakeasy.totp.verify.mockReturnValue(true)
 
@@ -85,9 +85,10 @@ describe('POST /api/mfa/login', () => {
     expect(res.body.verified).toBe(true)
     expect(res.body.token).toBeDefined()
 
-    const decoded = jwt.verify(res.body.token, SECRET) as { userId: number; email: string }
+    const decoded = jwt.verify(res.body.token, SECRET) as { userId: number; email: string; role: string }
     expect(decoded.userId).toBe(1)
     expect(decoded.email).toBe('test@test.com')
+    expect(decoded.role).toBe('USER')
   })
 })
 
@@ -126,7 +127,7 @@ describe('POST /api/mfa/verify', () => {
 
   it('retourne 400 si MFA non configuré pour l\'utilisateur', async () => {
     userMock.findUnique.mockResolvedValue({
-      id: 1, email: 'test@test.com', password: '', mfaSecret: null, banUntil: null,
+      id: 1, email: 'test@test.com', password: '', role: 'USER', mfaSecret: null, banUntil: null,
     })
 
     const token = makeToken(1, 'test@test.com')
@@ -140,7 +141,7 @@ describe('POST /api/mfa/verify', () => {
 
   it('retourne 401 si code TOTP invalide', async () => {
     userMock.findUnique.mockResolvedValue({
-      id: 1, email: 'test@test.com', password: '', mfaSecret: 'JBSWY3DPEHPK3PXP', banUntil: null,
+      id: 1, email: 'test@test.com', password: '', role: 'USER', mfaSecret: 'JBSWY3DPEHPK3PXP', banUntil: null,
     })
     speakeasy.totp.verify.mockReturnValue(false)
 
@@ -156,7 +157,7 @@ describe('POST /api/mfa/verify', () => {
 
   it('retourne un JWT final si code TOTP valide', async () => {
     userMock.findUnique.mockResolvedValue({
-      id: 1, email: 'test@test.com', password: '', mfaSecret: 'JBSWY3DPEHPK3PXP', banUntil: null,
+      id: 1, email: 'test@test.com', password: '', role: 'USER', mfaSecret: 'JBSWY3DPEHPK3PXP', banUntil: null,
     })
     speakeasy.totp.verify.mockReturnValue(true)
 
@@ -170,8 +171,9 @@ describe('POST /api/mfa/verify', () => {
     expect(res.body.verified).toBe(true)
     expect(res.body.token).toBeDefined()
 
-    const decoded = jwt.verify(res.body.token, SECRET) as { userId: number; email: string }
+    const decoded = jwt.verify(res.body.token, SECRET) as { userId: number; email: string; role: string }
     expect(decoded.userId).toBe(1)
     expect(decoded.email).toBe('test@test.com')
+    expect(decoded.role).toBe('USER')
   })
 })
