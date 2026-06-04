@@ -13,11 +13,13 @@ export const routes: Routes = [
   },
   {
     path: 'login',
+    canActivate: [() => import('./core/guards/guest.guard').then((m) => m.guestGuard)],
     loadComponent: () =>
       import('./pages/login/login.component').then((m) => m.LoginComponent),
   },
   {
     path: 'register',
+    canActivate: [() => import('./core/guards/guest.guard').then((m) => m.guestGuard)],
     loadComponent: () =>
       import('./pages/register/register.component').then((m) => m.RegisterComponent),
   },
