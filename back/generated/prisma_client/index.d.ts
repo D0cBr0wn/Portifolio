@@ -3701,6 +3701,7 @@ export namespace Prisma {
     password: string | null
     role: $Enums.Role | null
     mfaSecret: string | null
+    mfaRequired: boolean | null
     banUntil: Date | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -3712,6 +3713,7 @@ export namespace Prisma {
     password: string | null
     role: $Enums.Role | null
     mfaSecret: string | null
+    mfaRequired: boolean | null
     banUntil: Date | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -3723,6 +3725,7 @@ export namespace Prisma {
     password: number
     role: number
     mfaSecret: number
+    mfaRequired: number
     banUntil: number
     createdAt: number
     updatedAt: number
@@ -3744,6 +3747,7 @@ export namespace Prisma {
     password?: true
     role?: true
     mfaSecret?: true
+    mfaRequired?: true
     banUntil?: true
     createdAt?: true
     updatedAt?: true
@@ -3755,6 +3759,7 @@ export namespace Prisma {
     password?: true
     role?: true
     mfaSecret?: true
+    mfaRequired?: true
     banUntil?: true
     createdAt?: true
     updatedAt?: true
@@ -3766,6 +3771,7 @@ export namespace Prisma {
     password?: true
     role?: true
     mfaSecret?: true
+    mfaRequired?: true
     banUntil?: true
     createdAt?: true
     updatedAt?: true
@@ -3864,6 +3870,7 @@ export namespace Prisma {
     password: string
     role: $Enums.Role
     mfaSecret: string | null
+    mfaRequired: boolean
     banUntil: Date | null
     createdAt: Date
     updatedAt: Date
@@ -3894,6 +3901,7 @@ export namespace Prisma {
     password?: boolean
     role?: boolean
     mfaSecret?: boolean
+    mfaRequired?: boolean
     banUntil?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -3908,6 +3916,7 @@ export namespace Prisma {
     password?: boolean
     role?: boolean
     mfaSecret?: boolean
+    mfaRequired?: boolean
     banUntil?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -3919,6 +3928,7 @@ export namespace Prisma {
     password?: boolean
     role?: boolean
     mfaSecret?: boolean
+    mfaRequired?: boolean
     banUntil?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -3930,12 +3940,13 @@ export namespace Prisma {
     password?: boolean
     role?: boolean
     mfaSecret?: boolean
+    mfaRequired?: boolean
     banUntil?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "password" | "role" | "mfaSecret" | "banUntil" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "password" | "role" | "mfaSecret" | "mfaRequired" | "banUntil" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     shows?: boolean | User$showsArgs<ExtArgs>
     venues?: boolean | User$venuesArgs<ExtArgs>
@@ -3956,6 +3967,7 @@ export namespace Prisma {
       password: string
       role: $Enums.Role
       mfaSecret: string | null
+      mfaRequired: boolean
       banUntil: Date | null
       createdAt: Date
       updatedAt: Date
@@ -4389,6 +4401,7 @@ export namespace Prisma {
     readonly password: FieldRef<"User", 'String'>
     readonly role: FieldRef<"User", 'Role'>
     readonly mfaSecret: FieldRef<"User", 'String'>
+    readonly mfaRequired: FieldRef<"User", 'Boolean'>
     readonly banUntil: FieldRef<"User", 'DateTime'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
     readonly updatedAt: FieldRef<"User", 'DateTime'>
@@ -6880,6 +6893,7 @@ export namespace Prisma {
     password: 'password',
     role: 'role',
     mfaSecret: 'mfaSecret',
+    mfaRequired: 'mfaRequired',
     banUntil: 'banUntil',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
@@ -6989,6 +7003,13 @@ export namespace Prisma {
    * Reference to a field of type 'Role[]'
    */
   export type ListEnumRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Role[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Boolean'
+   */
+  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
 
 
@@ -7173,6 +7194,7 @@ export namespace Prisma {
     password?: StringFilter<"User"> | string
     role?: EnumRoleFilter<"User"> | $Enums.Role
     mfaSecret?: StringNullableFilter<"User"> | string | null
+    mfaRequired?: BoolFilter<"User"> | boolean
     banUntil?: DateTimeNullableFilter<"User"> | Date | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
@@ -7186,6 +7208,7 @@ export namespace Prisma {
     password?: SortOrder
     role?: SortOrder
     mfaSecret?: SortOrderInput | SortOrder
+    mfaRequired?: SortOrder
     banUntil?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -7202,6 +7225,7 @@ export namespace Prisma {
     password?: StringFilter<"User"> | string
     role?: EnumRoleFilter<"User"> | $Enums.Role
     mfaSecret?: StringNullableFilter<"User"> | string | null
+    mfaRequired?: BoolFilter<"User"> | boolean
     banUntil?: DateTimeNullableFilter<"User"> | Date | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
@@ -7215,6 +7239,7 @@ export namespace Prisma {
     password?: SortOrder
     role?: SortOrder
     mfaSecret?: SortOrderInput | SortOrder
+    mfaRequired?: SortOrder
     banUntil?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -7234,6 +7259,7 @@ export namespace Prisma {
     password?: StringWithAggregatesFilter<"User"> | string
     role?: EnumRoleWithAggregatesFilter<"User"> | $Enums.Role
     mfaSecret?: StringNullableWithAggregatesFilter<"User"> | string | null
+    mfaRequired?: BoolWithAggregatesFilter<"User"> | boolean
     banUntil?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
@@ -7491,6 +7517,7 @@ export namespace Prisma {
     password: string
     role?: $Enums.Role
     mfaSecret?: string | null
+    mfaRequired?: boolean
     banUntil?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -7504,6 +7531,7 @@ export namespace Prisma {
     password: string
     role?: $Enums.Role
     mfaSecret?: string | null
+    mfaRequired?: boolean
     banUntil?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -7516,6 +7544,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     mfaSecret?: NullableStringFieldUpdateOperationsInput | string | null
+    mfaRequired?: BoolFieldUpdateOperationsInput | boolean
     banUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -7529,6 +7558,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     mfaSecret?: NullableStringFieldUpdateOperationsInput | string | null
+    mfaRequired?: BoolFieldUpdateOperationsInput | boolean
     banUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -7542,6 +7572,7 @@ export namespace Prisma {
     password: string
     role?: $Enums.Role
     mfaSecret?: string | null
+    mfaRequired?: boolean
     banUntil?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -7552,6 +7583,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     mfaSecret?: NullableStringFieldUpdateOperationsInput | string | null
+    mfaRequired?: BoolFieldUpdateOperationsInput | boolean
     banUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -7563,6 +7595,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     mfaSecret?: NullableStringFieldUpdateOperationsInput | string | null
+    mfaRequired?: BoolFieldUpdateOperationsInput | boolean
     banUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -7924,6 +7957,11 @@ export namespace Prisma {
     not?: NestedEnumRoleFilter<$PrismaModel> | $Enums.Role
   }
 
+  export type BoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
   export type DateTimeNullableFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
@@ -7951,6 +7989,7 @@ export namespace Prisma {
     password?: SortOrder
     role?: SortOrder
     mfaSecret?: SortOrder
+    mfaRequired?: SortOrder
     banUntil?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -7966,6 +8005,7 @@ export namespace Prisma {
     password?: SortOrder
     role?: SortOrder
     mfaSecret?: SortOrder
+    mfaRequired?: SortOrder
     banUntil?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -7977,6 +8017,7 @@ export namespace Prisma {
     password?: SortOrder
     role?: SortOrder
     mfaSecret?: SortOrder
+    mfaRequired?: SortOrder
     banUntil?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -7994,6 +8035,14 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumRoleFilter<$PrismaModel>
     _max?: NestedEnumRoleFilter<$PrismaModel>
+  }
+
+  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -8203,6 +8252,10 @@ export namespace Prisma {
 
   export type EnumRoleFieldUpdateOperationsInput = {
     set?: $Enums.Role
+  }
+
+  export type BoolFieldUpdateOperationsInput = {
+    set?: boolean
   }
 
   export type NullableDateTimeFieldUpdateOperationsInput = {
@@ -8435,6 +8488,11 @@ export namespace Prisma {
     not?: NestedEnumRoleFilter<$PrismaModel> | $Enums.Role
   }
 
+  export type NestedBoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
   export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
@@ -8454,6 +8512,14 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumRoleFilter<$PrismaModel>
     _max?: NestedEnumRoleFilter<$PrismaModel>
+  }
+
+  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -8503,6 +8569,7 @@ export namespace Prisma {
     password: string
     role?: $Enums.Role
     mfaSecret?: string | null
+    mfaRequired?: boolean
     banUntil?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -8515,6 +8582,7 @@ export namespace Prisma {
     password: string
     role?: $Enums.Role
     mfaSecret?: string | null
+    mfaRequired?: boolean
     banUntil?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -8576,6 +8644,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     mfaSecret?: NullableStringFieldUpdateOperationsInput | string | null
+    mfaRequired?: BoolFieldUpdateOperationsInput | boolean
     banUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -8588,6 +8657,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     mfaSecret?: NullableStringFieldUpdateOperationsInput | string | null
+    mfaRequired?: BoolFieldUpdateOperationsInput | boolean
     banUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -8628,6 +8698,7 @@ export namespace Prisma {
     password: string
     role?: $Enums.Role
     mfaSecret?: string | null
+    mfaRequired?: boolean
     banUntil?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -8640,6 +8711,7 @@ export namespace Prisma {
     password: string
     role?: $Enums.Role
     mfaSecret?: string | null
+    mfaRequired?: boolean
     banUntil?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -8697,6 +8769,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     mfaSecret?: NullableStringFieldUpdateOperationsInput | string | null
+    mfaRequired?: BoolFieldUpdateOperationsInput | boolean
     banUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -8709,6 +8782,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     mfaSecret?: NullableStringFieldUpdateOperationsInput | string | null
+    mfaRequired?: BoolFieldUpdateOperationsInput | boolean
     banUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
