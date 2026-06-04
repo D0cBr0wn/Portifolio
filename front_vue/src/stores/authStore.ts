@@ -6,6 +6,13 @@ export const useAuthStore = defineStore('auth', () => {
 
   const isAuthenticated = computed(() => token.value !== null)
 
+  const isAdmin = computed(() => {
+    if (!token.value) return false
+    try {
+      return JSON.parse(atob(token.value.split('.')[1])).role === 'ADMIN'
+    } catch { return false }
+  })
+
   function setToken(newToken: string) {
     token.value = newToken
     sessionStorage.setItem('token', newToken)
@@ -16,5 +23,5 @@ export const useAuthStore = defineStore('auth', () => {
     sessionStorage.removeItem('token')
   }
 
-  return { token, isAuthenticated, setToken, logout }
+  return { token, isAuthenticated, isAdmin, setToken, logout }
 })

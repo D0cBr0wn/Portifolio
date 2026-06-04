@@ -36,6 +36,11 @@ const router = createRouter({
           path: 'mfa-setup',
           component: () => import('@/views/backoffice/MfaSetupView.vue'),
         },
+        {
+          path: 'users',
+          meta: { requiresAdmin: true },
+          component: () => import('@/views/backoffice/UsersView.vue'),
+        },
       ],
     },
   ],
@@ -43,9 +48,9 @@ const router = createRouter({
 
 router.beforeEach((to) => {
   const auth = useAuthStore()
-  if (to.meta.requiresAuth && !auth.isAuthenticated) {
-    return '/login'
-  }
+  if (to.meta.requiresAuth && !auth.isAuthenticated) return '/login'
+  if (to.meta.requiresAdmin && !auth.isAdmin) return '/backoffice/venues'
+  return true
 })
 
 export default router
