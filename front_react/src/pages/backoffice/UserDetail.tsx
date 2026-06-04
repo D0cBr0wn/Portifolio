@@ -6,7 +6,7 @@ import {
 } from '@mui/material'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import ShieldIcon from '@mui/icons-material/Shield'
-import ShieldOffIcon from '@mui/icons-material/ShieldOff'
+import ShieldOffIcon from '@mui/icons-material/ShieldOutlined'
 import { Visibility, VisibilityOff } from '@mui/icons-material'
 import { useNavigate, useParams } from 'react-router-dom'
 import AdminLayout from '@/components/layout/AdminLayout'
