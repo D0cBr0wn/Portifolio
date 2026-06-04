@@ -1,1 +1,130 @@
-/* You can add global styles to this file, and also import other style files */
+@use '@angular/material' as mat;
+@use '@angular/material/core/m2' as m2;
+
+// Custom dark palette matching MUI theme (primary: #c59a47, accent: #bb86fc, warn: #cf6679)
+$primary-palette: (
+  50:  #fdf6e3,
+  100: #faeac1,
+  200: #f5d78a,
+  300: #eec654,
+  400: #e8b82e,
+  500: #c59a47,
+  600: #b8861a,
+  700: #9e6f10,
+  800: #84590a,
+  900: #5e3a05,
+  contrast: (
+    50: rgba(0,0,0,.87),
+    100: rgba(0,0,0,.87),
+    200: rgba(0,0,0,.87),
+    300: rgba(0,0,0,.87),
+    400: rgba(0,0,0,.87),
+    500: rgba(0,0,0,.87),
+    600: white,
+    700: white,
+    800: white,
+    900: white,
+  )
+);
+
+$secondary-palette: (
+  50:  #f3e5fd,
+  100: #e1bffa,
+  200: #cd92f7,
+  300: #b864f5,
+  400: #a847f4,
+  500: #bb86fc,
+  600: #9c29f0,
+  700: #8921e8,
+  800: #7818e1,
+  900: #5709d3,
+  contrast: (
+    50:  rgba(0,0,0,.87),
+    100: rgba(0,0,0,.87),
+    200: rgba(0,0,0,.87),
+    300: rgba(0,0,0,.87),
+    400: rgba(0,0,0,.87),
+    500: rgba(0,0,0,.87),
+    600: white,
+    700: white,
+    800: white,
+    900: white,
+  )
+);
+
+$warn-palette: (
+  50:  #fce4e6,
+  100: #f9bbc0,
+  200: #f18e97,
+  300: #e9626d,
+  400: #e24050,
+  500: #cf6679,
+  600: #c43a4c,
+  700: #b52d41,
+  800: #a52136,
+  900: #880f24,
+  contrast: (
+    50:  rgba(0,0,0,.87),
+    100: rgba(0,0,0,.87),
+    200: rgba(0,0,0,.87),
+    300: rgba(0,0,0,.87),
+    400: white,
+    500: white,
+    600: white,
+    700: white,
+    800: white,
+    900: white,
+  )
+);
+
+$theme: m2.define-dark-theme((
+  color: (
+    primary: m2.define-palette($primary-palette, 500),
+    accent:  m2.define-palette($secondary-palette, 500),
+    warn:    m2.define-palette($warn-palette, 500),
+  ),
+  typography: m2.define-typography-config(
+    $font-family: '"Roboto", "Helvetica", "Arial", sans-serif',
+  ),
+  density: 0,
+));
+
+@include mat.core();
+@include mat.all-component-themes($theme);
+
+// Global resets
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  background-color: #1a1a1a;
+  color: #e0e0e0;
+  font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
+}
+
+// Component overrides to match MUI dark theme colors
+.mat-toolbar {
+  background-color: #1976d2 !important;
+}
+
+.mat-drawer,
+.mat-sidenav {
+  background-color: #2a2a2a !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+.mat-card,
+.mat-mdc-card {
+  background-color: #222 !important;
+  border: 1px solid #333 !important;
+}
+
+.mat-mdc-dialog-surface {
+  background-color: #2a2a2a !important;
+}
