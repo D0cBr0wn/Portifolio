@@ -54,6 +54,16 @@ router.post('/login', loginLimiter, async (req: Request, res: Response): Promise
       return
     }
 
+    if (user.mfaRequired && !user.mfaSecret) {
+      const setupToken = jwt.sign(
+        { userId: user.id, email: user.email, role: user.role, scope: 'mfa-setup' },
+        process.env.JWT_SECRET!,
+        { expiresIn: '15m' }
+      )
+      res.status(206).json({ mfaSetupRequired: true, userId: user.id, setupToken })
+      return
+    }
+
     if (user.mfaSecret) {
       res.status(206).json({ mfaRequired: true, userId: user.id, message: 'MFA required' })
       return

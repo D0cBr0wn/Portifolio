@@ -34,8 +34,8 @@ const app = buildTestApp()
 const SECRET = 'test-secret-for-jest-at-least-32-chars'
 process.env.JWT_SECRET = SECRET
 
-function makeToken(userId: number, email: string, role: 'USER' | 'ADMIN' = 'USER') {
-  return jwt.sign({ userId, email, role }, SECRET, { expiresIn: '1h' })
+function makeToken(userId: number, email: string, role: 'USER' | 'ADMIN' = 'USER', scope?: 'mfa-setup') {
+  return jwt.sign({ userId, email, role, ...(scope ? { scope } : {}) }, SECRET, { expiresIn: '1h' })
 }
 
 describe('POST /api/mfa/login', () => {
@@ -175,5 +175,26 @@ describe('POST /api/mfa/verify', () => {
     expect(decoded.userId).toBe(1)
     expect(decoded.email).toBe('test@test.com')
     expect(decoded.role).toBe('USER')
+  })
+
+  it('met mfaRequired à false et retourne JWT final si scope=mfa-setup', async () => {
+    userMock.findUnique.mockResolvedValue({
+      id: 1, email: 'test@test.com', password: '', role: 'USER', mfaSecret: 'JBSWY3DPEHPK3PXP', banUntil: null,
+    })
+    userMock.update.mockResolvedValue({})
+    speakeasy.totp.verify.mockReturnValue(true)
+
+    const setupToken = makeToken(1, 'test@test.com', 'USER', 'mfa-setup')
+    const res = await request(app)
+      .post('/api/mfa/verify')
+      .set('Authorization', `Bearer ${setupToken}`)
+      .send({ token: '123456' })
+
+    expect(res.status).toBe(200)
+    expect(res.body.verified).toBe(true)
+    expect(res.body.token).toBeDefined()
+    expect(userMock.update).toHaveBeenCalledWith(
+      expect.objectContaining({ data: { mfaRequired: false } })
+    )
   })
 })
