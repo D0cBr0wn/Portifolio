@@ -173,4 +173,27 @@ describe('POST /api/auth/login', () => {
     expect(res.status).toBe(403)
     expect(res.body.error).toBe('Identifiants invalides')
   })
+
+  it('retourne 206 + mfaSetupRequired si mfaRequired=true et mfaSecret=null', async () => {
+    const bcrypt = await import('bcryptjs')
+    const hash = await bcrypt.hash('password123', 1)
+
+    userMock.findUnique.mockResolvedValue({
+      id: 1, email: 'user@test.com', password: hash, role: 'USER',
+      mfaRequired: true, mfaSecret: null, banUntil: null,
+    })
+
+    const res = await request(app)
+      .post('/api/auth/login')
+      .send({ email: 'user@test.com', password: 'password123' })
+
+    expect(res.status).toBe(206)
+    expect(res.body.mfaSetupRequired).toBe(true)
+    expect(res.body.userId).toBe(1)
+    expect(res.body.setupToken).toBeDefined()
+
+    const jwt = await import('jsonwebtoken')
+    const decoded = jwt.verify(res.body.setupToken, process.env.JWT_SECRET!) as { scope: string }
+    expect(decoded.scope).toBe('mfa-setup')
+  })
 })
