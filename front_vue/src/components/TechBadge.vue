@@ -24,6 +24,17 @@
         </g>
       </svg>
     </a>
+    <a
+      href="http://localhost:5175"
+      class="tech-badge"
+      title="Angular version"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 250" aria-label="Angular">
+        <path d="M125 30L31.9 63.2l14.2 123.1L125 230l78.9-43.7 14.2-123.1z" fill="#dd0031"/>
+        <path d="M125 30v22.2-.1V230l78.9-43.7 14.2-123.1L125 30z" fill="#c3002f"/>
+        <path d="M125 52.1L66.8 182.6h21.7l11.7-29.2h49.4l11.7 29.2H183L125 52.1zm17 83.3h-34l17-40.9 17 40.9z" fill="#fff"/>
+      </svg>
+    </a>
   </div>
 </template>
 
