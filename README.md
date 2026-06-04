@@ -69,14 +69,19 @@ ADMIN_EMAIL=
 > node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 > ```
 
-### Frontends — variable d'environnement *(optionnel)*
+### Frontends — URL du backend *(optionnel)*
 
-Les trois frontends utilisent `http://localhost:3000/api` par défaut. Pour pointer sur un autre backend :
+Vue et React utilisent une variable d'environnement Vite, Angular un fichier TypeScript :
 
-```env
-# front_vue/.env.local  |  front_react/.env.local  |  front_angular/src/environments/environment.ts
+```bash
+# front_vue/.env.local  ou  front_react/.env.local
 VITE_API_BASE=http://localhost:3000/api
+
+# front_angular/src/environments/environment.ts
+export const environment = { production: false, apiBase: 'http://localhost:3000/api' }
 ```
+
+La valeur par défaut dans les trois cas est `http://localhost:3000/api`.
 
 ## Base de données
 
@@ -85,7 +90,7 @@ Le backend utilise **PostgreSQL** via Docker. Le container est défini dans `bac
 ```bash
 cd back
 
-# Démarrer PostgreSQL + API
+# Démarrer PostgreSQL + API dans Docker (recommandé)
 docker-compose up --build
 
 # Première fois : appliquer les migrations dans le container
@@ -95,62 +100,79 @@ docker-compose exec -T api npx prisma migrate deploy
 npx prisma studio
 ```
 
-> Pour le développement local **sans Docker**, mettre à jour `DATABASE_URL` dans `back/.env` pour pointer sur un PostgreSQL accessible, puis lancer `npx prisma migrate deploy` localement.
+> **Sans Docker** : démarrer un PostgreSQL local, mettre `DATABASE_URL` à jour dans `back/.env`, puis `npx prisma migrate deploy` dans `back/`.
 
 ## Lancer le projet
 
-### Depuis la racine
+### Avec Docker (recommandé — backend complet)
 
 ```bash
-pnpm dev:back      # API + PostgreSQL Docker (port 3000)
-pnpm dev:vue       # Frontend Vue    (port 5173)
-pnpm dev:react     # Frontend React  (port 5174)
-pnpm dev:angular   # Frontend Angular (port 5175)
+cd back && docker-compose up --build   # PostgreSQL + API sur :3000
+```
+
+Puis dans d'autres terminaux :
+
+```bash
+pnpm dev:vue       # port 5173
+pnpm dev:react     # port 5174
+pnpm dev:angular   # port 5175
+```
+
+### En local (hot-reload API)
+
+PostgreSQL doit tourner séparément (ex. `docker-compose up postgres` dans `back/`).
+
+```bash
+pnpm dev:back      # nodemon + ts-node, port 3000
+
+pnpm dev:vue       # port 5173
+pnpm dev:react     # port 5174
+pnpm dev:angular   # port 5175
 ```
 
 ### Depuis chaque workspace
 
 ```bash
-cd back        && pnpm dev   # port 3000
-cd front_vue   && pnpm dev   # port 5173
-cd front_react && pnpm dev   # port 5174
-cd front_angular && pnpm dev # port 5175
-```
-
-### Avec Docker (backend + PostgreSQL)
-
-```bash
-cd back
-docker-compose up --build
+cd back          && pnpm dev   # port 3000
+cd front_vue     && pnpm dev   # port 5173
+cd front_react   && pnpm dev   # port 5174
+cd front_angular && pnpm dev   # port 5175
 ```
 
 ## Tests
 
 ### Tests unitaires
 
-```bash
-# Par workspace (toujours disponible)
-pnpm test:back     # Jest + Supertest (142 tests, seuil 70 %)
-pnpm test:vue      # Vitest + Vue Test Utils
-pnpm test:react    # Vitest + Testing Library
-pnpm test:angular  # Jest + jest-preset-angular
-pnpm test:shared   # Vitest (classes Show et Venue)
+316 tests au total répartis sur 5 suites.
 
-# Tous les workspaces d'un coup (nécessite que les PRs de tests soient mergées sur dev)
+```bash
+# Tous les workspaces d'un coup
 pnpm test
+
+# Par workspace
+pnpm test:back     # Jest + Supertest — 142 tests, seuil couverture 70 %
+pnpm test:vue      # Vitest + Vue Test Utils — 48 tests
+pnpm test:react    # Vitest + Testing Library — 58 tests
+pnpm test:angular  # Jest + jest-preset-angular — 54 tests
+pnpm test:shared   # Vitest — 14 tests (classes Show et Venue)
+
+# Couverture (rapport HTML généré dans coverage/)
+cd front_vue     && pnpm test:coverage
+cd front_react   && pnpm test:coverage
+cd front_angular && pnpm test:coverage
 ```
 
-> `pnpm test` (et `test:back`) nécessitent que le backend PostgreSQL soit accessible (`DATABASE_URL` configuré).
+> `pnpm test` et `pnpm test:back` nécessitent que PostgreSQL soit accessible (`DATABASE_URL` configuré).
 
 ### Tests E2E Playwright
 
-Les specs E2E interceptent l'API via `page.route()` — **le backend n'a pas besoin de tourner**.  
-En revanche, **le frontend ciblé doit être démarré** (ou `webServer` dans `playwright.config.ts` le lance automatiquement).
+Les specs E2E mockent l'API via `page.route()` — **le backend n'a pas besoin de tourner**.  
+Le frontend ciblé doit être démarré, ou `webServer` dans `playwright.config.ts` le lance automatiquement.
 
 ```bash
-cd front_vue     && pnpm test:e2e   # port 5173
-cd front_react   && pnpm test:e2e   # port 5174
-cd front_angular && pnpm test:e2e   # port 5175
+cd front_vue     && pnpm test:e2e   # port 5173 — auth, shows, backoffice
+cd front_react   && pnpm test:e2e   # port 5174 — auth, shows, backoffice
+cd front_angular && pnpm test:e2e   # port 5175 — auth, shows, backoffice
 ```
 
 ## Structure du monorepo
@@ -184,7 +206,7 @@ Portifolio/
 │       │   └── guards/      # auth, admin, guest
 │       ├── pages/           # home, shows, login, register, backoffice/*
 │       └── layout/          # public, admin
-├── front_nuxt/              # squelette Nuxt 3 (hors workspace, à venir)
+├── front_nuxt/              # squelette Nuxt 3 (hors workspace pnpm, à venir)
 ├── packages/
 │   └── shared/              # @portfolio/shared — types partagés
 │       └── src/
@@ -200,9 +222,14 @@ Portifolio/
 1. POST /api/auth/login  { email, password }
       → 200 { token }                        # MFA non activé → accès direct
       → 206 { mfaRequired, userId }          # MFA activé → étape 2
-      → 206 { mfaSetupRequired, setupToken } # premier login, MFA à configurer
+      → 206 { mfaSetupRequired, setupToken } # premier login, MFA à configurer → étape 2b
 
-2. POST /api/mfa/verify  { userId, token }   # code Google Authenticator
+2.  POST /api/mfa/login   { userId, token }  # code TOTP (MFA activé)
+      → 200 { token }                        # JWT final
+
+2b. POST /api/mfa/setup   {}  (Authorization: Bearer <setupToken>)
+      → 200 { qrCodeDataURL, secret }        # QR code à scanner
+    POST /api/mfa/verify  { token }          # confirmer avec le code TOTP
       → 200 { token }                        # JWT final
 
 3. Toutes les routes backoffice nécessitent : Authorization: Bearer <token>
