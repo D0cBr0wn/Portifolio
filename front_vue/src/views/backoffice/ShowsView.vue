@@ -11,7 +11,7 @@
 
     <v-data-table
       :headers="headers"
-      :items="showStore.shows"
+      :items="showStore.backofficeShows"
       :loading="showStore.loading"
       loading-text="Chargement des concerts..."
       no-data-text="Aucun concert enregistré."
@@ -19,13 +19,19 @@
       :sort-by="[{ key: 'date', order: 'desc' }]"
     >
       <template #item.date="{ item }">
-        {{ item.getFormattedDate() }}
+        {{ formatDate(item.date) }}
       </template>
       <template #item.label="{ item }">
         {{ item.label || '—' }}
       </template>
       <template #item.venue="{ item }">
         {{ item.venue ? `${item.venue.name} — ${item.venue.city}` : '—' }}
+      </template>
+      <template #item.createdBy="{ item }">
+        {{ item.createdBy?.email || '—' }}
+      </template>
+      <template #item.createdAt="{ item }">
+        {{ formatDate(item.createdAt) }}
       </template>
       <template #item.actions="{ item }">
         <v-btn icon size="small" variant="text" @click="openEdit(item)">
@@ -90,34 +96,43 @@ import AdminLayout from '@/components/layout/AdminLayout.vue'
 import ShowForm from '@/components/backoffice/ShowForm.vue'
 import { useShowStore } from '@/stores/showStore'
 import { useVenueStore } from '@/stores/venueStore'
-import type { Show, ShowData } from '@portfolio/shared'
+import type { ShowWithCreator, ShowData } from '@portfolio/shared'
 
 const showStore = useShowStore()
 const venueStore = useVenueStore()
 const dialog = ref(false)
 const editDialog = ref(false)
-const editingShow = ref<Show | null>(null)
+const editingShow = ref<ShowWithCreator | null>(null)
 const deleteDialog = ref(false)
-const deleteTarget = ref<Show | null>(null)
+const deleteTarget = ref<ShowWithCreator | null>(null)
 
 const headers = [
   { title: 'Date', key: 'date', sortable: true },
   { title: 'Concert', key: 'label', sortable: true },
   { title: 'Lieu', key: 'venue', sortable: false },
+  { title: 'Créé par', key: 'createdBy', sortable: false },
+  { title: 'Créé le', key: 'createdAt', sortable: true },
   { title: '', key: 'actions', sortable: false },
 ]
 
+function formatDate(iso: string) {
+  return new Date(iso).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })
+}
+
 onMounted(() => {
-  showStore.load()
+  showStore.loadBackoffice()
   venueStore.load()
 })
 
 async function handleCreate(data: Omit<ShowData, 'id' | 'venue'>) {
   await showStore.create(data)
-  if (!showStore.error) dialog.value = false
+  if (!showStore.error) {
+    dialog.value = false
+    showStore.loadBackoffice()
+  }
 }
 
-function openEdit(show: Show) {
+function openEdit(show: ShowWithCreator) {
   editingShow.value = show
   editDialog.value = true
 }
@@ -125,10 +140,13 @@ function openEdit(show: Show) {
 async function handleEdit(data: Omit<ShowData, 'id' | 'venue'>) {
   if (!editingShow.value) return
   await showStore.update(editingShow.value.id, data)
-  if (!showStore.error) editDialog.value = false
+  if (!showStore.error) {
+    editDialog.value = false
+    showStore.loadBackoffice()
+  }
 }
 
-function openDelete(show: Show) {
+function openDelete(show: ShowWithCreator) {
   deleteTarget.value = show
   deleteDialog.value = true
 }
@@ -136,6 +154,9 @@ function openDelete(show: Show) {
 async function handleDelete() {
   if (!deleteTarget.value) return
   await showStore.remove(deleteTarget.value.id)
-  if (!showStore.error) deleteDialog.value = false
+  if (!showStore.error) {
+    deleteDialog.value = false
+    showStore.loadBackoffice()
+  }
 }
 </script>

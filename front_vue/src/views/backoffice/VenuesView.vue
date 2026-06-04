@@ -11,14 +11,20 @@
 
     <v-data-table
       :headers="headers"
-      :items="store.venues"
+      :items="store.backofficeVenues"
       :loading="store.loading"
       loading-text="Chargement des lieux..."
       no-data-text="Aucun lieu enregistré."
       item-value="id"
     >
       <template #item.address="{ item }">
-        {{ item.getFullAddress() || '—' }}
+        {{ [item.address1, item.zipCode, item.city].filter(Boolean).join(', ') || '—' }}
+      </template>
+      <template #item.createdBy="{ item }">
+        {{ item.createdBy?.email || '—' }}
+      </template>
+      <template #item.createdAt="{ item }">
+        {{ formatDate(item.createdAt) }}
       </template>
       <template #item.actions="{ item }">
         <v-btn icon size="small" variant="text" @click="openEdit(item)">
@@ -76,30 +82,42 @@ import { ref, onMounted } from 'vue'
 import AdminLayout from '@/components/layout/AdminLayout.vue'
 import VenueForm from '@/components/backoffice/VenueForm.vue'
 import { useVenueStore } from '@/stores/venueStore'
-import type { Venue, VenueData } from '@portfolio/shared'
+import type { VenueWithCreator, VenueData } from '@portfolio/shared'
 
 const store = useVenueStore()
 const dialog = ref(false)
 const editDialog = ref(false)
-const editingVenue = ref<Venue | null>(null)
+const editingVenue = ref<VenueWithCreator | null>(null)
 const deleteDialog = ref(false)
-const deleteTarget = ref<Venue | null>(null)
+const deleteTarget = ref<VenueWithCreator | null>(null)
 
 const headers = [
   { title: 'Nom', key: 'name', sortable: true },
   { title: 'Ville', key: 'city', sortable: true },
   { title: 'Adresse', key: 'address', sortable: false },
+  { title: 'Créé par', key: 'createdBy', sortable: false },
+  { title: 'Créé le', key: 'createdAt', sortable: true },
   { title: '', key: 'actions', sortable: false },
 ]
 
-onMounted(() => store.load())
+function formatDate(iso: string) {
+  return new Date(iso).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })
+}
+
+onMounted(() => {
+  store.loadBackoffice()
+  store.load()
+})
 
 async function handleCreate(data: Omit<VenueData, 'id'>) {
   await store.create(data)
-  if (!store.error) dialog.value = false
+  if (!store.error) {
+    dialog.value = false
+    store.loadBackoffice()
+  }
 }
 
-function openEdit(venue: Venue) {
+function openEdit(venue: VenueWithCreator) {
   editingVenue.value = venue
   editDialog.value = true
 }
@@ -107,10 +125,13 @@ function openEdit(venue: Venue) {
 async function handleEdit(data: Omit<VenueData, 'id'>) {
   if (!editingVenue.value) return
   await store.update(editingVenue.value.id, data)
-  if (!store.error) editDialog.value = false
+  if (!store.error) {
+    editDialog.value = false
+    store.loadBackoffice()
+  }
 }
 
-function openDelete(venue: Venue) {
+function openDelete(venue: VenueWithCreator) {
   deleteTarget.value = venue
   deleteDialog.value = true
 }
@@ -118,6 +139,9 @@ function openDelete(venue: Venue) {
 async function handleDelete() {
   if (!deleteTarget.value) return
   await store.remove(deleteTarget.value.id)
-  if (!store.error) deleteDialog.value = false
+  if (!store.error) {
+    deleteDialog.value = false
+    store.loadBackoffice()
+  }
 }
 </script>

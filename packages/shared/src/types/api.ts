@@ -28,6 +28,16 @@ export interface MfaVerifyResponse {
   token: string
 }
 
+export interface ShowWithCreator extends ShowData {
+  createdBy: { email: string } | null
+  createdAt: string
+}
+
+export interface VenueWithCreator extends VenueData {
+  createdBy: { email: string } | null
+  createdAt: string
+}
+
 export interface UserData {
   id: number
   email: string
