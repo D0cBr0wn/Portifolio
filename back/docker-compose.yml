@@ -12,6 +12,9 @@ services:
       DATABASE_URL: postgres://ooodbuser:password@postgres:5432/ooo_db
     networks:
       - prisma-network
+    depends_on:
+      postgres:
+        condition: service_healthy
     command: npm run dev
   # nuxt:
   #   build:
@@ -28,31 +31,31 @@ services:
   #     - NODE_ENV=development
   #     - NUXT_PUBLIC_BACK_URL='http://host.docker.internal:3000'
   #   command: npm run dev
-  # postgres:
-  #   image: postgres:15
-  #   restart: always
-  #   environment:
-  #     - POSTGRES_DB=ooo_db
-  #     - POSTGRES_USER=ooodbuser
-  #     - POSTGRES_PASSWORD=password
-  #   ports:
-  #     - '5432:5432'
-  #   networks:
-  #     - prisma-network
-  #   healthcheck:
-  #     test: ['CMD-SHELL', 'pg_isready -U ooodbuser -d ooo_db']
-  #     interval: 5s
-  #     timeout: 2s
-  #     retries: 20
-  #   volumes:
-  #     - postgres_data:/var/lib/postgresql/data
-  #   command: postgres -c listen_addresses='*'
-  #   logging:
-  #     options:
-  #       max-size: '10m'
-  #       max-file: '3'
+  postgres:
+    image: postgres:15
+    restart: always
+    environment:
+      - POSTGRES_DB=ooo_db
+      - POSTGRES_USER=ooodbuser
+      - POSTGRES_PASSWORD=password
+    ports:
+      - '5432:5432'
+    networks:
+      - prisma-network
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ooodbuser -d ooo_db']
+      interval: 5s
+      timeout: 2s
+      retries: 20
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    command: postgres -c listen_addresses='*'
+    logging:
+      options:
+        max-size: '10m'
+        max-file: '3'
 
 networks:
   prisma-network:
-#volumes:
-#postgres_data:
+volumes:
+  postgres_data:
