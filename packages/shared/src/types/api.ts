@@ -9,7 +9,8 @@ export interface VenueData {
 
 export interface ShowData {
   id: number
-  label: string
+  label?: string
+  details?: string
   date: string
   venueId: number
   venue?: VenueData

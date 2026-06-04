@@ -11,9 +11,17 @@ describe('showSchema', () => {
     expect(() => showSchema.parse({ ...validPayload, label: '' })).toThrow()
   })
 
-  it('rejette un label absent', () => {
+  it('accepte un label absent (label optionnel)', () => {
     const { label: _, ...rest } = validPayload
-    expect(() => showSchema.parse(rest)).toThrow()
+    expect(() => showSchema.parse(rest)).not.toThrow()
+  })
+
+  it('accepte un payload avec details', () => {
+    expect(() => showSchema.parse({ ...validPayload, details: 'Portes à 19h' })).not.toThrow()
+  })
+
+  it('accepte un payload sans details', () => {
+    expect(() => showSchema.parse(validPayload)).not.toThrow()
   })
 
   it('rejette une date invalide (texte libre)', () => {

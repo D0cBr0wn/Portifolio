@@ -20,6 +20,22 @@ describe('Show', () => {
     expect(show.venueId).toBe(1)
   })
 
+  it('accepte un label absent (optionnel)', () => {
+    const { label: _, ...rest } = showData
+    const show = new Show(rest)
+    expect(show.label).toBeUndefined()
+  })
+
+  it('stocke le champ details quand présent', () => {
+    const show = new Show({ ...showData, details: 'Portes à 19h' })
+    expect(show.details).toBe('Portes à 19h')
+  })
+
+  it('laisse details à undefined si absent', () => {
+    const show = new Show(showData)
+    expect(show.details).toBeUndefined()
+  })
+
   it('convertit la date string en instance Date', () => {
     const show = new Show(showData)
     expect(show.date).toBeInstanceOf(Date)

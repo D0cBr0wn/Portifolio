@@ -11,7 +11,8 @@ datasource db {
 
 model Show {
   id      Int      @id @default(autoincrement())
-  label   String
+  label   String?
+  details String?
   date    DateTime
   venueId Int
   venue   Venue    @relation(fields: [venueId], references: [id])
