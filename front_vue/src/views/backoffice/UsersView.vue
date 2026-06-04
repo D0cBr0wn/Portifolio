@@ -13,6 +13,8 @@
       loading-text="Chargement des utilisateurs..."
       no-data-text="Aucun utilisateur enregistré."
       item-value="id"
+      hover
+      @click:row="(_: unknown, { item }: { item: UserData }) => router.push(`/backoffice/users/${item.id}`)"
     >
       <template #item.role="{ item }">
         <v-chip :color="item.role === 'ADMIN' ? 'primary' : 'default'" size="small" label>
@@ -61,9 +63,12 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import AdminLayout from '@/components/layout/AdminLayout.vue'
 import { useUserStore } from '@/stores/userStore'
 import type { UserData } from '@portfolio/shared'
+
+const router = useRouter()
 
 const store = useUserStore()
 const deleteDialog = ref(false)
