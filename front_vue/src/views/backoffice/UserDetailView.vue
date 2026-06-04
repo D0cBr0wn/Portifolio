@@ -74,11 +74,13 @@
           <v-text-field
             v-model="newPassword"
             label="Nouveau mot de passe"
-            type="password"
+            :type="showNewPassword ? 'text' : 'password'"
             variant="outlined"
             density="compact"
             style="max-width: 300px"
             :rules="[v => v.length >= 6 || 'Minimum 6 caractères']"
+            :append-inner-icon="showNewPassword ? 'mdi-eye-off' : 'mdi-eye'"
+            @click:append-inner="showNewPassword = !showNewPassword"
           />
         </v-card-text>
         <v-card-actions>
@@ -141,6 +143,7 @@ const store = useUserStore()
 
 const selectedRole = ref<'USER' | 'ADMIN'>('USER')
 const newPassword = ref('')
+const showNewPassword = ref(false)
 
 onMounted(async () => {
   const id = parseInt(String(route.params.id), 10)

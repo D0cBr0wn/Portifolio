@@ -23,12 +23,14 @@
           <v-text-field
             v-model="password"
             label="Mot de passe"
-            type="password"
+            :type="showPassword ? 'text' : 'password'"
             variant="outlined"
             density="comfortable"
             autocomplete="current-password"
             :error-messages="errors.password"
+            :append-inner-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
             class="mb-4"
+            @click:append-inner="showPassword = !showPassword"
           />
           <v-alert v-if="serverError" type="error" density="compact" class="mb-4">
             {{ serverError }}
@@ -139,6 +141,7 @@ const router = useRouter()
 const authStore = useAuthStore()
 
 const step = ref<'credentials' | 'mfa' | 'mfa-setup'>('credentials')
+const showPassword = ref(false)
 const email = ref('')
 const password = ref('')
 const mfaCode = ref('')
