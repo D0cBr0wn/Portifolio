@@ -12,7 +12,7 @@ router.post('/setup', authenticateToken, async (req: Request, res: Response) => 
   const userId = req.user?.userId
 
   const secret = speakeasy.generateSecret({
-    name: `Auboulot (${req.user?.email})`,
+    name: `Portfolio (${req.user?.email})`,
   })
 
   const qrCodeDataURL = await qrcode.toDataURL(secret.otpauth_url!)
