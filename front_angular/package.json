@@ -10,7 +10,8 @@
     "lint": "ng lint",
     "test": "jest --passWithNoTests",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "test:e2e": "playwright test"
   },
   "private": true,
   "dependencies": {
@@ -33,6 +34,7 @@
     "@angular-devkit/build-angular": "^18.2.21",
     "@angular/cli": "^18.2.21",
     "@angular/compiler-cli": "^18.2.0",
+    "@playwright/test": "^1.60.0",
     "@types/jasmine": "~5.1.0",
     "@types/jest": "^29.5.14",
     "jasmine-core": "~5.2.0",
