@@ -8,7 +8,6 @@
 
     <div v-if="!store.loading">
       <section v-if="upcoming.length" class="mb-8">
-        <h2 class="section-title">À venir</h2>
         <ul class="show-list">
           <li v-for="show in upcoming" :key="show.id" class="show-item">
             <span class="show-line">{{ formatShowLine(show) }}</span>
@@ -61,7 +60,7 @@ function formatShowLine(show: Show): string {
   const date = `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`
   const zip = show.venue?.zipCode ? ` (${show.venue.zipCode})` : ''
   const venue = show.venue ? `${show.venue.name} — ${show.venue.city}${zip}` : '—'
-  const details = show.details ? ` + ${show.details}` : ''
+  const details = show.details ? `  ${show.details}` : ''
   return `${date}  ${venue}${details}`
 }
 </script>
