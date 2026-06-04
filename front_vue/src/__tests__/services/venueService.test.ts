@@ -6,6 +6,8 @@ vi.mock('../../services/api', () => ({
   api: {
     get: vi.fn(),
     post: vi.fn(),
+    put: vi.fn(),
+    delete: vi.fn(),
   },
 }))
 
@@ -15,7 +17,12 @@ vi.mock('../../stores/authStore', () => ({
 
 import { api } from '../../services/api'
 
-const mockApi = api as { get: ReturnType<typeof vi.fn>; post: ReturnType<typeof vi.fn> }
+const mockApi = api as {
+  get: ReturnType<typeof vi.fn>
+  post: ReturnType<typeof vi.fn>
+  put: ReturnType<typeof vi.fn>
+  delete: ReturnType<typeof vi.fn>
+}
 
 const venueData = { id: 1, name: 'Le Zénith', city: 'Paris', address1: '211 Av. Jean Jaurès', zipCode: '75019' }
 
@@ -58,6 +65,29 @@ describe('venueService', () => {
       expect(result).toBeInstanceOf(Venue)
       expect(result.id).toBe(1)
       expect(mockApi.post).toHaveBeenCalledWith('/venues', payload)
+    })
+  })
+
+  describe('update()', () => {
+    it('envoie les données à l\'API et retourne une Venue mise à jour', async () => {
+      const updated = { ...venueData, name: 'Nouveau Nom' }
+      mockApi.put.mockResolvedValue(updated)
+
+      const result = await venueService.update(1, { name: 'Nouveau Nom' })
+
+      expect(result).toBeInstanceOf(Venue)
+      expect(result.name).toBe('Nouveau Nom')
+      expect(mockApi.put).toHaveBeenCalledWith('/venues/1', { name: 'Nouveau Nom' })
+    })
+  })
+
+  describe('remove()', () => {
+    it('appelle DELETE sur le bon endpoint', async () => {
+      mockApi.delete.mockResolvedValue(undefined)
+
+      await venueService.remove(1)
+
+      expect(mockApi.delete).toHaveBeenCalledWith('/venues/1')
     })
   })
 })

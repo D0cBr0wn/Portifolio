@@ -1,17 +1,10 @@
 import { Router } from 'express'
-import { z } from 'zod'
+import type { Request, Response } from 'express'
 import prisma from '../lib/prisma'
 import { authenticateToken } from '../middleware/authMiddleware'
+import { venueSchema } from '../schemas/venue.schema'
 
 const router = Router()
-
-const venueSchema = z.object({
-  name: z.string().min(1),
-  city: z.string().min(1),
-  address1: z.string().optional(),
-  address2: z.string().optional(),
-  zipCode: z.string().optional(),
-})
 
 router.get('/', async (_req, res) => {
   const venues = await prisma.venue.findMany()
@@ -25,6 +18,48 @@ router.post('/', authenticateToken, async (req, res) => {
     res.status(201).json(venue)
   } catch {
     res.status(400).json({ error: 'Données invalides' })
+  }
+})
+
+router.put('/:id', authenticateToken, async (req: Request, res: Response) => {
+  const id = parseInt(String(req.params.id), 10)
+  if (isNaN(id)) {
+    res.status(400).json({ error: 'ID invalide' })
+    return
+  }
+  try {
+    const data = venueSchema.partial().parse(req.body)
+    const venue = await prisma.venue.update({ where: { id }, data })
+    res.json(venue)
+  } catch (e: unknown) {
+    if ((e as { code?: string }).code === 'P2025') {
+      res.status(404).json({ error: 'Lieu introuvable' })
+      return
+    }
+    res.status(400).json({ error: 'Données invalides' })
+  }
+})
+
+router.delete('/:id', authenticateToken, async (req: Request, res: Response) => {
+  const id = parseInt(String(req.params.id), 10)
+  if (isNaN(id)) {
+    res.status(400).json({ error: 'ID invalide' })
+    return
+  }
+  try {
+    await prisma.venue.delete({ where: { id } })
+    res.status(204).send()
+  } catch (e: unknown) {
+    const code = (e as { code?: string }).code
+    if (code === 'P2003') {
+      res.status(409).json({ error: 'Ce lieu est associé à des concerts et ne peut pas être supprimé.' })
+      return
+    }
+    if (code === 'P2025') {
+      res.status(404).json({ error: 'Lieu introuvable' })
+      return
+    }
+    res.status(500).json({ error: 'Erreur serveur' })
   }
 })
 

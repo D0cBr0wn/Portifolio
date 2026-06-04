@@ -34,5 +34,35 @@ export const useVenueStore = defineStore('venue', () => {
     }
   }
 
-  return { venues, loading, error, load, create }
+  async function update(id: number, data: Partial<Omit<VenueData, 'id'>>) {
+    loading.value = true
+    error.value = null
+    try {
+      const venue = await venueService.update(id, data)
+      const idx = venues.value.findIndex((v) => v.id === id)
+      if (idx !== -1) venues.value[idx] = venue
+      return venue
+    } catch (e: unknown) {
+      error.value = e instanceof Error ? e.message : 'Impossible de modifier le lieu.'
+      throw e
+    } finally {
+      loading.value = false
+    }
+  }
+
+  async function remove(id: number) {
+    loading.value = true
+    error.value = null
+    try {
+      await venueService.remove(id)
+      venues.value = venues.value.filter((v) => v.id !== id)
+    } catch (e: unknown) {
+      error.value = e instanceof Error ? e.message : 'Impossible de supprimer le lieu.'
+      throw e
+    } finally {
+      loading.value = false
+    }
+  }
+
+  return { venues, loading, error, load, create, update, remove }
 })

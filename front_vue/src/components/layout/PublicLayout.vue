@@ -2,7 +2,7 @@
   <div class="public-layout">
     <header class="public-header">
       <router-link to="/">
-        <img src="@/assets/logo.png" alt="Auboulot" class="logo" />
+        <img src="@/assets/logo.png" alt="Portfolio" class="logo" />
       </router-link>
       <nav>
         <router-link to="/">Accueil</router-link>
@@ -13,7 +13,7 @@
       <slot />
     </main>
     <footer class="public-footer">
-      <p>&copy; {{ new Date().getFullYear() }} Auboulot</p>
+      <p>&copy; {{ new Date().getFullYear() }} Portfolio</p>
     </footer>
   </div>
 </template>

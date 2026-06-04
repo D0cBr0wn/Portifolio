@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken'
 jest.mock('../../lib/prisma', () => ({
   __esModule: true,
   default: {
-    venue: { findMany: jest.fn(), create: jest.fn() },
+    venue: { findMany: jest.fn(), create: jest.fn(), update: jest.fn(), delete: jest.fn() },
     ipBan: {
       findUnique: jest.fn().mockResolvedValue(null),
       deleteMany: jest.fn().mockResolvedValue({ count: 0 }),
@@ -15,7 +15,12 @@ jest.mock('../../lib/prisma', () => ({
 import prisma from '../../lib/prisma'
 import { buildTestApp } from '../helpers/testApp'
 
-const venueMock = prisma.venue as unknown as { findMany: jest.Mock; create: jest.Mock }
+const venueMock = prisma.venue as unknown as {
+  findMany: jest.Mock
+  create: jest.Mock
+  update: jest.Mock
+  delete: jest.Mock
+}
 const app = buildTestApp()
 
 const SECRET = 'test-secret-for-jest-at-least-32-chars'
@@ -25,13 +30,13 @@ function authHeader() {
   return `Bearer ${jwt.sign({ userId: 1, email: 'user@test.com' }, SECRET, { expiresIn: '1h' })}`
 }
 
+const fakeVenue = { id: 1, name: 'Le Zénith', city: 'Paris', address1: null, address2: null, zipCode: null }
+
 describe('GET /api/venues', () => {
   beforeEach(() => jest.clearAllMocks())
 
   it('retourne la liste des venues (public, sans auth)', async () => {
-    venueMock.findMany.mockResolvedValue([
-      { id: 1, name: 'Le Zénith', city: 'Paris', address1: null, address2: null, zipCode: null },
-    ])
+    venueMock.findMany.mockResolvedValue([fakeVenue])
 
     const res = await request(app).get('/api/venues')
 
@@ -54,9 +59,7 @@ describe('POST /api/venues', () => {
   })
 
   it('crée une venue et retourne 201 avec token valide', async () => {
-    venueMock.create.mockResolvedValue(
-      { id: 1, name: 'Le Bataclan', city: 'Paris', address1: null, address2: null, zipCode: null }
-    )
+    venueMock.create.mockResolvedValue(fakeVenue)
 
     const res = await request(app)
       .post('/api/venues')
@@ -64,7 +67,7 @@ describe('POST /api/venues', () => {
       .send({ name: 'Le Bataclan', city: 'Paris' })
 
     expect(res.status).toBe(201)
-    expect(res.body.name).toBe('Le Bataclan')
+    expect(res.body.name).toBe('Le Zénith')
   })
 
   it('accepte les champs optionnels address1, address2, zipCode', async () => {
@@ -110,5 +113,86 @@ describe('POST /api/venues', () => {
       .send({ name: 'Test', city: 'Lyon' })
 
     expect(res.status).toBe(403)
+  })
+})
+
+describe('PUT /api/venues/:id', () => {
+  beforeEach(() => jest.clearAllMocks())
+
+  it('retourne 401 sans token', async () => {
+    const res = await request(app).put('/api/venues/1').send({ name: 'Modifié' })
+    expect(res.status).toBe(401)
+  })
+
+  it('modifie une venue et retourne 200', async () => {
+    venueMock.update.mockResolvedValue({ ...fakeVenue, name: 'Modifié' })
+
+    const res = await request(app)
+      .put('/api/venues/1')
+      .set('Authorization', authHeader())
+      .send({ name: 'Modifié' })
+
+    expect(res.status).toBe(200)
+    expect(res.body.name).toBe('Modifié')
+  })
+
+  it('retourne 404 si venue inexistante (P2025)', async () => {
+    venueMock.update.mockRejectedValue({ code: 'P2025' })
+
+    const res = await request(app)
+      .put('/api/venues/999')
+      .set('Authorization', authHeader())
+      .send({ name: 'X' })
+
+    expect(res.status).toBe(404)
+  })
+
+  it('retourne 400 si id non numérique', async () => {
+    const res = await request(app)
+      .put('/api/venues/abc')
+      .set('Authorization', authHeader())
+      .send({ name: 'X' })
+
+    expect(res.status).toBe(400)
+  })
+})
+
+describe('DELETE /api/venues/:id', () => {
+  beforeEach(() => jest.clearAllMocks())
+
+  it('retourne 401 sans token', async () => {
+    const res = await request(app).delete('/api/venues/1')
+    expect(res.status).toBe(401)
+  })
+
+  it('supprime une venue et retourne 204', async () => {
+    venueMock.delete.mockResolvedValue(fakeVenue)
+
+    const res = await request(app)
+      .delete('/api/venues/1')
+      .set('Authorization', authHeader())
+
+    expect(res.status).toBe(204)
+  })
+
+  it('retourne 404 si venue inexistante (P2025)', async () => {
+    venueMock.delete.mockRejectedValue({ code: 'P2025' })
+
+    const res = await request(app)
+      .delete('/api/venues/999')
+      .set('Authorization', authHeader())
+
+    expect(res.status).toBe(404)
+  })
+
+  it('retourne 409 si venue a des concerts (P2003)', async () => {
+    venueMock.delete.mockRejectedValue({ code: 'P2003' })
+
+    const res = await request(app)
+      .delete('/api/venues/1')
+      .set('Authorization', authHeader())
+
+    expect(res.status).toBe(409)
+    expect(res.body.error).toMatch(/concerts/)
   })
 })

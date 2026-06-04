@@ -1,7 +1,7 @@
 <template>
   <PublicLayout>
     <section class="hero-text">
-      <h1 class="artist-name">Auboulot</h1>
+      <h1 class="artist-name">Portfolio</h1>
       <p class="tagline">Musique live — Concerts & Tournées</p>
     </section>
 

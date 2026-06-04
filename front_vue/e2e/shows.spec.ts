@@ -63,7 +63,7 @@ test.describe("Page d'accueil", () => {
 
   test('accessible sans authentification', async ({ page }) => {
     await page.goto('/')
-    await expect(page.getByRole('heading', { name: 'Auboulot' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Portfolio' })).toBeVisible()
   })
 
   test('affiche les prochains concerts', async ({ page }) => {

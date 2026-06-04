@@ -1,13 +1,13 @@
 <template>
   <v-form @submit.prevent="submit" ref="formRef">
+    <p class="text-h6 mb-4">{{ initial ? 'Modifier le concert' : 'Nouveau concert' }}</p>
     <v-row>
       <v-col cols="12" sm="7">
         <v-text-field
           v-model="form.label"
-          label="Nom du concert *"
+          label="Nom du concert"
           variant="outlined"
           density="comfortable"
-          :rules="[required]"
         />
       </v-col>
       <v-col cols="12" sm="5">
@@ -27,10 +27,21 @@
           item-title="name"
           item-value="id"
           label="Lieu *"
+          placeholder="Choisir un lieu"
           variant="outlined"
           density="comfortable"
-          :rules="[requiredNum]"
+          :rules="[requiredVenue]"
           no-data-text="Aucun lieu disponible — créez-en un d'abord."
+        />
+      </v-col>
+      <v-col cols="12">
+        <v-textarea
+          v-model="form.details"
+          label="Détails"
+          variant="outlined"
+          density="comfortable"
+          rows="3"
+          auto-grow
         />
       </v-col>
     </v-row>
@@ -42,30 +53,52 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
-import type { Venue, ShowData } from '@portfolio/shared'
+import { ref, reactive, onMounted } from 'vue'
+import type { Venue, Show, ShowData } from '@portfolio/shared'
+
+const props = defineProps<{ venues: Venue[]; loading?: boolean; initial?: Show }>()
 
 const emit = defineEmits<{
   submit: [data: Omit<ShowData, 'id' | 'venue'>]
   cancel: []
 }>()
 
-defineProps<{ venues: Venue[]; loading?: boolean }>()
-
 const formRef = ref()
-const form = reactive({ label: '', date: '', venueId: 0 })
+const form = reactive({
+  label: '',
+  date: '',
+  venueId: null as number | null,
+  details: '',
+})
+
+onMounted(() => {
+  if (props.initial) {
+    const d = props.initial.date
+    const pad = (n: number) => String(n).padStart(2, '0')
+    const localStr = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`
+    Object.assign(form, {
+      label: props.initial.label ?? '',
+      date: localStr,
+      venueId: props.initial.venueId,
+      details: props.initial.details ?? '',
+    })
+  }
+})
 
 const required = (v: string) => !!v || 'Champ requis'
-const requiredNum = (v: number) => v > 0 || 'Champ requis'
+const requiredVenue = (v: number | null) => v !== null || 'Champ requis'
 
 async function submit() {
   const { valid } = await formRef.value.validate()
   if (!valid) return
   emit('submit', {
-    label: form.label,
+    label: form.label || undefined,
+    details: form.details || undefined,
     date: new Date(form.date).toISOString(),
-    venueId: form.venueId,
+    venueId: form.venueId!,
   })
-  Object.assign(form, { label: '', date: '', venueId: 0 })
+  if (!props.initial) {
+    Object.assign(form, { label: '', date: '', venueId: null, details: '' })
+  }
 }
 </script>

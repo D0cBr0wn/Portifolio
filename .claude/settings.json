@@ -1,6 +1,19 @@
 {
   "permissions": {
-    "allow": [],
-    "deny": []
+    "allow": [
+      "Edit",
+      "Bash(ls:*)",
+      "Bash(mkdir:*)",
+      "Bash(git:*)",
+      "Bash(gh pr create --base dev --title 'feat: setup pnpm monorepo workspace' --body ' *)",
+      "Bash(pnpm:*)",
+      "Bash(npm:*)",
+      "Bash(echo '{\"onlyBuiltDependencies\":[\"esbuild\"]}' > .npmrc && pnpm install 2>&1 | tail -10)",
+      "Bash(DATABASE_URL=\"file:./prisma/dev.db\" npx prisma migrate dev --name \"add_auth_models_and_venue_address\")"
+    ],
+    "additionalDirectories": [
+      "/home/nico/Nico/Dev/Portifolio/packages/shared",
+      "/home/nico/Nico/Dev/Portifolio"
+    ]
   }
 }

@@ -1,7 +1,7 @@
 <template>
   <v-app theme="light">
     <v-app-bar color="primary" flat>
-      <v-app-bar-title>Auboulot — Backoffice</v-app-bar-title>
+      <v-app-bar-title>Portfolio — Backoffice</v-app-bar-title>
       <template #append>
         <v-btn variant="text" @click="handleLogout">Déconnexion</v-btn>
       </template>
@@ -17,6 +17,11 @@
           title="Concerts"
           prepend-icon="mdi-music"
           to="/backoffice/shows"
+        />
+        <v-list-item
+          title="Sécurité MFA"
+          prepend-icon="mdi-shield-key"
+          to="/backoffice/mfa-setup"
         />
       </v-list>
     </v-navigation-drawer>

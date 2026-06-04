@@ -6,6 +6,8 @@ vi.mock('../../services/api', () => ({
   api: {
     get: vi.fn(),
     post: vi.fn(),
+    put: vi.fn(),
+    delete: vi.fn(),
   },
 }))
 
@@ -15,7 +17,12 @@ vi.mock('../../stores/authStore', () => ({
 
 import { api } from '../../services/api'
 
-const mockApi = api as { get: ReturnType<typeof vi.fn>; post: ReturnType<typeof vi.fn> }
+const mockApi = api as {
+  get: ReturnType<typeof vi.fn>
+  post: ReturnType<typeof vi.fn>
+  put: ReturnType<typeof vi.fn>
+  delete: ReturnType<typeof vi.fn>
+}
 
 const showData = {
   id: 10,
@@ -74,6 +81,40 @@ describe('showService', () => {
       expect(result).toBeInstanceOf(Show)
       expect(result.id).toBe(11)
       expect(mockApi.post).toHaveBeenCalledWith('/shows', payload)
+    })
+
+    it('accepte un show sans label (label optionnel)', async () => {
+      const created = { ...showData, id: 12, label: undefined }
+      mockApi.post.mockResolvedValue(created)
+
+      const payload = { date: '2025-09-01T20:00:00.000Z', venueId: 1 }
+      const result = await showService.create(payload)
+
+      expect(result).toBeInstanceOf(Show)
+      expect(result.label).toBeUndefined()
+    })
+  })
+
+  describe('update()', () => {
+    it('envoie les données à l\'API et retourne un Show mis à jour', async () => {
+      const updated = { ...showData, label: 'Modifié' }
+      mockApi.put.mockResolvedValue(updated)
+
+      const result = await showService.update(10, { label: 'Modifié' })
+
+      expect(result).toBeInstanceOf(Show)
+      expect(result.label).toBe('Modifié')
+      expect(mockApi.put).toHaveBeenCalledWith('/shows/10', { label: 'Modifié' })
+    })
+  })
+
+  describe('remove()', () => {
+    it('appelle DELETE sur le bon endpoint', async () => {
+      mockApi.delete.mockResolvedValue(undefined)
+
+      await showService.remove(10)
+
+      expect(mockApi.delete).toHaveBeenCalledWith('/shows/10')
     })
   })
 })

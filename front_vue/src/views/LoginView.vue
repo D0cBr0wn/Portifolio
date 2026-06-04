@@ -81,6 +81,11 @@
         </v-form>
       </v-card-text>
     </v-card>
+    <div class="mt-4 text-center">
+      <router-link to="/register" class="text-caption" style="color: #888;">
+        Créer un compte (démo)
+      </router-link>
+    </div>
   </div>
 </template>
 

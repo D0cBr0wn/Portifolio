@@ -60,4 +60,15 @@ describe('VenueForm', () => {
     const btn = wrapper.findAll('button').find(b => b.text().includes('Enregistrer'))
     expect(btn?.attributes('disabled')).toBeDefined()
   })
+
+  it('affiche "Modifier le lieu" quand initial est fourni', () => {
+    const initial = { id: 1, name: 'Le Zénith', city: 'Paris', address1: undefined, address2: undefined, zipCode: undefined, getFullAddress: () => '' }
+    const wrapper = mountForm({ initial })
+    expect(wrapper.text()).toContain('Modifier le lieu')
+  })
+
+  it('affiche "Nouveau lieu" sans initial', () => {
+    const wrapper = mountForm()
+    expect(wrapper.text()).toContain('Nouveau lieu')
+  })
 })
