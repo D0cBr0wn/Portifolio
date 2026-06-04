@@ -18,15 +18,16 @@ npm run format     # prettier
 
 **Docker (preferred for running the API):**
 ```bash
-docker-compose up --build          # starts API on :3000
-docker-compose exec api npx prisma migrate dev   # run migrations inside container
+docker compose up --build          # starts API on :3000
+docker compose exec api npx prisma migrate dev   # run migrations inside container
 ```
+> Use `docker compose` (no hyphen, V2 plugin). `docker-compose` v1.29.2 is incompatible with Docker Engine 29+.
 
 **Prisma:**
 - Schema: `prisma/schema.prisma`
 - Client generated to `generated/prisma_client/` (non-default path) — always import from `../../generated/prisma_client`
 - Local dev uses SQLite (`prisma/dev.db`); Docker uses PostgreSQL via `DATABASE_URL`
-- After schema changes: `npx prisma migrate dev` (local) or `docker-compose exec api npx prisma migrate dev` (Docker)
+- After schema changes: `npx prisma migrate dev` (local) or `docker compose exec api npx prisma migrate dev` (Docker)
 
 ## Frontend (`front/`)
 
