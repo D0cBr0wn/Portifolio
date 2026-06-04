@@ -11,6 +11,12 @@ pnpm-lock.yaml
 .output/
 .nuxtrc
 
+# Playwright
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
+
 # IDE
 .vscode/
 .idea/

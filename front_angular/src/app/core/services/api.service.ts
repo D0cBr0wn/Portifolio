@@ -1,0 +1,41 @@
+import { Injectable, inject } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
+
+@Injectable({ providedIn: 'root' })
+export class ApiService {
+  private readonly http = inject(HttpClient);
+  private readonly base = environment.apiBase;
+
+  get<T>(path: string): Observable<T> {
+    return this.http.get<T>(`${this.base}${path}`).pipe(catchError(this.handleError));
+  }
+
+  post<T>(path: string, body: unknown, headers?: HttpHeaders): Observable<T> {
+    return this.http
+      .post<T>(`${this.base}${path}`, body, headers ? { headers } : {})
+      .pipe(catchError(this.handleError));
+  }
+
+  put<T>(path: string, body: unknown): Observable<T> {
+    return this.http.put<T>(`${this.base}${path}`, body).pipe(catchError(this.handleError));
+  }
+
+  patch<T>(path: string, body: unknown): Observable<T> {
+    return this.http.patch<T>(`${this.base}${path}`, body).pipe(catchError(this.handleError));
+  }
+
+  delete<T>(path: string): Observable<T> {
+    return this.http.delete<T>(`${this.base}${path}`).pipe(catchError(this.handleError));
+  }
+
+  private handleError(error: { status?: number; error?: { error?: string; message?: string } }) {
+    const msg =
+      error?.error?.error ??
+      error?.error?.message ??
+      `Erreur ${error?.status ?? 'inconnue'}`;
+    return throwError(() => new Error(msg));
+  }
+}

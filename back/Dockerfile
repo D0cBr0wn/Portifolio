@@ -4,7 +4,7 @@ WORKDIR /app
 
 # 1. Installer les dépendances (layer caché tant que package.json ne change pas)
 COPY package*.json ./
-RUN npm install
+RUN npm install --ignore-scripts
 
 # 2. Copier le schéma Prisma et générer le client
 COPY prisma/ ./prisma/

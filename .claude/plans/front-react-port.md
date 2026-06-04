@@ -22,25 +22,27 @@ Port React : **5174** (Vue = 5173).
 
 ## Backlog — branches créées (stacked, T1 → T17)
 
-| Branche | Tâche |
-|---------|-------|
-| `feature/react-t1-setup` | Setup projet Vite + workspace |
-| `feature/react-t2-theme` | Thème MUI + ThemeProvider |
-| `feature/react-t3-services` | Couche services API |
-| `feature/react-t4-auth-routing` | Auth store Zustand + React Router + guards |
-| `feature/react-t5-public-layout` | PublicLayout |
-| `feature/react-t6-admin-layout` | AdminLayout |
-| `feature/react-t7-stores` | Stores show/venue/user |
-| `feature/react-t8-home` | Page Home |
-| `feature/react-t9-shows` | Page Shows |
-| `feature/react-t10-techbadge` | TechBadge Vue+React sur les deux fronts |
-| `feature/react-t11-login` | Page Login (3 étapes MFA) |
-| `feature/react-t12-register` | Page Register |
-| `feature/react-t13-venues` | Backoffice Venues (VenueForm + DataGrid) |
-| `feature/react-t14-shows-bo` | Backoffice Shows (ShowForm + DataGrid) |
-| `feature/react-t15-mfa-setup` | Backoffice MFA Setup |
-| `feature/react-t16-users` | Backoffice Users |
-| `feature/react-t17-user-detail` | Backoffice UserDetail |
+| Branche | Tâche | Durée estimée |
+|---------|-------|---------------|
+| `feature/react-t1-setup` | Setup projet Vite + workspace | 1-2h |
+| `feature/react-t2-theme` | Thème MUI + ThemeProvider | 1h |
+| `feature/react-t3-services` | Couche services API | 1-2h |
+| `feature/react-t4-auth-routing` | Auth store Zustand + React Router + guards | 2-3h |
+| `feature/react-t5-public-layout` | PublicLayout | 1h |
+| `feature/react-t6-admin-layout` | AdminLayout | 1-2h |
+| `feature/react-t7-stores` | Stores show/venue/user | 1-2h |
+| `feature/react-t8-home` | Page Home | 1h |
+| `feature/react-t9-shows` | Page Shows | 1-2h |
+| `feature/react-t10-techbadge` | TechBadge Vue+React sur les deux fronts | 1h |
+| `feature/react-t11-login` | Page Login (3 étapes MFA) | 2-3h |
+| `feature/react-t12-register` | Page Register | 1-2h |
+| `feature/react-t13-venues` | Backoffice Venues (VenueForm + DataGrid) | 2-3h |
+| `feature/react-t14-shows-bo` | Backoffice Shows (ShowForm + DataGrid) | 2-3h |
+| `feature/react-t15-mfa-setup` | Backoffice MFA Setup | 1-2h |
+| `feature/react-t16-users` | Backoffice Users | 1-2h |
+| `feature/react-t17-user-detail` | Backoffice UserDetail | 1-2h |
+
+**Total estimé : ~21-34h (≈ 27h)**
 
 ## Ordre de merge
 
