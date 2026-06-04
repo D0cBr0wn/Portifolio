@@ -14,7 +14,7 @@ router.get('/', async (_req, res) => {
 router.post('/', authenticateToken, async (req, res) => {
   try {
     const data = venueSchema.parse(req.body)
-    const venue = await prisma.venue.create({ data })
+    const venue = await prisma.venue.create({ data: { ...data, createdById: req.user!.userId } })
     res.status(201).json(venue)
   } catch {
     res.status(400).json({ error: 'Données invalides' })
