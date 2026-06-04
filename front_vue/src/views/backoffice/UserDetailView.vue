@@ -11,6 +11,10 @@
       {{ store.error }}
     </v-alert>
 
+    <v-snackbar v-model="snackbar" :timeout="3000" color="success" location="bottom right">
+      {{ snackbarMessage }}
+    </v-snackbar>
+
     <template v-if="store.loading && !store.currentUser">
       <v-skeleton-loader type="card" />
     </template>
@@ -78,7 +82,6 @@
             variant="outlined"
             density="compact"
             style="max-width: 300px"
-            :rules="[v => v.length >= 6 || 'Minimum 6 caractères']"
             :append-inner-icon="showNewPassword ? 'mdi-eye-off' : 'mdi-eye'"
             @click:append-inner="showNewPassword = !showNewPassword"
           />
@@ -144,6 +147,13 @@ const store = useUserStore()
 const selectedRole = ref<'USER' | 'ADMIN'>('USER')
 const newPassword = ref('')
 const showNewPassword = ref(false)
+const snackbar = ref(false)
+const snackbarMessage = ref('')
+
+function notify(message: string) {
+  snackbarMessage.value = message
+  snackbar.value = true
+}
 
 onMounted(async () => {
   const id = parseInt(String(route.params.id), 10)
@@ -158,21 +168,27 @@ function formatDate(iso: string) {
 async function handleUpdateRole() {
   if (!store.currentUser) return
   await store.updateRole(store.currentUser.id, selectedRole.value)
+  if (!store.error) notify('Rôle mis à jour.')
 }
 
 async function handleUpdatePassword() {
   if (!store.currentUser) return
   await store.updatePassword(store.currentUser.id, newPassword.value)
-  if (!store.error) newPassword.value = ''
+  if (!store.error) {
+    newPassword.value = ''
+    notify('Mot de passe modifié.')
+  }
 }
 
 async function handleRequireMfa() {
   if (!store.currentUser) return
   await store.requireMfa(store.currentUser.id)
+  if (!store.error) notify('MFA activé — l\'utilisateur devra le configurer à sa prochaine connexion.')
 }
 
 async function handleDisableMfa() {
   if (!store.currentUser) return
   await store.disableMfa(store.currentUser.id)
+  if (!store.error) notify('MFA désactivé.')
 }
 </script>
