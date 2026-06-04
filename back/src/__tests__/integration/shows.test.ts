@@ -27,7 +27,7 @@ const SECRET = 'test-secret-for-jest-at-least-32-chars'
 process.env.JWT_SECRET = SECRET
 
 function authHeader() {
-  return `Bearer ${jwt.sign({ userId: 1, email: 'user@test.com' }, SECRET, { expiresIn: '1h' })}`
+  return `Bearer ${jwt.sign({ userId: 1, email: 'user@test.com', role: 'USER' }, SECRET, { expiresIn: '1h' })}`
 }
 
 const fakeShow = {
@@ -69,7 +69,7 @@ describe('POST /api/shows', () => {
   })
 
   it('crée un show et retourne 201 avec token valide', async () => {
-    showMock.create.mockResolvedValue({ id: 2, ...validPayload })
+    showMock.create.mockResolvedValue({ id: 2, ...validPayload, createdById: 1 })
 
     const res = await request(app)
       .post('/api/shows')
@@ -78,6 +78,9 @@ describe('POST /api/shows', () => {
 
     expect(res.status).toBe(201)
     expect(res.body).toMatchObject({ label: 'Nouveau concert' })
+    expect(showMock.create).toHaveBeenCalledWith(
+      expect.objectContaining({ data: expect.objectContaining({ createdById: 1 }) })
+    )
   })
 
   it('crée un show sans label (label optionnel)', async () => {
