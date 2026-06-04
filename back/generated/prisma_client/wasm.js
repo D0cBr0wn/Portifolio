@@ -98,7 +98,10 @@ exports.Prisma.ShowScalarFieldEnum = {
   label: 'label',
   details: 'details',
   date: 'date',
-  venueId: 'venueId'
+  venueId: 'venueId',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.VenueScalarFieldEnum = {
@@ -107,15 +110,21 @@ exports.Prisma.VenueScalarFieldEnum = {
   city: 'city',
   address1: 'address1',
   address2: 'address2',
-  zipCode: 'zipCode'
+  zipCode: 'zipCode',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
   email: 'email',
   password: 'password',
+  role: 'role',
   mfaSecret: 'mfaSecret',
-  banUntil: 'banUntil'
+  banUntil: 'banUntil',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.IpBanScalarFieldEnum = {
@@ -145,7 +154,10 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
-
+exports.Role = exports.$Enums.Role = {
+  USER: 'USER',
+  ADMIN: 'ADMIN'
+};
 
 exports.Prisma.ModelName = {
   Show: 'Show',
@@ -197,7 +209,6 @@ const config = {
     "db"
   ],
   "activeProvider": "postgresql",
-  "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {
@@ -206,13 +217,13 @@ const config = {
       }
     }
   },
-  "inlineSchema": "generator client {\n  provider      = \"prisma-client-js\"\n  output        = \"../generated/prisma_client\"\n  binaryTargets = [\"native\", \"debian-openssl-3.0.x\"]\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel Show {\n  id      Int      @id @default(autoincrement())\n  label   String?\n  details String?\n  date    DateTime\n  venueId Int\n  venue   Venue    @relation(fields: [venueId], references: [id])\n}\n\nmodel Venue {\n  id       Int     @id @default(autoincrement())\n  name     String\n  city     String\n  address1 String?\n  address2 String?\n  zipCode  String?\n  shows    Show[]\n}\n\nmodel User {\n  id        Int       @id @default(autoincrement())\n  email     String    @unique\n  password  String\n  mfaSecret String?\n  banUntil  DateTime?\n}\n\nmodel IpBan {\n  ip        String   @id\n  reason    String\n  expiresAt DateTime\n}\n\nmodel FailedLoginAttempt {\n  id         Int      @id @default(autoincrement())\n  ip         String\n  emailTried String\n  date       DateTime\n}\n",
-  "inlineSchemaHash": "be191b0cf460c0eb8eac5b00f7e0cdab096748335ada421e4f6817df4a56a0d6",
+  "inlineSchema": "generator client {\n  provider      = \"prisma-client-js\"\n  output        = \"../generated/prisma_client\"\n  binaryTargets = [\"native\", \"debian-openssl-3.0.x\"]\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nenum Role {\n  USER\n  ADMIN\n}\n\nmodel Show {\n  id          Int      @id @default(autoincrement())\n  label       String?\n  details     String?\n  date        DateTime\n  venueId     Int\n  venue       Venue    @relation(fields: [venueId], references: [id])\n  createdById Int?\n  createdBy   User?    @relation(\"ShowCreator\", fields: [createdById], references: [id])\n  createdAt   DateTime @default(now())\n  updatedAt   DateTime @updatedAt\n}\n\nmodel Venue {\n  id          Int      @id @default(autoincrement())\n  name        String\n  city        String\n  address1    String?\n  address2    String?\n  zipCode     String?\n  shows       Show[]\n  createdById Int?\n  createdBy   User?    @relation(\"VenueCreator\", fields: [createdById], references: [id])\n  createdAt   DateTime @default(now())\n  updatedAt   DateTime @updatedAt\n}\n\nmodel User {\n  id        Int       @id @default(autoincrement())\n  email     String    @unique\n  password  String\n  role      Role      @default(USER)\n  mfaSecret String?\n  banUntil  DateTime?\n  createdAt DateTime  @default(now())\n  updatedAt DateTime  @updatedAt\n  shows     Show[]    @relation(\"ShowCreator\")\n  venues    Venue[]   @relation(\"VenueCreator\")\n}\n\nmodel IpBan {\n  ip        String   @id\n  reason    String\n  expiresAt DateTime\n}\n\nmodel FailedLoginAttempt {\n  id         Int      @id @default(autoincrement())\n  ip         String\n  emailTried String\n  date       DateTime\n}\n",
+  "inlineSchemaHash": "6cdf8e7f014f9ed228c73f2dcd9d27b62f1b064534a60eb6fbdd0b403d9aecba",
   "copyEngine": true
 }
 config.dirname = '/'
 
-config.runtimeDataModel = JSON.parse("{\"models\":{\"Show\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"label\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"details\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"date\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"venueId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"venue\",\"kind\":\"object\",\"type\":\"Venue\",\"relationName\":\"ShowToVenue\"}],\"dbName\":null},\"Venue\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"city\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"address1\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"address2\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"zipCode\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"shows\",\"kind\":\"object\",\"type\":\"Show\",\"relationName\":\"ShowToVenue\"}],\"dbName\":null},\"User\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"password\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"mfaSecret\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"banUntil\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"IpBan\":{\"fields\":[{\"name\":\"ip\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"reason\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"expiresAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"FailedLoginAttempt\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"ip\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"emailTried\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"date\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
+config.runtimeDataModel = JSON.parse("{\"models\":{\"Show\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"label\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"details\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"date\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"venueId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"venue\",\"kind\":\"object\",\"type\":\"Venue\",\"relationName\":\"ShowToVenue\"},{\"name\":\"createdById\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"createdBy\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"ShowCreator\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Venue\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"city\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"address1\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"address2\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"zipCode\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"shows\",\"kind\":\"object\",\"type\":\"Show\",\"relationName\":\"ShowToVenue\"},{\"name\":\"createdById\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"createdBy\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"VenueCreator\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"User\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"password\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"role\",\"kind\":\"enum\",\"type\":\"Role\"},{\"name\":\"mfaSecret\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"banUntil\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"shows\",\"kind\":\"object\",\"type\":\"Show\",\"relationName\":\"ShowCreator\"},{\"name\":\"venues\",\"kind\":\"object\",\"type\":\"Venue\",\"relationName\":\"VenueCreator\"}],\"dbName\":null},\"IpBan\":{\"fields\":[{\"name\":\"ip\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"reason\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"expiresAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"FailedLoginAttempt\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"ip\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"emailTried\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"date\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
 defineDmmfProperty(exports.Prisma, config.runtimeDataModel)
 config.engineWasm = {
   getRuntime: async () => require('./query_engine_bg.js'),
