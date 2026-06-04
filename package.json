@@ -5,6 +5,7 @@
     "dev:back": "pnpm --filter @portfolio/back dev",
     "dev:vue": "pnpm --filter @portfolio/front-vue dev",
     "dev:nuxt": "pnpm --filter @portfolio/front-nuxt dev",
+    "dev:react": "pnpm --filter @portfolio/front-react dev",
     "test": "pnpm -r test",
     "test:back": "pnpm --filter @portfolio/back test",
     "test:vue": "pnpm --filter @portfolio/front-vue test",
