@@ -27,3 +27,11 @@ export interface MfaVerifyResponse {
   verified: boolean
   token: string
 }
+
+export interface UserData {
+  id: number
+  email: string
+  role: 'USER' | 'ADMIN'
+  mfaEnabled: boolean
+  createdAt: string
+}
