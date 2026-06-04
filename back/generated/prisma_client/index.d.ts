@@ -40,6 +40,23 @@ export type IpBan = $Result.DefaultSelection<Prisma.$IpBanPayload>
 export type FailedLoginAttempt = $Result.DefaultSelection<Prisma.$FailedLoginAttemptPayload>
 
 /**
+ * Enums
+ */
+export namespace $Enums {
+  export const Role: {
+  USER: 'USER',
+  ADMIN: 'ADMIN'
+};
+
+export type Role = (typeof Role)[keyof typeof Role]
+
+}
+
+export type Role = $Enums.Role
+
+export const Role: typeof $Enums.Role
+
+/**
  * ##  Prisma Client ʲˢ
  *
  * Type-safe database client for TypeScript & Node.js
@@ -1252,6 +1269,46 @@ export namespace Prisma {
 
 
   /**
+   * Count Type UserCountOutputType
+   */
+
+  export type UserCountOutputType = {
+    shows: number
+    venues: number
+  }
+
+  export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    shows?: boolean | UserCountOutputTypeCountShowsArgs
+    venues?: boolean | UserCountOutputTypeCountVenuesArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserCountOutputType
+     */
+    select?: UserCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountShowsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ShowWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountVenuesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: VenueWhereInput
+  }
+
+
+  /**
    * Models
    */
 
@@ -1270,11 +1327,13 @@ export namespace Prisma {
   export type ShowAvgAggregateOutputType = {
     id: number | null
     venueId: number | null
+    createdById: number | null
   }
 
   export type ShowSumAggregateOutputType = {
     id: number | null
     venueId: number | null
+    createdById: number | null
   }
 
   export type ShowMinAggregateOutputType = {
@@ -1283,6 +1342,9 @@ export namespace Prisma {
     details: string | null
     date: Date | null
     venueId: number | null
+    createdById: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
   }
 
   export type ShowMaxAggregateOutputType = {
@@ -1291,6 +1353,9 @@ export namespace Prisma {
     details: string | null
     date: Date | null
     venueId: number | null
+    createdById: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
   }
 
   export type ShowCountAggregateOutputType = {
@@ -1299,6 +1364,9 @@ export namespace Prisma {
     details: number
     date: number
     venueId: number
+    createdById: number
+    createdAt: number
+    updatedAt: number
     _all: number
   }
 
@@ -1306,11 +1374,13 @@ export namespace Prisma {
   export type ShowAvgAggregateInputType = {
     id?: true
     venueId?: true
+    createdById?: true
   }
 
   export type ShowSumAggregateInputType = {
     id?: true
     venueId?: true
+    createdById?: true
   }
 
   export type ShowMinAggregateInputType = {
@@ -1319,6 +1389,9 @@ export namespace Prisma {
     details?: true
     date?: true
     venueId?: true
+    createdById?: true
+    createdAt?: true
+    updatedAt?: true
   }
 
   export type ShowMaxAggregateInputType = {
@@ -1327,6 +1400,9 @@ export namespace Prisma {
     details?: true
     date?: true
     venueId?: true
+    createdById?: true
+    createdAt?: true
+    updatedAt?: true
   }
 
   export type ShowCountAggregateInputType = {
@@ -1335,6 +1411,9 @@ export namespace Prisma {
     details?: true
     date?: true
     venueId?: true
+    createdById?: true
+    createdAt?: true
+    updatedAt?: true
     _all?: true
   }
 
@@ -1430,6 +1509,9 @@ export namespace Prisma {
     details: string | null
     date: Date
     venueId: number
+    createdById: number | null
+    createdAt: Date
+    updatedAt: Date
     _count: ShowCountAggregateOutputType | null
     _avg: ShowAvgAggregateOutputType | null
     _sum: ShowSumAggregateOutputType | null
@@ -1457,7 +1539,11 @@ export namespace Prisma {
     details?: boolean
     date?: boolean
     venueId?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
     venue?: boolean | VenueDefaultArgs<ExtArgs>
+    createdBy?: boolean | Show$createdByArgs<ExtArgs>
   }, ExtArgs["result"]["show"]>
 
   export type ShowSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -1466,7 +1552,11 @@ export namespace Prisma {
     details?: boolean
     date?: boolean
     venueId?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
     venue?: boolean | VenueDefaultArgs<ExtArgs>
+    createdBy?: boolean | Show$createdByArgs<ExtArgs>
   }, ExtArgs["result"]["show"]>
 
   export type ShowSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -1475,7 +1565,11 @@ export namespace Prisma {
     details?: boolean
     date?: boolean
     venueId?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
     venue?: boolean | VenueDefaultArgs<ExtArgs>
+    createdBy?: boolean | Show$createdByArgs<ExtArgs>
   }, ExtArgs["result"]["show"]>
 
   export type ShowSelectScalar = {
@@ -1484,23 +1578,30 @@ export namespace Prisma {
     details?: boolean
     date?: boolean
     venueId?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
   }
 
-  export type ShowOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "label" | "details" | "date" | "venueId", ExtArgs["result"]["show"]>
+  export type ShowOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "label" | "details" | "date" | "venueId" | "createdById" | "createdAt" | "updatedAt", ExtArgs["result"]["show"]>
   export type ShowInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     venue?: boolean | VenueDefaultArgs<ExtArgs>
+    createdBy?: boolean | Show$createdByArgs<ExtArgs>
   }
   export type ShowIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     venue?: boolean | VenueDefaultArgs<ExtArgs>
+    createdBy?: boolean | Show$createdByArgs<ExtArgs>
   }
   export type ShowIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     venue?: boolean | VenueDefaultArgs<ExtArgs>
+    createdBy?: boolean | Show$createdByArgs<ExtArgs>
   }
 
   export type $ShowPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Show"
     objects: {
       venue: Prisma.$VenuePayload<ExtArgs>
+      createdBy: Prisma.$UserPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -1508,6 +1609,9 @@ export namespace Prisma {
       details: string | null
       date: Date
       venueId: number
+      createdById: number | null
+      createdAt: Date
+      updatedAt: Date
     }, ExtArgs["result"]["show"]>
     composites: {}
   }
@@ -1903,6 +2007,7 @@ export namespace Prisma {
   export interface Prisma__ShowClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     venue<T extends VenueDefaultArgs<ExtArgs> = {}>(args?: Subset<T, VenueDefaultArgs<ExtArgs>>): Prisma__VenueClient<$Result.GetResult<Prisma.$VenuePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    createdBy<T extends Show$createdByArgs<ExtArgs> = {}>(args?: Subset<T, Show$createdByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1937,6 +2042,9 @@ export namespace Prisma {
     readonly details: FieldRef<"Show", 'String'>
     readonly date: FieldRef<"Show", 'DateTime'>
     readonly venueId: FieldRef<"Show", 'Int'>
+    readonly createdById: FieldRef<"Show", 'Int'>
+    readonly createdAt: FieldRef<"Show", 'DateTime'>
+    readonly updatedAt: FieldRef<"Show", 'DateTime'>
   }
     
 
@@ -2333,6 +2441,25 @@ export namespace Prisma {
   }
 
   /**
+   * Show.createdBy
+   */
+  export type Show$createdByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
    * Show without action
    */
   export type ShowDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2365,10 +2492,12 @@ export namespace Prisma {
 
   export type VenueAvgAggregateOutputType = {
     id: number | null
+    createdById: number | null
   }
 
   export type VenueSumAggregateOutputType = {
     id: number | null
+    createdById: number | null
   }
 
   export type VenueMinAggregateOutputType = {
@@ -2378,6 +2507,9 @@ export namespace Prisma {
     address1: string | null
     address2: string | null
     zipCode: string | null
+    createdById: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
   }
 
   export type VenueMaxAggregateOutputType = {
@@ -2387,6 +2519,9 @@ export namespace Prisma {
     address1: string | null
     address2: string | null
     zipCode: string | null
+    createdById: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
   }
 
   export type VenueCountAggregateOutputType = {
@@ -2396,16 +2531,21 @@ export namespace Prisma {
     address1: number
     address2: number
     zipCode: number
+    createdById: number
+    createdAt: number
+    updatedAt: number
     _all: number
   }
 
 
   export type VenueAvgAggregateInputType = {
     id?: true
+    createdById?: true
   }
 
   export type VenueSumAggregateInputType = {
     id?: true
+    createdById?: true
   }
 
   export type VenueMinAggregateInputType = {
@@ -2415,6 +2555,9 @@ export namespace Prisma {
     address1?: true
     address2?: true
     zipCode?: true
+    createdById?: true
+    createdAt?: true
+    updatedAt?: true
   }
 
   export type VenueMaxAggregateInputType = {
@@ -2424,6 +2567,9 @@ export namespace Prisma {
     address1?: true
     address2?: true
     zipCode?: true
+    createdById?: true
+    createdAt?: true
+    updatedAt?: true
   }
 
   export type VenueCountAggregateInputType = {
@@ -2433,6 +2579,9 @@ export namespace Prisma {
     address1?: true
     address2?: true
     zipCode?: true
+    createdById?: true
+    createdAt?: true
+    updatedAt?: true
     _all?: true
   }
 
@@ -2529,6 +2678,9 @@ export namespace Prisma {
     address1: string | null
     address2: string | null
     zipCode: string | null
+    createdById: number | null
+    createdAt: Date
+    updatedAt: Date
     _count: VenueCountAggregateOutputType | null
     _avg: VenueAvgAggregateOutputType | null
     _sum: VenueSumAggregateOutputType | null
@@ -2557,7 +2709,11 @@ export namespace Prisma {
     address1?: boolean
     address2?: boolean
     zipCode?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
     shows?: boolean | Venue$showsArgs<ExtArgs>
+    createdBy?: boolean | Venue$createdByArgs<ExtArgs>
     _count?: boolean | VenueCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["venue"]>
 
@@ -2568,6 +2724,10 @@ export namespace Prisma {
     address1?: boolean
     address2?: boolean
     zipCode?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    createdBy?: boolean | Venue$createdByArgs<ExtArgs>
   }, ExtArgs["result"]["venue"]>
 
   export type VenueSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -2577,6 +2737,10 @@ export namespace Prisma {
     address1?: boolean
     address2?: boolean
     zipCode?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    createdBy?: boolean | Venue$createdByArgs<ExtArgs>
   }, ExtArgs["result"]["venue"]>
 
   export type VenueSelectScalar = {
@@ -2586,20 +2750,29 @@ export namespace Prisma {
     address1?: boolean
     address2?: boolean
     zipCode?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
   }
 
-  export type VenueOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "city" | "address1" | "address2" | "zipCode", ExtArgs["result"]["venue"]>
+  export type VenueOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "city" | "address1" | "address2" | "zipCode" | "createdById" | "createdAt" | "updatedAt", ExtArgs["result"]["venue"]>
   export type VenueInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     shows?: boolean | Venue$showsArgs<ExtArgs>
+    createdBy?: boolean | Venue$createdByArgs<ExtArgs>
     _count?: boolean | VenueCountOutputTypeDefaultArgs<ExtArgs>
   }
-  export type VenueIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
-  export type VenueIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type VenueIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    createdBy?: boolean | Venue$createdByArgs<ExtArgs>
+  }
+  export type VenueIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    createdBy?: boolean | Venue$createdByArgs<ExtArgs>
+  }
 
   export type $VenuePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Venue"
     objects: {
       shows: Prisma.$ShowPayload<ExtArgs>[]
+      createdBy: Prisma.$UserPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -2608,6 +2781,9 @@ export namespace Prisma {
       address1: string | null
       address2: string | null
       zipCode: string | null
+      createdById: number | null
+      createdAt: Date
+      updatedAt: Date
     }, ExtArgs["result"]["venue"]>
     composites: {}
   }
@@ -3003,6 +3179,7 @@ export namespace Prisma {
   export interface Prisma__VenueClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     shows<T extends Venue$showsArgs<ExtArgs> = {}>(args?: Subset<T, Venue$showsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ShowPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    createdBy<T extends Venue$createdByArgs<ExtArgs> = {}>(args?: Subset<T, Venue$createdByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3038,6 +3215,9 @@ export namespace Prisma {
     readonly address1: FieldRef<"Venue", 'String'>
     readonly address2: FieldRef<"Venue", 'String'>
     readonly zipCode: FieldRef<"Venue", 'String'>
+    readonly createdById: FieldRef<"Venue", 'Int'>
+    readonly createdAt: FieldRef<"Venue", 'DateTime'>
+    readonly updatedAt: FieldRef<"Venue", 'DateTime'>
   }
     
 
@@ -3287,6 +3467,10 @@ export namespace Prisma {
      */
     data: VenueCreateManyInput | VenueCreateManyInput[]
     skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: VenueIncludeCreateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -3357,6 +3541,10 @@ export namespace Prisma {
      * Limit how many Venues to update.
      */
     limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: VenueIncludeUpdateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -3450,6 +3638,25 @@ export namespace Prisma {
   }
 
   /**
+   * Venue.createdBy
+   */
+  export type Venue$createdByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
    * Venue without action
    */
   export type VenueDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3492,24 +3699,33 @@ export namespace Prisma {
     id: number | null
     email: string | null
     password: string | null
+    role: $Enums.Role | null
     mfaSecret: string | null
     banUntil: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
   }
 
   export type UserMaxAggregateOutputType = {
     id: number | null
     email: string | null
     password: string | null
+    role: $Enums.Role | null
     mfaSecret: string | null
     banUntil: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
   }
 
   export type UserCountAggregateOutputType = {
     id: number
     email: number
     password: number
+    role: number
     mfaSecret: number
     banUntil: number
+    createdAt: number
+    updatedAt: number
     _all: number
   }
 
@@ -3526,24 +3742,33 @@ export namespace Prisma {
     id?: true
     email?: true
     password?: true
+    role?: true
     mfaSecret?: true
     banUntil?: true
+    createdAt?: true
+    updatedAt?: true
   }
 
   export type UserMaxAggregateInputType = {
     id?: true
     email?: true
     password?: true
+    role?: true
     mfaSecret?: true
     banUntil?: true
+    createdAt?: true
+    updatedAt?: true
   }
 
   export type UserCountAggregateInputType = {
     id?: true
     email?: true
     password?: true
+    role?: true
     mfaSecret?: true
     banUntil?: true
+    createdAt?: true
+    updatedAt?: true
     _all?: true
   }
 
@@ -3637,8 +3862,11 @@ export namespace Prisma {
     id: number
     email: string
     password: string
+    role: $Enums.Role
     mfaSecret: string | null
     banUntil: Date | null
+    createdAt: Date
+    updatedAt: Date
     _count: UserCountAggregateOutputType | null
     _avg: UserAvgAggregateOutputType | null
     _sum: UserSumAggregateOutputType | null
@@ -3664,45 +3892,73 @@ export namespace Prisma {
     id?: boolean
     email?: boolean
     password?: boolean
+    role?: boolean
     mfaSecret?: boolean
     banUntil?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    shows?: boolean | User$showsArgs<ExtArgs>
+    venues?: boolean | User$venuesArgs<ExtArgs>
+    _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     email?: boolean
     password?: boolean
+    role?: boolean
     mfaSecret?: boolean
     banUntil?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     email?: boolean
     password?: boolean
+    role?: boolean
     mfaSecret?: boolean
     banUntil?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectScalar = {
     id?: boolean
     email?: boolean
     password?: boolean
+    role?: boolean
     mfaSecret?: boolean
     banUntil?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "password" | "mfaSecret" | "banUntil", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "password" | "role" | "mfaSecret" | "banUntil" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+  export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    shows?: boolean | User$showsArgs<ExtArgs>
+    venues?: boolean | User$venuesArgs<ExtArgs>
+    _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type UserIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
 
   export type $UserPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "User"
-    objects: {}
+    objects: {
+      shows: Prisma.$ShowPayload<ExtArgs>[]
+      venues: Prisma.$VenuePayload<ExtArgs>[]
+    }
     scalars: $Extensions.GetPayloadResult<{
       id: number
       email: string
       password: string
+      role: $Enums.Role
       mfaSecret: string | null
       banUntil: Date | null
+      createdAt: Date
+      updatedAt: Date
     }, ExtArgs["result"]["user"]>
     composites: {}
   }
@@ -4097,6 +4353,8 @@ export namespace Prisma {
    */
   export interface Prisma__UserClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    shows<T extends User$showsArgs<ExtArgs> = {}>(args?: Subset<T, User$showsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ShowPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    venues<T extends User$venuesArgs<ExtArgs> = {}>(args?: Subset<T, User$venuesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$VenuePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4129,8 +4387,11 @@ export namespace Prisma {
     readonly id: FieldRef<"User", 'Int'>
     readonly email: FieldRef<"User", 'String'>
     readonly password: FieldRef<"User", 'String'>
+    readonly role: FieldRef<"User", 'Role'>
     readonly mfaSecret: FieldRef<"User", 'String'>
     readonly banUntil: FieldRef<"User", 'DateTime'>
+    readonly createdAt: FieldRef<"User", 'DateTime'>
+    readonly updatedAt: FieldRef<"User", 'DateTime'>
   }
     
 
@@ -4147,6 +4408,10 @@ export namespace Prisma {
      * Omit specific fields from the User
      */
     omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
     /**
      * Filter, which User to fetch.
      */
@@ -4166,6 +4431,10 @@ export namespace Prisma {
      */
     omit?: UserOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    /**
      * Filter, which User to fetch.
      */
     where: UserWhereUniqueInput
@@ -4183,6 +4452,10 @@ export namespace Prisma {
      * Omit specific fields from the User
      */
     omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
     /**
      * Filter, which User to fetch.
      */
@@ -4232,6 +4505,10 @@ export namespace Prisma {
      */
     omit?: UserOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    /**
      * Filter, which User to fetch.
      */
     where?: UserWhereInput
@@ -4280,6 +4557,10 @@ export namespace Prisma {
      */
     omit?: UserOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    /**
      * Filter, which Users to fetch.
      */
     where?: UserWhereInput
@@ -4322,6 +4603,10 @@ export namespace Prisma {
      * Omit specific fields from the User
      */
     omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
     /**
      * The data needed to create a User.
      */
@@ -4370,6 +4655,10 @@ export namespace Prisma {
      * Omit specific fields from the User
      */
     omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
     /**
      * The data needed to update a User.
      */
@@ -4437,6 +4726,10 @@ export namespace Prisma {
      */
     omit?: UserOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    /**
      * The filter to search for the User to update in case it exists.
      */
     where: UserWhereUniqueInput
@@ -4463,6 +4756,10 @@ export namespace Prisma {
      */
     omit?: UserOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    /**
      * Filter which User to delete.
      */
     where: UserWhereUniqueInput
@@ -4483,6 +4780,54 @@ export namespace Prisma {
   }
 
   /**
+   * User.shows
+   */
+  export type User$showsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Show
+     */
+    select?: ShowSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Show
+     */
+    omit?: ShowOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ShowInclude<ExtArgs> | null
+    where?: ShowWhereInput
+    orderBy?: ShowOrderByWithRelationInput | ShowOrderByWithRelationInput[]
+    cursor?: ShowWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ShowScalarFieldEnum | ShowScalarFieldEnum[]
+  }
+
+  /**
+   * User.venues
+   */
+  export type User$venuesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Venue
+     */
+    select?: VenueSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Venue
+     */
+    omit?: VenueOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: VenueInclude<ExtArgs> | null
+    where?: VenueWhereInput
+    orderBy?: VenueOrderByWithRelationInput | VenueOrderByWithRelationInput[]
+    cursor?: VenueWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: VenueScalarFieldEnum | VenueScalarFieldEnum[]
+  }
+
+  /**
    * User without action
    */
   export type UserDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4494,6 +4839,10 @@ export namespace Prisma {
      * Omit specific fields from the User
      */
     omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
   }
 
 
@@ -6501,7 +6850,10 @@ export namespace Prisma {
     label: 'label',
     details: 'details',
     date: 'date',
-    venueId: 'venueId'
+    venueId: 'venueId',
+    createdById: 'createdById',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
   };
 
   export type ShowScalarFieldEnum = (typeof ShowScalarFieldEnum)[keyof typeof ShowScalarFieldEnum]
@@ -6513,7 +6865,10 @@ export namespace Prisma {
     city: 'city',
     address1: 'address1',
     address2: 'address2',
-    zipCode: 'zipCode'
+    zipCode: 'zipCode',
+    createdById: 'createdById',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
   };
 
   export type VenueScalarFieldEnum = (typeof VenueScalarFieldEnum)[keyof typeof VenueScalarFieldEnum]
@@ -6523,8 +6878,11 @@ export namespace Prisma {
     id: 'id',
     email: 'email',
     password: 'password',
+    role: 'role',
     mfaSecret: 'mfaSecret',
-    banUntil: 'banUntil'
+    banUntil: 'banUntil',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
   };
 
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -6621,6 +6979,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'Role'
+   */
+  export type EnumRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Role'>
+    
+
+
+  /**
+   * Reference to a field of type 'Role[]'
+   */
+  export type ListEnumRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Role[]'>
+    
+
+
+  /**
    * Reference to a field of type 'Float'
    */
   export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -6646,7 +7018,11 @@ export namespace Prisma {
     details?: StringNullableFilter<"Show"> | string | null
     date?: DateTimeFilter<"Show"> | Date | string
     venueId?: IntFilter<"Show"> | number
+    createdById?: IntNullableFilter<"Show"> | number | null
+    createdAt?: DateTimeFilter<"Show"> | Date | string
+    updatedAt?: DateTimeFilter<"Show"> | Date | string
     venue?: XOR<VenueScalarRelationFilter, VenueWhereInput>
+    createdBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
   }
 
   export type ShowOrderByWithRelationInput = {
@@ -6655,7 +7031,11 @@ export namespace Prisma {
     details?: SortOrderInput | SortOrder
     date?: SortOrder
     venueId?: SortOrder
+    createdById?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
     venue?: VenueOrderByWithRelationInput
+    createdBy?: UserOrderByWithRelationInput
   }
 
   export type ShowWhereUniqueInput = Prisma.AtLeast<{
@@ -6667,7 +7047,11 @@ export namespace Prisma {
     details?: StringNullableFilter<"Show"> | string | null
     date?: DateTimeFilter<"Show"> | Date | string
     venueId?: IntFilter<"Show"> | number
+    createdById?: IntNullableFilter<"Show"> | number | null
+    createdAt?: DateTimeFilter<"Show"> | Date | string
+    updatedAt?: DateTimeFilter<"Show"> | Date | string
     venue?: XOR<VenueScalarRelationFilter, VenueWhereInput>
+    createdBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
   }, "id">
 
   export type ShowOrderByWithAggregationInput = {
@@ -6676,6 +7060,9 @@ export namespace Prisma {
     details?: SortOrderInput | SortOrder
     date?: SortOrder
     venueId?: SortOrder
+    createdById?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
     _count?: ShowCountOrderByAggregateInput
     _avg?: ShowAvgOrderByAggregateInput
     _max?: ShowMaxOrderByAggregateInput
@@ -6692,6 +7079,9 @@ export namespace Prisma {
     details?: StringNullableWithAggregatesFilter<"Show"> | string | null
     date?: DateTimeWithAggregatesFilter<"Show"> | Date | string
     venueId?: IntWithAggregatesFilter<"Show"> | number
+    createdById?: IntNullableWithAggregatesFilter<"Show"> | number | null
+    createdAt?: DateTimeWithAggregatesFilter<"Show"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Show"> | Date | string
   }
 
   export type VenueWhereInput = {
@@ -6704,7 +7094,11 @@ export namespace Prisma {
     address1?: StringNullableFilter<"Venue"> | string | null
     address2?: StringNullableFilter<"Venue"> | string | null
     zipCode?: StringNullableFilter<"Venue"> | string | null
+    createdById?: IntNullableFilter<"Venue"> | number | null
+    createdAt?: DateTimeFilter<"Venue"> | Date | string
+    updatedAt?: DateTimeFilter<"Venue"> | Date | string
     shows?: ShowListRelationFilter
+    createdBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
   }
 
   export type VenueOrderByWithRelationInput = {
@@ -6714,7 +7108,11 @@ export namespace Prisma {
     address1?: SortOrderInput | SortOrder
     address2?: SortOrderInput | SortOrder
     zipCode?: SortOrderInput | SortOrder
+    createdById?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
     shows?: ShowOrderByRelationAggregateInput
+    createdBy?: UserOrderByWithRelationInput
   }
 
   export type VenueWhereUniqueInput = Prisma.AtLeast<{
@@ -6727,7 +7125,11 @@ export namespace Prisma {
     address1?: StringNullableFilter<"Venue"> | string | null
     address2?: StringNullableFilter<"Venue"> | string | null
     zipCode?: StringNullableFilter<"Venue"> | string | null
+    createdById?: IntNullableFilter<"Venue"> | number | null
+    createdAt?: DateTimeFilter<"Venue"> | Date | string
+    updatedAt?: DateTimeFilter<"Venue"> | Date | string
     shows?: ShowListRelationFilter
+    createdBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
   }, "id">
 
   export type VenueOrderByWithAggregationInput = {
@@ -6737,6 +7139,9 @@ export namespace Prisma {
     address1?: SortOrderInput | SortOrder
     address2?: SortOrderInput | SortOrder
     zipCode?: SortOrderInput | SortOrder
+    createdById?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
     _count?: VenueCountOrderByAggregateInput
     _avg?: VenueAvgOrderByAggregateInput
     _max?: VenueMaxOrderByAggregateInput
@@ -6754,6 +7159,9 @@ export namespace Prisma {
     address1?: StringNullableWithAggregatesFilter<"Venue"> | string | null
     address2?: StringNullableWithAggregatesFilter<"Venue"> | string | null
     zipCode?: StringNullableWithAggregatesFilter<"Venue"> | string | null
+    createdById?: IntNullableWithAggregatesFilter<"Venue"> | number | null
+    createdAt?: DateTimeWithAggregatesFilter<"Venue"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Venue"> | Date | string
   }
 
   export type UserWhereInput = {
@@ -6763,16 +7171,26 @@ export namespace Prisma {
     id?: IntFilter<"User"> | number
     email?: StringFilter<"User"> | string
     password?: StringFilter<"User"> | string
+    role?: EnumRoleFilter<"User"> | $Enums.Role
     mfaSecret?: StringNullableFilter<"User"> | string | null
     banUntil?: DateTimeNullableFilter<"User"> | Date | string | null
+    createdAt?: DateTimeFilter<"User"> | Date | string
+    updatedAt?: DateTimeFilter<"User"> | Date | string
+    shows?: ShowListRelationFilter
+    venues?: VenueListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
     id?: SortOrder
     email?: SortOrder
     password?: SortOrder
+    role?: SortOrder
     mfaSecret?: SortOrderInput | SortOrder
     banUntil?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    shows?: ShowOrderByRelationAggregateInput
+    venues?: VenueOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -6782,16 +7200,24 @@ export namespace Prisma {
     OR?: UserWhereInput[]
     NOT?: UserWhereInput | UserWhereInput[]
     password?: StringFilter<"User"> | string
+    role?: EnumRoleFilter<"User"> | $Enums.Role
     mfaSecret?: StringNullableFilter<"User"> | string | null
     banUntil?: DateTimeNullableFilter<"User"> | Date | string | null
+    createdAt?: DateTimeFilter<"User"> | Date | string
+    updatedAt?: DateTimeFilter<"User"> | Date | string
+    shows?: ShowListRelationFilter
+    venues?: VenueListRelationFilter
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
     id?: SortOrder
     email?: SortOrder
     password?: SortOrder
+    role?: SortOrder
     mfaSecret?: SortOrderInput | SortOrder
     banUntil?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
     _count?: UserCountOrderByAggregateInput
     _avg?: UserAvgOrderByAggregateInput
     _max?: UserMaxOrderByAggregateInput
@@ -6806,8 +7232,11 @@ export namespace Prisma {
     id?: IntWithAggregatesFilter<"User"> | number
     email?: StringWithAggregatesFilter<"User"> | string
     password?: StringWithAggregatesFilter<"User"> | string
+    role?: EnumRoleWithAggregatesFilter<"User"> | $Enums.Role
     mfaSecret?: StringNullableWithAggregatesFilter<"User"> | string | null
     banUntil?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
   }
 
   export type IpBanWhereInput = {
@@ -6905,7 +7334,10 @@ export namespace Prisma {
     label?: string | null
     details?: string | null
     date: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
     venue: VenueCreateNestedOneWithoutShowsInput
+    createdBy?: UserCreateNestedOneWithoutShowsInput
   }
 
   export type ShowUncheckedCreateInput = {
@@ -6914,13 +7346,19 @@ export namespace Prisma {
     details?: string | null
     date: Date | string
     venueId: number
+    createdById?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type ShowUpdateInput = {
     label?: NullableStringFieldUpdateOperationsInput | string | null
     details?: NullableStringFieldUpdateOperationsInput | string | null
     date?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     venue?: VenueUpdateOneRequiredWithoutShowsNestedInput
+    createdBy?: UserUpdateOneWithoutShowsNestedInput
   }
 
   export type ShowUncheckedUpdateInput = {
@@ -6929,6 +7367,9 @@ export namespace Prisma {
     details?: NullableStringFieldUpdateOperationsInput | string | null
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     venueId?: IntFieldUpdateOperationsInput | number
+    createdById?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ShowCreateManyInput = {
@@ -6937,12 +7378,17 @@ export namespace Prisma {
     details?: string | null
     date: Date | string
     venueId: number
+    createdById?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type ShowUpdateManyMutationInput = {
     label?: NullableStringFieldUpdateOperationsInput | string | null
     details?: NullableStringFieldUpdateOperationsInput | string | null
     date?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ShowUncheckedUpdateManyInput = {
@@ -6951,6 +7397,9 @@ export namespace Prisma {
     details?: NullableStringFieldUpdateOperationsInput | string | null
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     venueId?: IntFieldUpdateOperationsInput | number
+    createdById?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type VenueCreateInput = {
@@ -6959,7 +7408,10 @@ export namespace Prisma {
     address1?: string | null
     address2?: string | null
     zipCode?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
     shows?: ShowCreateNestedManyWithoutVenueInput
+    createdBy?: UserCreateNestedOneWithoutVenuesInput
   }
 
   export type VenueUncheckedCreateInput = {
@@ -6969,6 +7421,9 @@ export namespace Prisma {
     address1?: string | null
     address2?: string | null
     zipCode?: string | null
+    createdById?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
     shows?: ShowUncheckedCreateNestedManyWithoutVenueInput
   }
 
@@ -6978,7 +7433,10 @@ export namespace Prisma {
     address1?: NullableStringFieldUpdateOperationsInput | string | null
     address2?: NullableStringFieldUpdateOperationsInput | string | null
     zipCode?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     shows?: ShowUpdateManyWithoutVenueNestedInput
+    createdBy?: UserUpdateOneWithoutVenuesNestedInput
   }
 
   export type VenueUncheckedUpdateInput = {
@@ -6988,6 +7446,9 @@ export namespace Prisma {
     address1?: NullableStringFieldUpdateOperationsInput | string | null
     address2?: NullableStringFieldUpdateOperationsInput | string | null
     zipCode?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     shows?: ShowUncheckedUpdateManyWithoutVenueNestedInput
   }
 
@@ -6998,6 +7459,9 @@ export namespace Prisma {
     address1?: string | null
     address2?: string | null
     zipCode?: string | null
+    createdById?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type VenueUpdateManyMutationInput = {
@@ -7006,6 +7470,8 @@ export namespace Prisma {
     address1?: NullableStringFieldUpdateOperationsInput | string | null
     address2?: NullableStringFieldUpdateOperationsInput | string | null
     zipCode?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type VenueUncheckedUpdateManyInput = {
@@ -7015,59 +7481,91 @@ export namespace Prisma {
     address1?: NullableStringFieldUpdateOperationsInput | string | null
     address2?: NullableStringFieldUpdateOperationsInput | string | null
     zipCode?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type UserCreateInput = {
     email: string
     password: string
+    role?: $Enums.Role
     mfaSecret?: string | null
     banUntil?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    shows?: ShowCreateNestedManyWithoutCreatedByInput
+    venues?: VenueCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateInput = {
     id?: number
     email: string
     password: string
+    role?: $Enums.Role
     mfaSecret?: string | null
     banUntil?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    shows?: ShowUncheckedCreateNestedManyWithoutCreatedByInput
+    venues?: VenueUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUpdateInput = {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     mfaSecret?: NullableStringFieldUpdateOperationsInput | string | null
     banUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    shows?: ShowUpdateManyWithoutCreatedByNestedInput
+    venues?: VenueUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     mfaSecret?: NullableStringFieldUpdateOperationsInput | string | null
     banUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    shows?: ShowUncheckedUpdateManyWithoutCreatedByNestedInput
+    venues?: VenueUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserCreateManyInput = {
     id?: number
     email: string
     password: string
+    role?: $Enums.Role
     mfaSecret?: string | null
     banUntil?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type UserUpdateManyMutationInput = {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     mfaSecret?: NullableStringFieldUpdateOperationsInput | string | null
     banUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type UserUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     mfaSecret?: NullableStringFieldUpdateOperationsInput | string | null
     banUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type IpBanCreateInput = {
@@ -7195,9 +7693,25 @@ export namespace Prisma {
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
+  export type IntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
   export type VenueScalarRelationFilter = {
     is?: VenueWhereInput
     isNot?: VenueWhereInput
+  }
+
+  export type UserNullableScalarRelationFilter = {
+    is?: UserWhereInput | null
+    isNot?: UserWhereInput | null
   }
 
   export type SortOrderInput = {
@@ -7211,11 +7725,15 @@ export namespace Prisma {
     details?: SortOrder
     date?: SortOrder
     venueId?: SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type ShowAvgOrderByAggregateInput = {
     id?: SortOrder
     venueId?: SortOrder
+    createdById?: SortOrder
   }
 
   export type ShowMaxOrderByAggregateInput = {
@@ -7224,6 +7742,9 @@ export namespace Prisma {
     details?: SortOrder
     date?: SortOrder
     venueId?: SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type ShowMinOrderByAggregateInput = {
@@ -7232,11 +7753,15 @@ export namespace Prisma {
     details?: SortOrder
     date?: SortOrder
     venueId?: SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type ShowSumOrderByAggregateInput = {
     id?: SortOrder
     venueId?: SortOrder
+    createdById?: SortOrder
   }
 
   export type IntWithAggregatesFilter<$PrismaModel = never> = {
@@ -7287,6 +7812,22 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
+  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -7319,10 +7860,14 @@ export namespace Prisma {
     address1?: SortOrder
     address2?: SortOrder
     zipCode?: SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type VenueAvgOrderByAggregateInput = {
     id?: SortOrder
+    createdById?: SortOrder
   }
 
   export type VenueMaxOrderByAggregateInput = {
@@ -7332,6 +7877,9 @@ export namespace Prisma {
     address1?: SortOrder
     address2?: SortOrder
     zipCode?: SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type VenueMinOrderByAggregateInput = {
@@ -7341,10 +7889,14 @@ export namespace Prisma {
     address1?: SortOrder
     address2?: SortOrder
     zipCode?: SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type VenueSumOrderByAggregateInput = {
     id?: SortOrder
+    createdById?: SortOrder
   }
 
   export type StringWithAggregatesFilter<$PrismaModel = never> = {
@@ -7365,6 +7917,13 @@ export namespace Prisma {
     _max?: NestedStringFilter<$PrismaModel>
   }
 
+  export type EnumRoleFilter<$PrismaModel = never> = {
+    equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
+    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    not?: NestedEnumRoleFilter<$PrismaModel> | $Enums.Role
+  }
+
   export type DateTimeNullableFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
@@ -7376,12 +7935,25 @@ export namespace Prisma {
     not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
 
+  export type VenueListRelationFilter = {
+    every?: VenueWhereInput
+    some?: VenueWhereInput
+    none?: VenueWhereInput
+  }
+
+  export type VenueOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type UserCountOrderByAggregateInput = {
     id?: SortOrder
     email?: SortOrder
     password?: SortOrder
+    role?: SortOrder
     mfaSecret?: SortOrder
     banUntil?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type UserAvgOrderByAggregateInput = {
@@ -7392,20 +7964,36 @@ export namespace Prisma {
     id?: SortOrder
     email?: SortOrder
     password?: SortOrder
+    role?: SortOrder
     mfaSecret?: SortOrder
     banUntil?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type UserMinOrderByAggregateInput = {
     id?: SortOrder
     email?: SortOrder
     password?: SortOrder
+    role?: SortOrder
     mfaSecret?: SortOrder
     banUntil?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type UserSumOrderByAggregateInput = {
     id?: SortOrder
+  }
+
+  export type EnumRoleWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
+    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    not?: NestedEnumRoleWithAggregatesFilter<$PrismaModel> | $Enums.Role
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumRoleFilter<$PrismaModel>
+    _max?: NestedEnumRoleFilter<$PrismaModel>
   }
 
   export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -7475,6 +8063,12 @@ export namespace Prisma {
     connect?: VenueWhereUniqueInput
   }
 
+  export type UserCreateNestedOneWithoutShowsInput = {
+    create?: XOR<UserCreateWithoutShowsInput, UserUncheckedCreateWithoutShowsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutShowsInput
+    connect?: UserWhereUniqueInput
+  }
+
   export type NullableStringFieldUpdateOperationsInput = {
     set?: string | null
   }
@@ -7491,8 +8085,26 @@ export namespace Prisma {
     update?: XOR<XOR<VenueUpdateToOneWithWhereWithoutShowsInput, VenueUpdateWithoutShowsInput>, VenueUncheckedUpdateWithoutShowsInput>
   }
 
+  export type UserUpdateOneWithoutShowsNestedInput = {
+    create?: XOR<UserCreateWithoutShowsInput, UserUncheckedCreateWithoutShowsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutShowsInput
+    upsert?: UserUpsertWithoutShowsInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutShowsInput, UserUpdateWithoutShowsInput>, UserUncheckedUpdateWithoutShowsInput>
+  }
+
   export type IntFieldUpdateOperationsInput = {
     set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type NullableIntFieldUpdateOperationsInput = {
+    set?: number | null
     increment?: number
     decrement?: number
     multiply?: number
@@ -7504,6 +8116,12 @@ export namespace Prisma {
     connectOrCreate?: ShowCreateOrConnectWithoutVenueInput | ShowCreateOrConnectWithoutVenueInput[]
     createMany?: ShowCreateManyVenueInputEnvelope
     connect?: ShowWhereUniqueInput | ShowWhereUniqueInput[]
+  }
+
+  export type UserCreateNestedOneWithoutVenuesInput = {
+    create?: XOR<UserCreateWithoutVenuesInput, UserUncheckedCreateWithoutVenuesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutVenuesInput
+    connect?: UserWhereUniqueInput
   }
 
   export type ShowUncheckedCreateNestedManyWithoutVenueInput = {
@@ -7531,6 +8149,16 @@ export namespace Prisma {
     deleteMany?: ShowScalarWhereInput | ShowScalarWhereInput[]
   }
 
+  export type UserUpdateOneWithoutVenuesNestedInput = {
+    create?: XOR<UserCreateWithoutVenuesInput, UserUncheckedCreateWithoutVenuesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutVenuesInput
+    upsert?: UserUpsertWithoutVenuesInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutVenuesInput, UserUpdateWithoutVenuesInput>, UserUncheckedUpdateWithoutVenuesInput>
+  }
+
   export type ShowUncheckedUpdateManyWithoutVenueNestedInput = {
     create?: XOR<ShowCreateWithoutVenueInput, ShowUncheckedCreateWithoutVenueInput> | ShowCreateWithoutVenueInput[] | ShowUncheckedCreateWithoutVenueInput[]
     connectOrCreate?: ShowCreateOrConnectWithoutVenueInput | ShowCreateOrConnectWithoutVenueInput[]
@@ -7545,8 +8173,96 @@ export namespace Prisma {
     deleteMany?: ShowScalarWhereInput | ShowScalarWhereInput[]
   }
 
+  export type ShowCreateNestedManyWithoutCreatedByInput = {
+    create?: XOR<ShowCreateWithoutCreatedByInput, ShowUncheckedCreateWithoutCreatedByInput> | ShowCreateWithoutCreatedByInput[] | ShowUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: ShowCreateOrConnectWithoutCreatedByInput | ShowCreateOrConnectWithoutCreatedByInput[]
+    createMany?: ShowCreateManyCreatedByInputEnvelope
+    connect?: ShowWhereUniqueInput | ShowWhereUniqueInput[]
+  }
+
+  export type VenueCreateNestedManyWithoutCreatedByInput = {
+    create?: XOR<VenueCreateWithoutCreatedByInput, VenueUncheckedCreateWithoutCreatedByInput> | VenueCreateWithoutCreatedByInput[] | VenueUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: VenueCreateOrConnectWithoutCreatedByInput | VenueCreateOrConnectWithoutCreatedByInput[]
+    createMany?: VenueCreateManyCreatedByInputEnvelope
+    connect?: VenueWhereUniqueInput | VenueWhereUniqueInput[]
+  }
+
+  export type ShowUncheckedCreateNestedManyWithoutCreatedByInput = {
+    create?: XOR<ShowCreateWithoutCreatedByInput, ShowUncheckedCreateWithoutCreatedByInput> | ShowCreateWithoutCreatedByInput[] | ShowUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: ShowCreateOrConnectWithoutCreatedByInput | ShowCreateOrConnectWithoutCreatedByInput[]
+    createMany?: ShowCreateManyCreatedByInputEnvelope
+    connect?: ShowWhereUniqueInput | ShowWhereUniqueInput[]
+  }
+
+  export type VenueUncheckedCreateNestedManyWithoutCreatedByInput = {
+    create?: XOR<VenueCreateWithoutCreatedByInput, VenueUncheckedCreateWithoutCreatedByInput> | VenueCreateWithoutCreatedByInput[] | VenueUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: VenueCreateOrConnectWithoutCreatedByInput | VenueCreateOrConnectWithoutCreatedByInput[]
+    createMany?: VenueCreateManyCreatedByInputEnvelope
+    connect?: VenueWhereUniqueInput | VenueWhereUniqueInput[]
+  }
+
+  export type EnumRoleFieldUpdateOperationsInput = {
+    set?: $Enums.Role
+  }
+
   export type NullableDateTimeFieldUpdateOperationsInput = {
     set?: Date | string | null
+  }
+
+  export type ShowUpdateManyWithoutCreatedByNestedInput = {
+    create?: XOR<ShowCreateWithoutCreatedByInput, ShowUncheckedCreateWithoutCreatedByInput> | ShowCreateWithoutCreatedByInput[] | ShowUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: ShowCreateOrConnectWithoutCreatedByInput | ShowCreateOrConnectWithoutCreatedByInput[]
+    upsert?: ShowUpsertWithWhereUniqueWithoutCreatedByInput | ShowUpsertWithWhereUniqueWithoutCreatedByInput[]
+    createMany?: ShowCreateManyCreatedByInputEnvelope
+    set?: ShowWhereUniqueInput | ShowWhereUniqueInput[]
+    disconnect?: ShowWhereUniqueInput | ShowWhereUniqueInput[]
+    delete?: ShowWhereUniqueInput | ShowWhereUniqueInput[]
+    connect?: ShowWhereUniqueInput | ShowWhereUniqueInput[]
+    update?: ShowUpdateWithWhereUniqueWithoutCreatedByInput | ShowUpdateWithWhereUniqueWithoutCreatedByInput[]
+    updateMany?: ShowUpdateManyWithWhereWithoutCreatedByInput | ShowUpdateManyWithWhereWithoutCreatedByInput[]
+    deleteMany?: ShowScalarWhereInput | ShowScalarWhereInput[]
+  }
+
+  export type VenueUpdateManyWithoutCreatedByNestedInput = {
+    create?: XOR<VenueCreateWithoutCreatedByInput, VenueUncheckedCreateWithoutCreatedByInput> | VenueCreateWithoutCreatedByInput[] | VenueUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: VenueCreateOrConnectWithoutCreatedByInput | VenueCreateOrConnectWithoutCreatedByInput[]
+    upsert?: VenueUpsertWithWhereUniqueWithoutCreatedByInput | VenueUpsertWithWhereUniqueWithoutCreatedByInput[]
+    createMany?: VenueCreateManyCreatedByInputEnvelope
+    set?: VenueWhereUniqueInput | VenueWhereUniqueInput[]
+    disconnect?: VenueWhereUniqueInput | VenueWhereUniqueInput[]
+    delete?: VenueWhereUniqueInput | VenueWhereUniqueInput[]
+    connect?: VenueWhereUniqueInput | VenueWhereUniqueInput[]
+    update?: VenueUpdateWithWhereUniqueWithoutCreatedByInput | VenueUpdateWithWhereUniqueWithoutCreatedByInput[]
+    updateMany?: VenueUpdateManyWithWhereWithoutCreatedByInput | VenueUpdateManyWithWhereWithoutCreatedByInput[]
+    deleteMany?: VenueScalarWhereInput | VenueScalarWhereInput[]
+  }
+
+  export type ShowUncheckedUpdateManyWithoutCreatedByNestedInput = {
+    create?: XOR<ShowCreateWithoutCreatedByInput, ShowUncheckedCreateWithoutCreatedByInput> | ShowCreateWithoutCreatedByInput[] | ShowUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: ShowCreateOrConnectWithoutCreatedByInput | ShowCreateOrConnectWithoutCreatedByInput[]
+    upsert?: ShowUpsertWithWhereUniqueWithoutCreatedByInput | ShowUpsertWithWhereUniqueWithoutCreatedByInput[]
+    createMany?: ShowCreateManyCreatedByInputEnvelope
+    set?: ShowWhereUniqueInput | ShowWhereUniqueInput[]
+    disconnect?: ShowWhereUniqueInput | ShowWhereUniqueInput[]
+    delete?: ShowWhereUniqueInput | ShowWhereUniqueInput[]
+    connect?: ShowWhereUniqueInput | ShowWhereUniqueInput[]
+    update?: ShowUpdateWithWhereUniqueWithoutCreatedByInput | ShowUpdateWithWhereUniqueWithoutCreatedByInput[]
+    updateMany?: ShowUpdateManyWithWhereWithoutCreatedByInput | ShowUpdateManyWithWhereWithoutCreatedByInput[]
+    deleteMany?: ShowScalarWhereInput | ShowScalarWhereInput[]
+  }
+
+  export type VenueUncheckedUpdateManyWithoutCreatedByNestedInput = {
+    create?: XOR<VenueCreateWithoutCreatedByInput, VenueUncheckedCreateWithoutCreatedByInput> | VenueCreateWithoutCreatedByInput[] | VenueUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: VenueCreateOrConnectWithoutCreatedByInput | VenueCreateOrConnectWithoutCreatedByInput[]
+    upsert?: VenueUpsertWithWhereUniqueWithoutCreatedByInput | VenueUpsertWithWhereUniqueWithoutCreatedByInput[]
+    createMany?: VenueCreateManyCreatedByInputEnvelope
+    set?: VenueWhereUniqueInput | VenueWhereUniqueInput[]
+    disconnect?: VenueWhereUniqueInput | VenueWhereUniqueInput[]
+    delete?: VenueWhereUniqueInput | VenueWhereUniqueInput[]
+    connect?: VenueWhereUniqueInput | VenueWhereUniqueInput[]
+    update?: VenueUpdateWithWhereUniqueWithoutCreatedByInput | VenueUpdateWithWhereUniqueWithoutCreatedByInput[]
+    updateMany?: VenueUpdateManyWithWhereWithoutCreatedByInput | VenueUpdateManyWithWhereWithoutCreatedByInput[]
+    deleteMany?: VenueScalarWhereInput | VenueScalarWhereInput[]
   }
 
   export type NestedIntFilter<$PrismaModel = never> = {
@@ -7583,6 +8299,17 @@ export namespace Prisma {
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
+  }
+
+  export type NestedIntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
   export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
@@ -7629,17 +8356,6 @@ export namespace Prisma {
     _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
-  export type NestedIntNullableFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableFilter<$PrismaModel> | number | null
-  }
-
   export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -7652,6 +8368,33 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedDateTimeFilter<$PrismaModel>
     _max?: NestedDateTimeFilter<$PrismaModel>
+  }
+
+  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type NestedFloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -7685,6 +8428,13 @@ export namespace Prisma {
     _max?: NestedStringFilter<$PrismaModel>
   }
 
+  export type NestedEnumRoleFilter<$PrismaModel = never> = {
+    equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
+    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    not?: NestedEnumRoleFilter<$PrismaModel> | $Enums.Role
+  }
+
   export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
@@ -7694,6 +8444,16 @@ export namespace Prisma {
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
+  export type NestedEnumRoleWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
+    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    not?: NestedEnumRoleWithAggregatesFilter<$PrismaModel> | $Enums.Role
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumRoleFilter<$PrismaModel>
+    _max?: NestedEnumRoleFilter<$PrismaModel>
   }
 
   export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -7716,6 +8476,9 @@ export namespace Prisma {
     address1?: string | null
     address2?: string | null
     zipCode?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    createdBy?: UserCreateNestedOneWithoutVenuesInput
   }
 
   export type VenueUncheckedCreateWithoutShowsInput = {
@@ -7725,11 +8488,42 @@ export namespace Prisma {
     address1?: string | null
     address2?: string | null
     zipCode?: string | null
+    createdById?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type VenueCreateOrConnectWithoutShowsInput = {
     where: VenueWhereUniqueInput
     create: XOR<VenueCreateWithoutShowsInput, VenueUncheckedCreateWithoutShowsInput>
+  }
+
+  export type UserCreateWithoutShowsInput = {
+    email: string
+    password: string
+    role?: $Enums.Role
+    mfaSecret?: string | null
+    banUntil?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    venues?: VenueCreateNestedManyWithoutCreatedByInput
+  }
+
+  export type UserUncheckedCreateWithoutShowsInput = {
+    id?: number
+    email: string
+    password: string
+    role?: $Enums.Role
+    mfaSecret?: string | null
+    banUntil?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    venues?: VenueUncheckedCreateNestedManyWithoutCreatedByInput
+  }
+
+  export type UserCreateOrConnectWithoutShowsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutShowsInput, UserUncheckedCreateWithoutShowsInput>
   }
 
   export type VenueUpsertWithoutShowsInput = {
@@ -7749,6 +8543,9 @@ export namespace Prisma {
     address1?: NullableStringFieldUpdateOperationsInput | string | null
     address2?: NullableStringFieldUpdateOperationsInput | string | null
     zipCode?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdBy?: UserUpdateOneWithoutVenuesNestedInput
   }
 
   export type VenueUncheckedUpdateWithoutShowsInput = {
@@ -7758,12 +8555,52 @@ export namespace Prisma {
     address1?: NullableStringFieldUpdateOperationsInput | string | null
     address2?: NullableStringFieldUpdateOperationsInput | string | null
     zipCode?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserUpsertWithoutShowsInput = {
+    update: XOR<UserUpdateWithoutShowsInput, UserUncheckedUpdateWithoutShowsInput>
+    create: XOR<UserCreateWithoutShowsInput, UserUncheckedCreateWithoutShowsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutShowsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutShowsInput, UserUncheckedUpdateWithoutShowsInput>
+  }
+
+  export type UserUpdateWithoutShowsInput = {
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    mfaSecret?: NullableStringFieldUpdateOperationsInput | string | null
+    banUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    venues?: VenueUpdateManyWithoutCreatedByNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutShowsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    mfaSecret?: NullableStringFieldUpdateOperationsInput | string | null
+    banUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    venues?: VenueUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type ShowCreateWithoutVenueInput = {
     label?: string | null
     details?: string | null
     date: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    createdBy?: UserCreateNestedOneWithoutShowsInput
   }
 
   export type ShowUncheckedCreateWithoutVenueInput = {
@@ -7771,6 +8608,9 @@ export namespace Prisma {
     label?: string | null
     details?: string | null
     date: Date | string
+    createdById?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type ShowCreateOrConnectWithoutVenueInput = {
@@ -7781,6 +8621,34 @@ export namespace Prisma {
   export type ShowCreateManyVenueInputEnvelope = {
     data: ShowCreateManyVenueInput | ShowCreateManyVenueInput[]
     skipDuplicates?: boolean
+  }
+
+  export type UserCreateWithoutVenuesInput = {
+    email: string
+    password: string
+    role?: $Enums.Role
+    mfaSecret?: string | null
+    banUntil?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    shows?: ShowCreateNestedManyWithoutCreatedByInput
+  }
+
+  export type UserUncheckedCreateWithoutVenuesInput = {
+    id?: number
+    email: string
+    password: string
+    role?: $Enums.Role
+    mfaSecret?: string | null
+    banUntil?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    shows?: ShowUncheckedCreateNestedManyWithoutCreatedByInput
+  }
+
+  export type UserCreateOrConnectWithoutVenuesInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutVenuesInput, UserUncheckedCreateWithoutVenuesInput>
   }
 
   export type ShowUpsertWithWhereUniqueWithoutVenueInput = {
@@ -7808,6 +8676,152 @@ export namespace Prisma {
     details?: StringNullableFilter<"Show"> | string | null
     date?: DateTimeFilter<"Show"> | Date | string
     venueId?: IntFilter<"Show"> | number
+    createdById?: IntNullableFilter<"Show"> | number | null
+    createdAt?: DateTimeFilter<"Show"> | Date | string
+    updatedAt?: DateTimeFilter<"Show"> | Date | string
+  }
+
+  export type UserUpsertWithoutVenuesInput = {
+    update: XOR<UserUpdateWithoutVenuesInput, UserUncheckedUpdateWithoutVenuesInput>
+    create: XOR<UserCreateWithoutVenuesInput, UserUncheckedCreateWithoutVenuesInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutVenuesInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutVenuesInput, UserUncheckedUpdateWithoutVenuesInput>
+  }
+
+  export type UserUpdateWithoutVenuesInput = {
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    mfaSecret?: NullableStringFieldUpdateOperationsInput | string | null
+    banUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    shows?: ShowUpdateManyWithoutCreatedByNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutVenuesInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    mfaSecret?: NullableStringFieldUpdateOperationsInput | string | null
+    banUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    shows?: ShowUncheckedUpdateManyWithoutCreatedByNestedInput
+  }
+
+  export type ShowCreateWithoutCreatedByInput = {
+    label?: string | null
+    details?: string | null
+    date: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    venue: VenueCreateNestedOneWithoutShowsInput
+  }
+
+  export type ShowUncheckedCreateWithoutCreatedByInput = {
+    id?: number
+    label?: string | null
+    details?: string | null
+    date: Date | string
+    venueId: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ShowCreateOrConnectWithoutCreatedByInput = {
+    where: ShowWhereUniqueInput
+    create: XOR<ShowCreateWithoutCreatedByInput, ShowUncheckedCreateWithoutCreatedByInput>
+  }
+
+  export type ShowCreateManyCreatedByInputEnvelope = {
+    data: ShowCreateManyCreatedByInput | ShowCreateManyCreatedByInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type VenueCreateWithoutCreatedByInput = {
+    name: string
+    city: string
+    address1?: string | null
+    address2?: string | null
+    zipCode?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    shows?: ShowCreateNestedManyWithoutVenueInput
+  }
+
+  export type VenueUncheckedCreateWithoutCreatedByInput = {
+    id?: number
+    name: string
+    city: string
+    address1?: string | null
+    address2?: string | null
+    zipCode?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    shows?: ShowUncheckedCreateNestedManyWithoutVenueInput
+  }
+
+  export type VenueCreateOrConnectWithoutCreatedByInput = {
+    where: VenueWhereUniqueInput
+    create: XOR<VenueCreateWithoutCreatedByInput, VenueUncheckedCreateWithoutCreatedByInput>
+  }
+
+  export type VenueCreateManyCreatedByInputEnvelope = {
+    data: VenueCreateManyCreatedByInput | VenueCreateManyCreatedByInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ShowUpsertWithWhereUniqueWithoutCreatedByInput = {
+    where: ShowWhereUniqueInput
+    update: XOR<ShowUpdateWithoutCreatedByInput, ShowUncheckedUpdateWithoutCreatedByInput>
+    create: XOR<ShowCreateWithoutCreatedByInput, ShowUncheckedCreateWithoutCreatedByInput>
+  }
+
+  export type ShowUpdateWithWhereUniqueWithoutCreatedByInput = {
+    where: ShowWhereUniqueInput
+    data: XOR<ShowUpdateWithoutCreatedByInput, ShowUncheckedUpdateWithoutCreatedByInput>
+  }
+
+  export type ShowUpdateManyWithWhereWithoutCreatedByInput = {
+    where: ShowScalarWhereInput
+    data: XOR<ShowUpdateManyMutationInput, ShowUncheckedUpdateManyWithoutCreatedByInput>
+  }
+
+  export type VenueUpsertWithWhereUniqueWithoutCreatedByInput = {
+    where: VenueWhereUniqueInput
+    update: XOR<VenueUpdateWithoutCreatedByInput, VenueUncheckedUpdateWithoutCreatedByInput>
+    create: XOR<VenueCreateWithoutCreatedByInput, VenueUncheckedCreateWithoutCreatedByInput>
+  }
+
+  export type VenueUpdateWithWhereUniqueWithoutCreatedByInput = {
+    where: VenueWhereUniqueInput
+    data: XOR<VenueUpdateWithoutCreatedByInput, VenueUncheckedUpdateWithoutCreatedByInput>
+  }
+
+  export type VenueUpdateManyWithWhereWithoutCreatedByInput = {
+    where: VenueScalarWhereInput
+    data: XOR<VenueUpdateManyMutationInput, VenueUncheckedUpdateManyWithoutCreatedByInput>
+  }
+
+  export type VenueScalarWhereInput = {
+    AND?: VenueScalarWhereInput | VenueScalarWhereInput[]
+    OR?: VenueScalarWhereInput[]
+    NOT?: VenueScalarWhereInput | VenueScalarWhereInput[]
+    id?: IntFilter<"Venue"> | number
+    name?: StringFilter<"Venue"> | string
+    city?: StringFilter<"Venue"> | string
+    address1?: StringNullableFilter<"Venue"> | string | null
+    address2?: StringNullableFilter<"Venue"> | string | null
+    zipCode?: StringNullableFilter<"Venue"> | string | null
+    createdById?: IntNullableFilter<"Venue"> | number | null
+    createdAt?: DateTimeFilter<"Venue"> | Date | string
+    updatedAt?: DateTimeFilter<"Venue"> | Date | string
   }
 
   export type ShowCreateManyVenueInput = {
@@ -7815,12 +8829,18 @@ export namespace Prisma {
     label?: string | null
     details?: string | null
     date: Date | string
+    createdById?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type ShowUpdateWithoutVenueInput = {
     label?: NullableStringFieldUpdateOperationsInput | string | null
     details?: NullableStringFieldUpdateOperationsInput | string | null
     date?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdBy?: UserUpdateOneWithoutShowsNestedInput
   }
 
   export type ShowUncheckedUpdateWithoutVenueInput = {
@@ -7828,6 +8848,9 @@ export namespace Prisma {
     label?: NullableStringFieldUpdateOperationsInput | string | null
     details?: NullableStringFieldUpdateOperationsInput | string | null
     date?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdById?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ShowUncheckedUpdateManyWithoutVenueInput = {
@@ -7835,6 +8858,93 @@ export namespace Prisma {
     label?: NullableStringFieldUpdateOperationsInput | string | null
     details?: NullableStringFieldUpdateOperationsInput | string | null
     date?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdById?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ShowCreateManyCreatedByInput = {
+    id?: number
+    label?: string | null
+    details?: string | null
+    date: Date | string
+    venueId: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type VenueCreateManyCreatedByInput = {
+    id?: number
+    name: string
+    city: string
+    address1?: string | null
+    address2?: string | null
+    zipCode?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ShowUpdateWithoutCreatedByInput = {
+    label?: NullableStringFieldUpdateOperationsInput | string | null
+    details?: NullableStringFieldUpdateOperationsInput | string | null
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    venue?: VenueUpdateOneRequiredWithoutShowsNestedInput
+  }
+
+  export type ShowUncheckedUpdateWithoutCreatedByInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    label?: NullableStringFieldUpdateOperationsInput | string | null
+    details?: NullableStringFieldUpdateOperationsInput | string | null
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    venueId?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ShowUncheckedUpdateManyWithoutCreatedByInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    label?: NullableStringFieldUpdateOperationsInput | string | null
+    details?: NullableStringFieldUpdateOperationsInput | string | null
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    venueId?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type VenueUpdateWithoutCreatedByInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    address1?: NullableStringFieldUpdateOperationsInput | string | null
+    address2?: NullableStringFieldUpdateOperationsInput | string | null
+    zipCode?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    shows?: ShowUpdateManyWithoutVenueNestedInput
+  }
+
+  export type VenueUncheckedUpdateWithoutCreatedByInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    address1?: NullableStringFieldUpdateOperationsInput | string | null
+    address2?: NullableStringFieldUpdateOperationsInput | string | null
+    zipCode?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    shows?: ShowUncheckedUpdateManyWithoutVenueNestedInput
+  }
+
+  export type VenueUncheckedUpdateManyWithoutCreatedByInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    address1?: NullableStringFieldUpdateOperationsInput | string | null
+    address2?: NullableStringFieldUpdateOperationsInput | string | null
+    zipCode?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
 
