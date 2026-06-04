@@ -6,7 +6,7 @@ Site d'artiste avec backoffice de gestion de concerts. Projet de portfolio démo
 
 | Couche | Technologie |
 |---|---|
-| Backend | Node.js · Express 5 · TypeScript · Prisma · SQLite (dev) / PostgreSQL (prod) |
+| Backend | Node.js · Express 5 · TypeScript · Prisma · PostgreSQL (via Docker) |
 | Auth | JWT · TOTP MFA (Google Authenticator) · bcrypt |
 | Frontend Vue | Vue 3 SPA · Vite · Vuetify 3 · Pinia · Vue Router 4 |
 | Frontend Nuxt | Nuxt 3 · @nuxt/ui *(à venir)* |
@@ -49,7 +49,7 @@ Variables requises :
 ```env
 # Obligatoires
 JWT_SECRET=<chaîne aléatoire d'au moins 32 caractères>
-DATABASE_URL=file:./prisma/dev.db        # SQLite en dev
+DATABASE_URL=postgresql://ooodbuser:password@localhost:5432/ooo_db  # Docker PostgreSQL
 FRONTEND_URL=http://localhost:5173       # CORS
 
 # Optionnelles (alertes email sur tentatives suspectes)
@@ -73,11 +73,13 @@ VITE_API_BASE=http://localhost:3000/api  # valeur par défaut
 
 ## Base de données
 
-```bash
-# Créer/mettre à jour la base SQLite locale
-cd back && npx prisma migrate dev
+Le backend utilise **PostgreSQL** via Docker. Le container `postgres` est défini dans `back/docker-compose.yml` et démarre automatiquement avec l'API.
 
-# Ouvrir Prisma Studio (interface graphique)
+```bash
+# Appliquer les migrations (dans le container, après docker-compose up)
+cd back && docker-compose exec -T api npx prisma migrate dev
+
+# Ouvrir Prisma Studio (pointe sur le PostgreSQL local exposé sur :5432)
 cd back && npx prisma studio
 ```
 
@@ -103,14 +105,14 @@ cd back && pnpm dev
 cd front_vue && pnpm dev
 ```
 
-### Avec Docker (backend + PostgreSQL)
+### Avec Docker (backend + PostgreSQL, recommandé)
 
 ```bash
 cd back
 docker-compose up --build
 
-# Appliquer les migrations dans le container
-docker-compose exec api npx prisma migrate dev
+# Première fois : appliquer les migrations dans le container
+docker-compose exec -T api npx prisma migrate dev --name init
 ```
 
 ## Tests
