@@ -36,7 +36,7 @@
           variant="text"
           color="error"
           :disabled="item.role === 'ADMIN'"
-          @click="openDelete(item)"
+          @click.stop="openDelete(item)"
         >
           <v-icon>mdi-delete</v-icon>
         </v-btn>
