@@ -52,6 +52,7 @@
         </p>
         <v-form @submit.prevent="submitMfa">
           <v-otp-input
+            ref="otpInputRef"
             v-model="mfaCode"
             length="6"
             type="number"
@@ -90,7 +91,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/authStore'
 import { authService } from '@/services/authService'
@@ -107,6 +108,11 @@ const serverError = ref('')
 const pendingUserId = ref<number | null>(null)
 
 const errors = ref({ email: '', password: '' })
+const otpInputRef = ref<{ focus: () => void } | null>(null)
+
+watch(step, (val) => {
+  if (val === 'mfa') nextTick(() => otpInputRef.value?.focus())
+})
 
 function validate(): boolean {
   errors.value = { email: '', password: '' }
