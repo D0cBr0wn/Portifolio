@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { TechBadgeComponent } from '../../shared/components/tech-badge.component';
 
 @Component({
   selector: 'app-public-layout',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive],
+  imports: [RouterLink, RouterLinkActive, TechBadgeComponent],
   template: `
     <div class="public-shell">
       <header class="public-header">
@@ -24,6 +25,8 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
       <footer class="public-footer">
         <p>&copy; {{ year }} Portfolio</p>
       </footer>
+
+      <app-tech-badge />
     </div>
   `,
   styles: [`
