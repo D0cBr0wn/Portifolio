@@ -274,7 +274,98 @@ describe('DELETE /api/users/:id/mfa', () => {
 
     expect(res.status).toBe(200)
     expect(userMock.update).toHaveBeenCalledWith(
-      expect.objectContaining({ data: { mfaSecret: null } })
+      expect.objectContaining({ data: { mfaSecret: null, mfaRequired: false } })
     )
+  })
+})
+
+describe('PATCH /api/users/:id/role', () => {
+  beforeEach(() => jest.clearAllMocks())
+
+  it('retourne 401 sans token', async () => {
+    const res = await request(app).patch('/api/users/1/role').send({ role: 'ADMIN' })
+    expect(res.status).toBe(401)
+  })
+
+  it('retourne 403 si role USER', async () => {
+    const res = await request(app)
+      .patch('/api/users/1/role')
+      .set('Authorization', makeToken(1, 'USER'))
+      .send({ role: 'ADMIN' })
+    expect(res.status).toBe(403)
+  })
+
+  it('retourne 400 si role invalide', async () => {
+    const res = await request(app)
+      .patch('/api/users/1/role')
+      .set('Authorization', makeToken(1, 'ADMIN'))
+      .send({ role: 'SUPERADMIN' })
+    expect(res.status).toBe(400)
+  })
+
+  it('met à jour le rôle et retourne 200 si ADMIN', async () => {
+    userMock.update.mockResolvedValue({ ...fakeUser, role: 'ADMIN' })
+
+    const res = await request(app)
+      .patch('/api/users/1/role')
+      .set('Authorization', makeToken(1, 'ADMIN'))
+      .send({ role: 'ADMIN' })
+
+    expect(res.status).toBe(200)
+    expect(res.body.role).toBe('ADMIN')
+    expect(userMock.update).toHaveBeenCalledWith(
+      expect.objectContaining({ data: { role: 'ADMIN' } })
+    )
+  })
+
+  it('retourne 404 si utilisateur inexistant (P2025)', async () => {
+    userMock.update.mockRejectedValue({ code: 'P2025' })
+
+    const res = await request(app)
+      .patch('/api/users/999/role')
+      .set('Authorization', makeToken(1, 'ADMIN'))
+      .send({ role: 'USER' })
+
+    expect(res.status).toBe(404)
+  })
+})
+
+describe('POST /api/users/:id/mfa/require', () => {
+  beforeEach(() => jest.clearAllMocks())
+
+  it('retourne 401 sans token', async () => {
+    const res = await request(app).post('/api/users/1/mfa/require')
+    expect(res.status).toBe(401)
+  })
+
+  it('retourne 403 si role USER', async () => {
+    const res = await request(app)
+      .post('/api/users/1/mfa/require')
+      .set('Authorization', makeToken(1, 'USER'))
+    expect(res.status).toBe(403)
+  })
+
+  it('active mfaRequired et réinitialise mfaSecret si ADMIN', async () => {
+    userMock.update.mockResolvedValue(fakeUser)
+
+    const res = await request(app)
+      .post('/api/users/1/mfa/require')
+      .set('Authorization', makeToken(1, 'ADMIN'))
+
+    expect(res.status).toBe(200)
+    expect(res.body.message).toBe('MFA requis pour cet utilisateur')
+    expect(userMock.update).toHaveBeenCalledWith(
+      expect.objectContaining({ data: { mfaRequired: true, mfaSecret: null } })
+    )
+  })
+
+  it('retourne 404 si utilisateur inexistant (P2025)', async () => {
+    userMock.update.mockRejectedValue({ code: 'P2025' })
+
+    const res = await request(app)
+      .post('/api/users/999/mfa/require')
+      .set('Authorization', makeToken(1, 'ADMIN'))
+
+    expect(res.status).toBe(404)
   })
 })
