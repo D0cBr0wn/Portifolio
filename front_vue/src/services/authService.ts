@@ -20,6 +20,6 @@ export const authService = {
   confirmMfa: (token: string) =>
     api.post<{ verified: boolean; token: string }>('/mfa/verify', { token }),
 
-  register: (email: string, password: string) =>
-    api.post<{ id: number; email: string }>('/auth/register', { email, password }),
+  register: (email: string, password: string, isAdmin = false) =>
+    api.post<{ id: number; email: string }>('/auth/register', { email, password, isAdmin }),
 }
