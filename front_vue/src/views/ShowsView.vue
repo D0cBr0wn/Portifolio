@@ -8,47 +8,22 @@
 
     <div v-if="!store.loading">
       <section v-if="upcoming.length" class="mb-8">
-        <h2 class="section-title">À venir</h2>
-        <v-table class="shows-table">
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Concert</th>
-              <th>Lieu</th>
-              <th>Ville</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="show in upcoming" :key="show.id">
-              <td class="date-col">{{ show.getFormattedDate() }}</td>
-              <td>{{ show.label }}</td>
-              <td>{{ show.venue?.name ?? '—' }}</td>
-              <td>{{ show.venue?.city ?? '—' }}</td>
-            </tr>
-          </tbody>
-        </v-table>
+        <ul class="show-list">
+          <li v-for="show in upcoming" :key="show.id" class="show-item">
+            <span class="show-line"><span class="show-date">{{ formatDate(show) }}</span>  {{ formatRest(show) }}</span>
+            <span v-if="show.label" class="show-label">{{ show.label }}</span>
+          </li>
+        </ul>
       </section>
 
       <section v-if="past.length">
         <h2 class="section-title muted">Passés</h2>
-        <v-table class="shows-table muted">
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Concert</th>
-              <th>Lieu</th>
-              <th>Ville</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="show in past" :key="show.id">
-              <td class="date-col">{{ show.getFormattedDate() }}</td>
-              <td>{{ show.label }}</td>
-              <td>{{ show.venue?.name ?? '—' }}</td>
-              <td>{{ show.venue?.city ?? '—' }}</td>
-            </tr>
-          </tbody>
-        </v-table>
+        <ul class="show-list muted">
+          <li v-for="show in past" :key="show.id" class="show-item">
+            <span class="show-line"><span class="show-date">{{ formatDate(show) }}</span>  {{ formatRest(show) }}</span>
+            <span v-if="show.label" class="show-label">{{ show.label }}</span>
+          </li>
+        </ul>
       </section>
 
       <p v-if="!upcoming.length && !past.length" class="empty">
@@ -62,6 +37,7 @@
 import { computed, onMounted } from 'vue'
 import PublicLayout from '@/components/layout/PublicLayout.vue'
 import { useShowStore } from '@/stores/showStore'
+import type { Show } from '@portfolio/shared'
 
 const store = useShowStore()
 
@@ -78,6 +54,18 @@ const past = computed(() =>
     .filter(s => s.date < new Date())
     .sort((a, b) => b.date.getTime() - a.date.getTime())
 )
+
+function formatDate(show: Show): string {
+  const d = show.date
+  return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`
+}
+
+function formatRest(show: Show): string {
+  const zip = show.venue?.zipCode ? ` (${show.venue.zipCode})` : ''
+  const venue = show.venue ? `${show.venue.name} — ${show.venue.city}${zip}` : '—'
+  const details = show.details ? `  ${show.details}` : ''
+  return `${venue}${details}`
+}
 </script>
 
 <style scoped>
@@ -86,7 +74,7 @@ const past = computed(() =>
   font-weight: 300;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: #BB86FC;
+  color: var(--color-accent);
   margin-bottom: 2rem;
 }
 
@@ -100,18 +88,42 @@ const past = computed(() =>
 }
 
 .section-title.muted,
-.shows-table.muted {
+.show-list.muted {
   opacity: 0.5;
 }
 
-.shows-table {
-  background: transparent !important;
+.show-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
-.date-col {
-  white-space: nowrap;
-  color: #BB86FC;
+.show-item {
+  padding: 0.6rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.show-item:last-child {
+  border-bottom: none;
+}
+
+.show-line {
+  font-size: 1rem;
+  color: #e0e0e0;
   font-variant-numeric: tabular-nums;
+}
+
+.show-date {
+  color: var(--color-accent);
+}
+
+.show-label {
+  font-size: 0.85rem;
+  color: #888;
+  font-style: italic;
 }
 
 .empty {

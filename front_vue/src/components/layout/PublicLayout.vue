@@ -2,7 +2,7 @@
   <div class="public-layout">
     <header class="public-header">
       <router-link to="/">
-        <img src="@/assets/logo.png" alt="Auboulot" class="logo" />
+        <img src="@/assets/logo.png" alt="Portfolio" class="logo" />
       </router-link>
       <nav>
         <router-link to="/">Accueil</router-link>
@@ -13,7 +13,7 @@
       <slot />
     </main>
     <footer class="public-footer">
-      <p>&copy; {{ new Date().getFullYear() }} Auboulot</p>
+      <p>&copy; {{ new Date().getFullYear() }} Portfolio</p>
     </footer>
   </div>
 </template>
@@ -29,7 +29,7 @@
 
 .public-header {
   height: 300px;
-  background-image: url('@/assets/bg.jpg');
+  background-image: url("@/assets/bg.jpg");
   background-size: cover;
   background-position: center;
   display: flex;
@@ -57,7 +57,7 @@ nav a {
 }
 
 nav a.router-link-active {
-  border-bottom: 2px solid #BB86FC;
+  border-bottom: 2px solid var(--color-accent-menu);
 }
 
 .public-content {

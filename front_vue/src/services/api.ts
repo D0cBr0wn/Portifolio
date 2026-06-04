@@ -17,7 +17,6 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   const response = await fetch(`${API_BASE}${path}`, { ...options, headers })
 
   // Rediriger vers /login seulement si on avait un token (session expirée)
-  // Pas si on n'avait pas de token (ex: tentative de login avec mauvais credentials)
   if (response.status === 401 && auth.token) {
     auth.logout()
     window.location.href = '/login'
@@ -26,9 +25,10 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
 
   if (!response.ok) {
     const body = await response.json().catch(() => ({}))
-    throw new Error((body as { message?: string }).message ?? `Erreur ${response.status}`)
+    throw new Error((body as { error?: string; message?: string }).error ?? (body as { message?: string }).message ?? `Erreur ${response.status}`)
   }
 
+  if (response.status === 204) return undefined as T
   return response.json() as Promise<T>
 }
 
@@ -36,4 +36,8 @@ export const api = {
   get: <T>(path: string) => request<T>(path),
   post: <T>(path: string, body: unknown) =>
     request<T>(path, { method: 'POST', body: JSON.stringify(body) }),
+  put: <T>(path: string, body: unknown) =>
+    request<T>(path, { method: 'PUT', body: JSON.stringify(body) }),
+  delete: <T>(path: string) =>
+    request<T>(path, { method: 'DELETE' }),
 }

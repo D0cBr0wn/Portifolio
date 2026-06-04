@@ -1,5 +1,6 @@
 <template>
   <v-form @submit.prevent="submit" ref="formRef">
+    <p class="text-h6 mb-4">{{ initial ? 'Modifier le lieu' : 'Nouveau lieu' }}</p>
     <v-row>
       <v-col cols="12" sm="6">
         <v-text-field
@@ -44,18 +45,29 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
-import type { VenueData } from '@portfolio/shared'
+import { ref, reactive, onMounted } from 'vue'
+import type { Venue, VenueData } from '@portfolio/shared'
+
+const props = defineProps<{ loading?: boolean; initial?: Venue }>()
 
 const emit = defineEmits<{
   submit: [data: Omit<VenueData, 'id'>]
   cancel: []
 }>()
 
-defineProps<{ loading?: boolean }>()
-
 const formRef = ref()
 const form = reactive({ name: '', city: '', address1: '', zipCode: '' })
+
+onMounted(() => {
+  if (props.initial) {
+    Object.assign(form, {
+      name: props.initial.name,
+      city: props.initial.city,
+      address1: props.initial.address1 ?? '',
+      zipCode: props.initial.zipCode ?? '',
+    })
+  }
+})
 
 const required = (v: string) => !!v || 'Champ requis'
 
@@ -63,6 +75,8 @@ async function submit() {
   const { valid } = await formRef.value.validate()
   if (!valid) return
   emit('submit', { ...form })
-  Object.assign(form, { name: '', city: '', address1: '', zipCode: '' })
+  if (!props.initial) {
+    Object.assign(form, { name: '', city: '', address1: '', zipCode: '' })
+  }
 }
 </script>
