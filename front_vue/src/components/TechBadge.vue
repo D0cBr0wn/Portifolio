@@ -1,32 +1,55 @@
 <template>
-  <a
-    href="https://vuejs.org"
-    target="_blank"
-    rel="noopener"
-    class="tech-badge"
-    title="Built with Vue.js"
-  >
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 261.76 226.69" aria-hidden="true">
-      <path d="M161.096.001l-30.225 52.351L100.647.001H-.005l130.877 226.688L261.749.001z" fill="#41b883"/>
-      <path d="M161.096.001l-30.225 52.351L100.647.001H52.346l78.526 136.01L209.398.001z" fill="#34495e"/>
-    </svg>
-  </a>
+  <div class="tech-badge-container">
+    <a
+      href="http://localhost:5173"
+      class="tech-badge active"
+      title="Vue.js version"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 261.76 226.69" aria-label="Vue.js">
+        <path d="M161.096.001l-30.225 52.351L100.647.001H-.005l130.877 226.688L261.749.001z" fill="#41b883"/>
+        <path d="M161.096.001l-30.225 52.351L100.647.001H52.346l78.526 136.01L209.398.001z" fill="#34495e"/>
+      </svg>
+    </a>
+    <a
+      href="http://localhost:5174"
+      class="tech-badge"
+      title="React version"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="-11.5 -10.23174 23 20.46348" aria-label="React">
+        <circle cx="0" cy="0" r="2.05" fill="#61dafb"/>
+        <g stroke="#61dafb" stroke-width="1" fill="none">
+          <ellipse rx="11" ry="4.2"/>
+          <ellipse rx="11" ry="4.2" transform="rotate(60)"/>
+          <ellipse rx="11" ry="4.2" transform="rotate(120)"/>
+        </g>
+      </svg>
+    </a>
+  </div>
 </template>
 
 <style scoped>
-.tech-badge {
+.tech-badge-container {
   position: fixed;
   bottom: 1rem;
   right: 1rem;
+  display: flex;
+  gap: 0.5rem;
+  z-index: 9999;
+}
+
+.tech-badge {
   width: 28px;
   opacity: 0.35;
   transition: opacity 0.2s;
-  z-index: 9999;
   display: block;
 }
 
+.tech-badge.active {
+  opacity: 0.7;
+}
+
 .tech-badge:hover {
-  opacity: 0.8;
+  opacity: 1;
 }
 
 .tech-badge svg {

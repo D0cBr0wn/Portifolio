@@ -3,3 +3,5 @@ node_modules
 .env
 # Artefact créé par erreur en lançant Prisma depuis prisma/
 prisma/prisma/
+# Prisma generated client (regenerated via postinstall)
+generated/prisma_client/
