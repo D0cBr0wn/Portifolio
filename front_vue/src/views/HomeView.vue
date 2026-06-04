@@ -2,7 +2,17 @@
   <PublicLayout>
     <section class="hero-text">
       <h1 class="artist-name">Portfolio</h1>
-      <p class="tagline">Musique live — Concerts & Tournées</p>
+      <p class="tagline">
+        Odyssey Of One, is a raw, minimalist folk music project, built around
+        Nico’s guitar and voice, formerly the bass player of the post-hardcore
+        band TANEN. Listening to Bob Dylan and The Tallest Man On Earth
+        introduced him to this introspective, authentic language. On stage, he
+        offers a stripped-down, sincere experience: one voice, one guitar, and
+        the desire to convey pure, unadorned emotion. The project also stands
+        out for its willingness to share the creative process in real time,
+        inviting listeners to follow the album's progress via social networks.
+        Join the journey.
+      </p>
     </section>
 
     <section class="next-shows" v-if="nextShows.length">
@@ -19,31 +29,33 @@
           </v-card>
         </v-col>
       </v-row>
-      <v-btn variant="text" color="primary" to="/shows" class="mt-4">
+      <v-btn variant="text" to="/shows" class="mt-4 btn-accent">
         Voir tous les concerts
         <v-icon end>mdi-arrow-right</v-icon>
       </v-btn>
     </section>
 
-    <v-alert v-if="store.error" type="error" class="mt-4">{{ store.error }}</v-alert>
+    <v-alert v-if="store.error" type="error" class="mt-4">{{
+      store.error
+    }}</v-alert>
   </PublicLayout>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted } from 'vue'
-import PublicLayout from '@/components/layout/PublicLayout.vue'
-import { useShowStore } from '@/stores/showStore'
+import { computed, onMounted } from "vue";
+import PublicLayout from "@/components/layout/PublicLayout.vue";
+import { useShowStore } from "@/stores/showStore";
 
-const store = useShowStore()
+const store = useShowStore();
 
-onMounted(() => store.load())
+onMounted(() => store.load());
 
 const nextShows = computed(() =>
   store.shows
-    .filter(s => s.date >= new Date())
+    .filter((s) => s.date >= new Date())
     .sort((a, b) => a.date.getTime() - b.date.getTime())
-    .slice(0, 3)
-)
+    .slice(0, 3),
+);
 </script>
 
 <style scoped>
@@ -57,7 +69,7 @@ const nextShows = computed(() =>
   font-weight: 300;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: #BB86FC;
+  color: var(--color-accent);
 }
 
 .tagline {
@@ -83,5 +95,10 @@ const nextShows = computed(() =>
 .show-card {
   border-color: #333 !important;
   background: #222 !important;
+  height: 100%;
+}
+
+.btn-accent {
+  color: var(--color-accent) !important;
 }
 </style>

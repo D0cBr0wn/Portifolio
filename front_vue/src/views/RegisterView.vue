@@ -119,6 +119,6 @@ async function submit() {
   font-size: 1.4rem;
   font-weight: 400;
   padding: 1.5rem 1.5rem 0;
-  color: #BB86FC;
+  color: var(--color-accent-alt);
 }
 </style>

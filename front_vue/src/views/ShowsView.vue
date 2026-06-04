@@ -10,7 +10,7 @@
       <section v-if="upcoming.length" class="mb-8">
         <ul class="show-list">
           <li v-for="show in upcoming" :key="show.id" class="show-item">
-            <span class="show-line">{{ formatShowLine(show) }}</span>
+            <span class="show-line"><span class="show-date">{{ formatDate(show) }}</span>  {{ formatRest(show) }}</span>
             <span v-if="show.label" class="show-label">{{ show.label }}</span>
           </li>
         </ul>
@@ -20,7 +20,7 @@
         <h2 class="section-title muted">Passés</h2>
         <ul class="show-list muted">
           <li v-for="show in past" :key="show.id" class="show-item">
-            <span class="show-line">{{ formatShowLine(show) }}</span>
+            <span class="show-line"><span class="show-date">{{ formatDate(show) }}</span>  {{ formatRest(show) }}</span>
             <span v-if="show.label" class="show-label">{{ show.label }}</span>
           </li>
         </ul>
@@ -55,13 +55,16 @@ const past = computed(() =>
     .sort((a, b) => b.date.getTime() - a.date.getTime())
 )
 
-function formatShowLine(show: Show): string {
+function formatDate(show: Show): string {
   const d = show.date
-  const date = `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`
+  return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`
+}
+
+function formatRest(show: Show): string {
   const zip = show.venue?.zipCode ? ` (${show.venue.zipCode})` : ''
   const venue = show.venue ? `${show.venue.name} — ${show.venue.city}${zip}` : '—'
   const details = show.details ? `  ${show.details}` : ''
-  return `${date}  ${venue}${details}`
+  return `${venue}${details}`
 }
 </script>
 
@@ -71,7 +74,7 @@ function formatShowLine(show: Show): string {
   font-weight: 300;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: #BB86FC;
+  color: var(--color-accent);
   margin-bottom: 2rem;
 }
 
@@ -111,6 +114,10 @@ function formatShowLine(show: Show): string {
   font-size: 1rem;
   color: #e0e0e0;
   font-variant-numeric: tabular-nums;
+}
+
+.show-date {
+  color: var(--color-accent);
 }
 
 .show-label {

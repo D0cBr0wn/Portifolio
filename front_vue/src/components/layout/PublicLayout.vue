@@ -29,7 +29,7 @@
 
 .public-header {
   height: 300px;
-  background-image: url('@/assets/bg.jpg');
+  background-image: url("@/assets/bg.jpg");
   background-size: cover;
   background-position: center;
   display: flex;
@@ -57,7 +57,7 @@ nav a {
 }
 
 nav a.router-link-active {
-  border-bottom: 2px solid #BB86FC;
+  border-bottom: 2px solid var(--color-accent-menu);
 }
 
 .public-content {
