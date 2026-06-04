@@ -11,6 +11,12 @@ export const authService = {
   setupMfa: () =>
     api.post<{ qrCodeDataURL: string; secret: string }>('/mfa/setup', {}),
 
+  setupMfaWithToken: (setupToken: string) =>
+    api.postAs<{ qrCodeDataURL: string; secret: string }>('/mfa/setup', {}, setupToken),
+
+  confirmMfaWithToken: (totpCode: string, setupToken: string) =>
+    api.postAs<{ verified: boolean; token: string }>('/mfa/verify', { token: totpCode }, setupToken),
+
   confirmMfa: (token: string) =>
     api.post<{ verified: boolean; token: string }>('/mfa/verify', { token }),
 

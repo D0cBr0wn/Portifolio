@@ -19,7 +19,9 @@ export interface ShowData {
 export interface AuthResponse {
   token?: string
   mfaRequired?: boolean
+  mfaSetupRequired?: boolean
   userId?: number
+  setupToken?: string
   message?: string
 }
 
