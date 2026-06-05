@@ -4,7 +4,7 @@ import {
   IconButton, InputAdornment, TextField, ThemeProvider, Typography, createTheme,
 } from '@mui/material'
 import { Visibility, VisibilityOff } from '@mui/icons-material'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { authService } from '@/services/authService'
 import { useAuthStore } from '@/stores/authStore'
 
@@ -16,7 +16,13 @@ type Step = 'credentials' | 'mfa' | 'mfa-setup'
 
 export default function Login() {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const setToken = useAuthStore((s) => s.setToken)
+
+  function redirectAfterLogin() {
+    const returnUrl = searchParams.get('returnUrl')
+    navigate(returnUrl && returnUrl.startsWith('/') ? returnUrl : '/backoffice/venues', { replace: true })
+  }
 
   const [step, setStep] = useState<Step>('credentials')
   const [email, setEmail] = useState('')
@@ -64,7 +70,7 @@ export default function Login() {
         setStep('mfa')
       } else if (res.token) {
         setToken(res.token)
-        navigate('/backoffice/venues')
+        redirectAfterLogin()
       }
     } catch {
       setServerError('Identifiants invalides.')
@@ -81,7 +87,7 @@ export default function Login() {
     try {
       const res = await authService.confirmMfaWithToken(mfaSetupCode, pendingSetupToken)
       setToken(res.token)
-      navigate('/backoffice/venues')
+      redirectAfterLogin()
     } catch {
       setServerError('Code invalide. Réessayez.')
       setMfaSetupCode('')
@@ -98,7 +104,7 @@ export default function Login() {
     try {
       const res = await authService.verifyMfa(pendingUserId, mfaCode)
       setToken(res.token)
-      navigate('/backoffice/venues')
+      redirectAfterLogin()
     } catch {
       setServerError('Code invalide. Réessayez.')
       setMfaCode('')
