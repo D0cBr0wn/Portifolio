@@ -1,7 +1,6 @@
 import { Box, Container } from '@mui/material'
 import { Link, NavLink } from 'react-router-dom'
 import type { ReactNode } from 'react'
-import TechBadge from '@/components/TechBadge'
 import logo from '@/assets/logo.png'
 import bgImg from '@/assets/bg.jpg'
 
@@ -43,7 +42,6 @@ export default function PublicLayout({ children }: Props) {
         <p>&copy; {new Date().getFullYear()} Portfolio</p>
       </Box>
 
-      <TechBadge />
     </Box>
   )
 }

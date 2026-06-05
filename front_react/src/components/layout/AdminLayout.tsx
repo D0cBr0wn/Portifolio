@@ -9,7 +9,6 @@ import PeopleIcon from '@mui/icons-material/People'
 import { NavLink, useNavigate } from 'react-router-dom'
 import type { ReactNode } from 'react'
 import { useAuthStore } from '@/stores/authStore'
-import TechBadge from '@/components/TechBadge'
 
 const DRAWER_WIDTH = 240
 
@@ -91,7 +90,6 @@ export default function AdminLayout({ children }: Props) {
         {children}
       </Box>
 
-      <TechBadge />
     </Box>
   )
 }

@@ -1,12 +1,16 @@
 import { useEffect, useRef, useState } from 'react'
 import {
   Alert, Box, Button, Card, CardContent, CircularProgress,
-  IconButton, InputAdornment, TextField, Typography,
+  IconButton, InputAdornment, TextField, ThemeProvider, Typography, createTheme,
 } from '@mui/material'
 import { Visibility, VisibilityOff } from '@mui/icons-material'
 import { Link, useNavigate } from 'react-router-dom'
 import { authService } from '@/services/authService'
 import { useAuthStore } from '@/stores/authStore'
+
+const loginTheme = createTheme({
+  palette: { mode: 'dark', primary: { main: '#bb86fc' } },
+})
 
 type Step = 'credentials' | 'mfa' | 'mfa-setup'
 
@@ -107,9 +111,10 @@ export default function Login() {
 
   return (
     <Box sx={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#1a1a1a' }}>
-      <Card sx={{ width: '100%', maxWidth: 420 }} elevation={8}>
+      <ThemeProvider theme={loginTheme}>
+      <Card sx={{ width: '100%', maxWidth: 420, backgroundColor: '#2a2a2a', color: '#e0e0e0' }} elevation={8}>
         <CardContent sx={{ p: 3 }}>
-          <Typography variant="h5" sx={{ fontWeight: 400, color: 'secondary.main', mb: 3 }}>
+          <Typography variant="h5" sx={{ fontWeight: 400, color: '#bb86fc', mb: 3 }}>
             {stepTitle}
           </Typography>
 
@@ -195,6 +200,7 @@ export default function Login() {
           </Box>
         </CardContent>
       </Card>
+      </ThemeProvider>
     </Box>
   )
 }
