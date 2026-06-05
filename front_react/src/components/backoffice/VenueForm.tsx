@@ -44,17 +44,19 @@ export default function VenueForm({ initial, loading, onSubmit, onCancel }: Prop
 
   return (
     <Box component="form" onSubmit={submit}>
-      <Typography variant="h6" sx={{ mb: 3 }}>{initial ? 'Modifier le lieu' : 'Nouveau lieu'}</Typography>
+      <Typography variant="h6" sx={{ mb: 3 }} data-testid="venue-dialog-title">{initial ? 'Modifier le lieu' : 'Nouveau lieu'}</Typography>
       <Grid container spacing={2}>
         <Grid item xs={12} sm={6}>
           <TextField label="Nom du lieu *" fullWidth variant="outlined" size="small"
             value={name} onChange={(e) => setName(e.target.value)}
-            error={!!errors.name} helperText={errors.name} />
+            error={!!errors.name} helperText={errors.name}
+            inputProps={{ 'data-testid': 'venue-name-input' }} />
         </Grid>
         <Grid item xs={12} sm={6}>
           <TextField label="Ville *" fullWidth variant="outlined" size="small"
             value={city} onChange={(e) => setCity(e.target.value)}
-            error={!!errors.city} helperText={errors.city} />
+            error={!!errors.city} helperText={errors.city}
+            inputProps={{ 'data-testid': 'venue-city-input' }} />
         </Grid>
         <Grid item xs={12} sm={8}>
           <TextField label="Adresse" fullWidth variant="outlined" size="small"
@@ -66,7 +68,7 @@ export default function VenueForm({ initial, loading, onSubmit, onCancel }: Prop
         </Grid>
       </Grid>
       <Box sx={{ display: 'flex', gap: 1, mt: 3 }}>
-        <Button type="submit" variant="contained" disabled={loading}>Enregistrer</Button>
+        <Button type="submit" variant="contained" disabled={loading} data-testid="save-btn">Enregistrer</Button>
         <Button variant="text" onClick={onCancel}>Annuler</Button>
       </Box>
     </Box>

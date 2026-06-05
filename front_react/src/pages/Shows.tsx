@@ -37,7 +37,7 @@ export default function Shows() {
 
   return (
     <PublicLayout>
-      <Typography variant="h4" sx={{ fontWeight: 300, letterSpacing: '0.15em', textTransform: 'uppercase', color: '#c59a47', mb: 4 }}>
+      <Typography variant="h4" sx={{ fontWeight: 300, letterSpacing: '0.15em', textTransform: 'uppercase', color: '#c59a47', mb: 4 }} data-testid="shows-heading">
         Concerts
       </Typography>
 
