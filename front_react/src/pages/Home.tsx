@@ -22,7 +22,7 @@ export default function Home() {
   return (
     <PublicLayout>
       <Box sx={{ textAlign: 'center', pt: 6, pb: 4 }}>
-        <Typography variant="h2" sx={{ fontWeight: 300, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'primary.main' }}>
+        <Typography variant="h2" sx={{ fontSize: '3.5rem', fontWeight: 300, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'primary.main' }}>
           Portfolio
         </Typography>
         <Typography sx={{ fontSize: '1.2rem', color: '#aaa', mt: 1, letterSpacing: '0.05em', maxWidth: 700, mx: 'auto' }}>
@@ -40,7 +40,7 @@ export default function Home() {
 
       {nextShows.length > 0 && (
         <Box sx={{ mt: 6 }}>
-          <Typography variant="h6" sx={{ fontWeight: 400, textTransform: 'uppercase', letterSpacing: '0.1em', color: '#ddd', mb: 3 }}>
+          <Typography variant="h6" sx={{ fontSize: '1.4rem', fontWeight: 400, textTransform: 'uppercase', letterSpacing: '0.1em', color: '#ddd', mb: 3 }}>
             Prochains concerts
           </Typography>
           <Grid container spacing={2}>

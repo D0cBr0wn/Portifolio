@@ -43,13 +43,14 @@ import { Component } from '@angular/core';
     .badge-link {
       display: block;
       width: 28px;
+      height: 28px;
       opacity: 0.35;
       transition: opacity 0.2s;
       text-decoration: none;
 
       svg {
         width: 100%;
-        height: auto;
+        height: 100%;
         display: block;
       }
 
