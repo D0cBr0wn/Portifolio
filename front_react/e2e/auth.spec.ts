@@ -13,11 +13,11 @@ test.describe('Authentification', () => {
     await page.route(`${API}/venues`, route => route.fulfill({ json: [] }))
 
     await page.goto('/login')
-    await expect(page.getByText('Connexion')).toBeVisible()
+    await expect(page.getByTestId('login-title')).toBeVisible()
 
-    await page.locator('input[type="email"]').fill('test@example.com')
-    await page.locator('input[type="password"]').fill('password123')
-    await page.getByRole('button', { name: 'Se connecter' }).click()
+    await page.getByTestId('email-input').fill('test@example.com')
+    await page.getByTestId('password-input').fill('password123')
+    await page.getByTestId('login-submit').click()
 
     await expect(page).toHaveURL(/\/backoffice\/venues/)
   })
@@ -28,11 +28,11 @@ test.describe('Authentification', () => {
     )
 
     await page.goto('/login')
-    await page.locator('input[type="email"]').fill('test@example.com')
-    await page.locator('input[type="password"]').fill('password123')
-    await page.getByRole('button', { name: 'Se connecter' }).click()
+    await page.getByTestId('email-input').fill('test@example.com')
+    await page.getByTestId('password-input').fill('password123')
+    await page.getByTestId('login-submit').click()
 
-    await expect(page.getByText('Vérification MFA')).toBeVisible()
+    await expect(page.getByTestId('login-title')).toContainText('Vérification MFA')
   })
 
   test('mauvais credentials → message d\'erreur', async ({ page }) => {
@@ -41,11 +41,11 @@ test.describe('Authentification', () => {
     )
 
     await page.goto('/login')
-    await page.locator('input[type="email"]').fill('wrong@example.com')
-    await page.locator('input[type="password"]').fill('wrongpass')
-    await page.getByRole('button', { name: 'Se connecter' }).click()
+    await page.getByTestId('email-input').fill('wrong@example.com')
+    await page.getByTestId('password-input').fill('wrongpass')
+    await page.getByTestId('login-submit').click()
 
-    await expect(page.getByText('Identifiants invalides')).toBeVisible()
+    await expect(page.getByTestId('server-error')).toBeVisible()
   })
 
   test('accès /backoffice sans token → redirect /login', async ({ page }) => {
@@ -59,12 +59,12 @@ test.describe('Authentification', () => {
     await page.route(`${API}/venues`, route => route.fulfill({ json: [] }))
 
     await page.goto('/login')
-    await page.locator('input[type="email"]').fill('test@example.com')
-    await page.locator('input[type="password"]').fill('password123')
-    await page.getByRole('button', { name: 'Se connecter' }).click()
+    await page.getByTestId('email-input').fill('test@example.com')
+    await page.getByTestId('password-input').fill('password123')
+    await page.getByTestId('login-submit').click()
     await expect(page).toHaveURL(/\/backoffice\/venues/)
 
-    await page.getByRole('button', { name: 'Déconnexion' }).click()
+    await page.getByTestId('logout-btn').click()
     await expect(page).toHaveURL(/\/login/)
   })
 })

@@ -81,7 +81,7 @@ export default function BackofficeShows() {
     <AdminLayout>
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
         <Typography variant="h5">Concerts</Typography>
-        <Button variant="contained" startIcon={<AddIcon />} onClick={() => setCreateOpen(true)}>
+        <Button variant="contained" startIcon={<AddIcon />} onClick={() => setCreateOpen(true)} data-testid="add-show-btn">
           Ajouter un concert
         </Button>
       </Box>

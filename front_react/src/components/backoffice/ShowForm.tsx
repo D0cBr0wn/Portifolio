@@ -55,17 +55,19 @@ export default function ShowForm({ venues, initial, loading, onSubmit, onCancel 
 
   return (
     <Box component="form" onSubmit={submit}>
-      <Typography variant="h6" sx={{ mb: 3 }}>{initial ? 'Modifier le concert' : 'Nouveau concert'}</Typography>
+      <Typography variant="h6" sx={{ mb: 3 }} data-testid="show-dialog-title">{initial ? 'Modifier le concert' : 'Nouveau concert'}</Typography>
       <Grid container spacing={2}>
         <Grid item xs={12} sm={7}>
           <TextField label="Nom du concert" fullWidth variant="outlined" size="small"
-            value={label} onChange={(e) => setLabel(e.target.value)} />
+            value={label} onChange={(e) => setLabel(e.target.value)}
+            inputProps={{ 'data-testid': 'show-label-input' }} />
         </Grid>
         <Grid item xs={12} sm={5}>
           <TextField label="Date *" type="datetime-local" fullWidth variant="outlined" size="small"
             value={date} onChange={(e) => setDate(e.target.value)}
             error={!!errors.date} helperText={errors.date}
-            InputLabelProps={{ shrink: true }} />
+            InputLabelProps={{ shrink: true }}
+            inputProps={{ 'data-testid': 'show-date-input' }} />
         </Grid>
         <Grid item xs={12}>
           <TextField
@@ -84,7 +86,7 @@ export default function ShowForm({ venues, initial, loading, onSubmit, onCancel 
         </Grid>
       </Grid>
       <Box sx={{ display: 'flex', gap: 1, mt: 3 }}>
-        <Button type="submit" variant="contained" disabled={loading}>Enregistrer</Button>
+        <Button type="submit" variant="contained" disabled={loading} data-testid="save-btn">Enregistrer</Button>
         <Button variant="text" onClick={onCancel}>Annuler</Button>
       </Box>
     </Box>

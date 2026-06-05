@@ -120,7 +120,7 @@ export default function Login() {
       <ThemeProvider theme={loginTheme}>
       <Card sx={{ width: '100%', maxWidth: 420, backgroundColor: '#2a2a2a', color: '#e0e0e0' }} elevation={8}>
         <CardContent sx={{ p: 3 }}>
-          <Typography variant="h5" sx={{ fontWeight: 400, color: '#bb86fc', mb: 3 }}>
+          <Typography variant="h5" sx={{ fontWeight: 400, color: '#bb86fc', mb: 3 }} data-testid="login-title">
             {stepTitle}
           </Typography>
 
@@ -131,6 +131,7 @@ export default function Login() {
                 value={email} onChange={(e) => setEmail(e.target.value)}
                 error={!!errors.email} helperText={errors.email}
                 autoComplete="email" sx={{ mb: 2 }}
+                inputProps={{ 'data-testid': 'email-input' }}
               />
               <TextField
                 label="Mot de passe" fullWidth variant="outlined" size="small"
@@ -147,10 +148,11 @@ export default function Login() {
                     </InputAdornment>
                   ),
                 }}
+                inputProps={{ 'data-testid': 'password-input' }}
                 sx={{ mb: 3 }}
               />
-              {serverError && <Alert severity="error" sx={{ mb: 2 }}>{serverError}</Alert>}
-              <Button type="submit" variant="contained" fullWidth size="large" disabled={loading}>
+              {serverError && <Alert severity="error" sx={{ mb: 2 }} data-testid="server-error">{serverError}</Alert>}
+              <Button type="submit" variant="contained" fullWidth size="large" disabled={loading} data-testid="login-submit">
                 {loading ? <CircularProgress size={22} color="inherit" /> : 'Se connecter'}
               </Button>
             </Box>
@@ -167,15 +169,15 @@ export default function Login() {
                 </>
               ) : (
                 <>
-                  <Typography sx={{ color: '#aaa', fontSize: '0.9rem', mb: 2 }}>
+                  <Typography sx={{ color: '#aaa', fontSize: '0.9rem', mb: 2 }} data-testid="mfa-hint">
                     Scannez ce QR code avec Google Authenticator ou une application TOTP compatible, puis entrez le code généré.
                   </Typography>
                   <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
                     <img src={qrCodeDataURL} alt="QR Code MFA" width={180} height={180} />
                   </Box>
                   <OtpInput value={mfaSetupCode} onChange={setMfaSetupCode} inputRef={mfaSetupInputRef} />
-                  {serverError && <Alert severity="error" sx={{ mb: 2 }}>{serverError}</Alert>}
-                  <Button type="submit" variant="contained" fullWidth size="large" disabled={loading || mfaSetupCode.length < 6}>
+                  {serverError && <Alert severity="error" sx={{ mb: 2 }} data-testid="server-error">{serverError}</Alert>}
+                  <Button type="submit" variant="contained" fullWidth size="large" disabled={loading || mfaSetupCode.length < 6} data-testid="mfa-submit">
                     {loading ? <CircularProgress size={22} color="inherit" /> : 'Confirmer'}
                   </Button>
                 </>
@@ -185,12 +187,12 @@ export default function Login() {
 
           {step === 'mfa' && (
             <Box component="form" onSubmit={submitMfa}>
-              <Typography sx={{ color: '#aaa', fontSize: '0.9rem', mb: 2 }}>
+              <Typography sx={{ color: '#aaa', fontSize: '0.9rem', mb: 2 }} data-testid="mfa-hint">
                 Saisissez le code à 6 chiffres affiché dans votre application Google Authenticator.
               </Typography>
               <OtpInput value={mfaCode} onChange={setMfaCode} inputRef={mfaInputRef} />
-              {serverError && <Alert severity="error" sx={{ mb: 2 }}>{serverError}</Alert>}
-              <Button type="submit" variant="contained" fullWidth size="large" disabled={loading || mfaCode.length < 6}>
+              {serverError && <Alert severity="error" sx={{ mb: 2 }} data-testid="server-error">{serverError}</Alert>}
+              <Button type="submit" variant="contained" fullWidth size="large" disabled={loading || mfaCode.length < 6} data-testid="mfa-submit">
                 {loading ? <CircularProgress size={22} color="inherit" /> : 'Vérifier'}
               </Button>
               <Button variant="text" fullWidth sx={{ mt: 1 }} onClick={() => setStep('credentials')}>
@@ -226,7 +228,7 @@ function OtpInput({ value, onChange, inputRef }: {
         const v = e.target.value.replace(/\D/g, '').slice(0, 6)
         onChange(v)
       }}
-      inputProps={{ inputMode: 'numeric', pattern: '[0-9]*', maxLength: 6 }}
+      inputProps={{ inputMode: 'numeric', pattern: '[0-9]*', maxLength: 6, 'data-testid': 'otp-input' }}
       sx={{ mb: 3, letterSpacing: '0.5em', '& input': { textAlign: 'center', fontSize: '1.5rem' } }}
     />
   )

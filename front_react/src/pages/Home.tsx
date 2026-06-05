@@ -22,7 +22,7 @@ export default function Home() {
   return (
     <PublicLayout>
       <Box sx={{ textAlign: 'center', pt: 6, pb: 4 }}>
-        <Typography variant="h2" sx={{ fontSize: '3.5rem', fontWeight: 300, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#c59a47' }}>
+        <Typography variant="h2" sx={{ fontSize: '3.5rem', fontWeight: 300, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#c59a47' }} data-testid="home-heading">
           Portfolio
         </Typography>
         <Typography sx={{ fontSize: '1.2rem', color: '#aaa', mt: 1, letterSpacing: '0.05em', maxWidth: 700, mx: 'auto' }}>
@@ -70,6 +70,7 @@ export default function Home() {
             to="/shows"
             endIcon={<ArrowForwardIcon />}
             sx={{ mt: 3, color: '#c59a47' }}
+            data-testid="view-all-shows"
           >
             Voir tous les concerts
           </Button>
