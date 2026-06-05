@@ -85,7 +85,7 @@ $theme: m2.define-light-theme((
     warn:    m2.define-palette($warn-palette, 500),
   ),
   typography: m2.define-typography-config(
-    $font-family: '"Roboto", "Helvetica", "Arial", sans-serif',
+    $font-family: '"Arial", system-ui, sans-serif',
   ),
   density: 0,
 ));
@@ -106,7 +106,7 @@ body {
   margin: 0;
   background-color: #FFFFFF;
   color: rgba(0,0,0,0.87);
-  font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
+  font-family: 'Arial', system-ui, sans-serif;
 }
 
 // Component overrides for light theme
