@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta, timezone
 
-from jose import JWTError, jwt
+import jwt
 
 from app.config import settings
 
@@ -30,5 +30,5 @@ def create_mfa_setup_token(user_id: int, email: str, role: str) -> str:
 def verify_token(token: str) -> dict:
     try:
         return jwt.decode(token, settings.jwt_secret, algorithms=[ALGORITHM])
-    except JWTError as exc:
+    except jwt.PyJWTError as exc:
         raise ValueError("Invalid token") from exc
