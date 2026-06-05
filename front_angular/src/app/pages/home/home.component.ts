@@ -71,12 +71,12 @@ import { ShowStore } from '../../core/stores/show.store';
       letter-spacing: 0.2em;
       text-transform: uppercase;
       color: #c59a47;
-      font-size: 2.5rem;
+      font-size: 3.5rem;
       margin: 0 0 0.5rem;
     }
 
     .hero-desc {
-      font-size: 1.1rem;
+      font-size: 1.2rem;
       color: #aaa;
       margin: 0.5rem auto 0;
       letter-spacing: 0.05em;
@@ -93,8 +93,8 @@ import { ShowStore } from '../../core/stores/show.store';
       text-transform: uppercase;
       letter-spacing: 0.1em;
       color: #ddd;
-      font-size: 1.1rem;
-      margin: 0 0 1rem;
+      font-size: 1.4rem;
+      margin: 0 0 1.5rem;
     }
 
     .shows-grid {
