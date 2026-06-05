@@ -23,13 +23,18 @@ function ReactLogo() {
   )
 }
 
-function Badge({ href, title, active, children }: { href: string; title: string; active?: boolean; children: React.ReactNode }) {
+function navigate(port: number) {
+  window.location.href = `http://localhost:${port}${window.location.pathname}`
+}
+
+function Badge({ port, title, active, children }: { port: number; title: string; active?: boolean; children: React.ReactNode }) {
   const base = active ? ACTIVE : BASE
   return (
     <a
-      href={href}
+      href="#"
       title={title}
       style={base}
+      onClick={(e) => { e.preventDefault(); navigate(port) }}
       onMouseEnter={(e) => Object.assign((e.currentTarget as HTMLElement).style, { opacity: 1 })}
       onMouseLeave={(e) => Object.assign((e.currentTarget as HTMLElement).style, { opacity: String(base.opacity) })}
     >
@@ -51,13 +56,13 @@ function AngularLogo() {
 export default function TechBadge() {
   return (
     <div style={{ position: 'fixed', bottom: '1rem', right: '1rem', display: 'flex', gap: '0.5rem', zIndex: 9999 }}>
-      <Badge href="http://localhost:5173" title="Vue.js version">
+      <Badge port={5173} title="Vue.js version">
         <VueLogo />
       </Badge>
-      <Badge href="http://localhost:5174" title="React version" active>
+      <Badge port={5174} title="React version" active>
         <ReactLogo />
       </Badge>
-      <Badge href="http://localhost:5175" title="Angular version">
+      <Badge port={5175} title="Angular version">
         <AngularLogo />
       </Badge>
     </div>
