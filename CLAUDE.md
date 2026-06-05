@@ -83,8 +83,10 @@ When asked to implement a feature:
 ## Execution / GIT
 
 - always work from the dev branch
-- each baclog task must be in a git feature
-- do a pull request after each element of backlog is done
+- each backlog task must be in a git feature branch created from dev
+- implement the backlog item on that branch, then commit and open a PR before moving to the next item
+- do not implement multiple backlog items before making PRs — each item is a full cycle: branch → implement → commit → PR
+- your pull requests must ALWAYS be from your feature to dev, unless it's small or emergency fix.
 
 ## Backend
 
