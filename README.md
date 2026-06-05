@@ -193,18 +193,7 @@ cd back && docker-compose up --build
 ### Backend Python (`back_python/`)
 
 ```bash
-cd back_python
-
-# Local (SQLite)
-uv venv .venv --python 3.12
-uv pip install -r requirements.txt
-cp .env.example .env
-alembic upgrade head
-uvicorn app.main:app --reload --port 3000
-
-# Docker (PostgreSQL)
-docker-compose up --build
-docker-compose exec api alembic upgrade head
+cd back_python && docker-compose up --build
 ```
 
 ---
