@@ -30,7 +30,7 @@ function formatDate(iso: string): string {
     <app-admin-layout>
       <div class="page-header">
         <h1 class="page-title">Concerts</h1>
-        <button mat-raised-button color="primary" (click)="openCreate()">
+        <button mat-raised-button color="primary" (click)="openCreate()" data-testid="add-show-btn">
           <mat-icon>add</mat-icon> Ajouter un concert
         </button>
       </div>

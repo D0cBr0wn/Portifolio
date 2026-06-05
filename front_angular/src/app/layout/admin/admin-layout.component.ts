@@ -60,7 +60,7 @@ const NAV_ITEMS: NavItem[] = [
       <mat-sidenav-content>
         <mat-toolbar color="primary" class="admin-toolbar">
           <span class="toolbar-title">Portfolio — Backoffice</span>
-          <button mat-button (click)="logout()">Déconnexion</button>
+          <button mat-button (click)="logout()" data-testid="logout-btn">Déconnexion</button>
         </mat-toolbar>
 
         <main class="admin-main">
