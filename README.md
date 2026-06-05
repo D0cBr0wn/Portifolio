@@ -96,11 +96,36 @@ docker-compose up --build
 # Première fois : appliquer les migrations dans le container
 docker-compose exec -T api npx prisma migrate deploy
 
+# Pré-remplir la base avec les données de démo (idempotent)
+docker-compose exec -T api npx prisma db seed
+
 # Ouvrir Prisma Studio (pointe sur le PostgreSQL local, port 5432)
 npx prisma studio
 ```
 
 > **Sans Docker** : démarrer un PostgreSQL local, mettre `DATABASE_URL` à jour dans `back/.env`, puis `npx prisma migrate deploy` dans `back/`.
+
+## Données de démonstration
+
+Le seed recrée un jeu de données de référence (idempotent — relancer la commande remet la base dans son état initial) :
+
+- 5 salles de concert
+- 5 concerts (4 passés, 1 à venir)
+- 3 comptes utilisateurs
+
+| Email           | Mot de passe | Rôle  |
+|-----------------|--------------|-------|
+| test@test.com   | password     | ADMIN |
+| admin@demo.com  | password     | ADMIN |
+| user@test.com   | password     | USER  |
+
+```bash
+# Avec Docker
+docker-compose exec -T api npx prisma db seed
+
+# Sans Docker (depuis back/)
+npx prisma db seed
+```
 
 ## Lancer le projet
 
