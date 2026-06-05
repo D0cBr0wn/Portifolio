@@ -50,6 +50,7 @@
 
 .tech-badge {
   width: 28px;
+  height: 28px;
   opacity: 0.35;
   transition: opacity 0.2s;
   display: block;
@@ -65,7 +66,7 @@
 
 .tech-badge svg {
   width: 100%;
-  height: auto;
+  height: 100%;
   display: block;
 }
 </style>
