@@ -35,7 +35,7 @@ test.describe('Page publique — Concerts', () => {
     await page.addInitScript(() => sessionStorage.clear())
     await page.goto('/shows')
     await expect(page).toHaveURL('/shows')
-    await expect(page.getByRole('heading', { name: 'Concerts' })).toBeVisible()
+    await expect(page.getByTestId('shows-heading')).toBeVisible()
   })
 
   test('affiche les concerts à venir', async ({ page }) => {
@@ -63,7 +63,7 @@ test.describe("Page d'accueil", () => {
 
   test('accessible sans authentification', async ({ page }) => {
     await page.goto('/')
-    await expect(page.getByRole('heading', { name: 'Portfolio' })).toBeVisible()
+    await expect(page.getByTestId('home-heading')).toBeVisible()
   })
 
   test('affiche les prochains concerts', async ({ page }) => {
@@ -73,7 +73,7 @@ test.describe("Page d'accueil", () => {
 
   test("le lien 'Voir tous les concerts' navigue vers /shows", async ({ page }) => {
     await page.goto('/')
-    await page.getByText('Voir tous les concerts').click()
+    await page.getByTestId('view-all-shows').click()
     await expect(page).toHaveURL('/shows')
   })
 })

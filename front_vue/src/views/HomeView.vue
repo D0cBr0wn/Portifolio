@@ -1,7 +1,7 @@
 <template>
   <PublicLayout>
     <section class="hero-text">
-      <h1 class="artist-name">Portfolio</h1>
+      <h1 class="artist-name" data-testid="home-heading">Portfolio</h1>
       <p class="tagline">
         Odyssey Of One, is a raw, minimalist folk music project, built around
         Nico’s guitar and voice, formerly the bass player of the post-hardcore
@@ -29,7 +29,7 @@
           </v-card>
         </v-col>
       </v-row>
-      <v-btn variant="text" to="/shows" class="mt-4 btn-accent">
+      <v-btn variant="text" to="/shows" class="mt-4 btn-accent" data-testid="view-all-shows">
         Voir tous les concerts
         <v-icon end>mdi-arrow-right</v-icon>
       </v-btn>
