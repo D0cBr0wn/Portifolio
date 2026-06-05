@@ -116,16 +116,19 @@ Le seed recrée un jeu de données de référence (idempotent — relancer la co
 
 | Email           | Mot de passe | Rôle  |
 |-----------------|--------------|-------|
-| test@test.com   | password     | ADMIN |
-| admin@demo.com  | password     | ADMIN |
-| user@test.com   | password     | USER  |
+| test@test.com        | password     | ADMIN |
+| superuser@test.com   | password     | ADMIN |
+| user@test.com        | password     | USER  |
 
 ```bash
-# Avec Docker
+# Backend Node.js — avec Docker
 docker-compose exec -T api npx prisma db seed
 
-# Sans Docker (depuis back/)
+# Backend Node.js — sans Docker (depuis back/)
 npx prisma db seed
+
+# Backend Python — avec Docker (depuis back_python/)
+docker-compose exec api python seed.py
 ```
 
 ## Lancer le projet
@@ -194,6 +197,8 @@ cd back && docker-compose up --build
 
 ```bash
 cd back_python && docker-compose up --build
+docker-compose exec api alembic upgrade head
+docker-compose exec api python seed.py
 ```
 
 ---
