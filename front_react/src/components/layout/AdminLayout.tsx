@@ -59,7 +59,7 @@ export default function AdminLayout({ children }: Props) {
                 component={NavLink}
                 to={item.to}
                 sx={{
-                  '&.active': { backgroundColor: 'rgba(197, 154, 71, 0.15)', color: 'primary.main' },
+                  '&.active': { backgroundColor: 'rgba(98, 0, 238, 0.12)', color: 'primary.main' },
                   '&.active .MuiListItemIcon-root': { color: 'primary.main' },
                 }}
               >
@@ -74,7 +74,7 @@ export default function AdminLayout({ children }: Props) {
                 component={NavLink}
                 to="/backoffice/users"
                 sx={{
-                  '&.active': { backgroundColor: 'rgba(197, 154, 71, 0.15)', color: 'primary.main' },
+                  '&.active': { backgroundColor: 'rgba(98, 0, 238, 0.12)', color: 'primary.main' },
                   '&.active .MuiListItemIcon-root': { color: 'primary.main' },
                 }}
               >
