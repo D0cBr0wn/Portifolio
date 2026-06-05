@@ -68,7 +68,7 @@ import { TechBadgeComponent } from '../../shared/components/tech-badge.component
         border-bottom: 2px solid transparent;
 
         &.active {
-          border-bottom-color: #c59a47;
+          border-bottom-color: #000;
         }
       }
     }
