@@ -103,11 +103,11 @@ const NAV_ITEMS: NavItem[] = [
 
     .nav-item {
       &.active-nav {
-        background-color: rgba(197, 154, 71, 0.15);
-        color: #c59a47;
+        background-color: rgba(98, 0, 238, 0.12);
+        color: #6200EE;
 
         mat-icon {
-          color: #c59a47;
+          color: #6200EE;
         }
       }
     }
