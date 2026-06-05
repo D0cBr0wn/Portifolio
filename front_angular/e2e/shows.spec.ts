@@ -24,7 +24,7 @@ test.describe('Page publique — Concerts', () => {
     await page.addInitScript(() => sessionStorage.clear())
     await page.goto('/shows')
     await expect(page).toHaveURL('/shows')
-    await expect(page.getByRole('heading', { name: /concerts/i })).toBeVisible()
+    await expect(page.getByTestId('shows-heading')).toBeVisible()
   })
 
   test('affiche les concerts', async ({ page }) => {

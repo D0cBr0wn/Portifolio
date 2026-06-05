@@ -21,7 +21,7 @@ function formatRest(show: Show): string {
   imports: [MatProgressBarModule, PublicLayoutComponent],
   template: `
     <app-public-layout>
-      <h1 class="page-title">Concerts</h1>
+      <h1 class="page-title" data-testid="shows-heading">Concerts</h1>
 
       @if (store.loading()) {
         <mat-progress-bar mode="indeterminate" color="primary" />

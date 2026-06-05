@@ -23,17 +23,17 @@ function toLocalDatetimeString(date: Date): string {
   imports: [FormsModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatButtonModule],
   template: `
     <div class="form-container">
-      <h2>{{ data.initial ? 'Modifier le concert' : 'Nouveau concert' }}</h2>
+      <h2 data-testid="show-dialog-title">{{ data.initial ? 'Modifier le concert' : 'Nouveau concert' }}</h2>
 
       <form (ngSubmit)="submit()">
         <div class="form-row">
           <mat-form-field appearance="outline" style="flex: 2">
             <mat-label>Nom du concert</mat-label>
-            <input matInput name="label" [(ngModel)]="label" />
+            <input matInput name="label" [(ngModel)]="label" data-testid="show-label-input" />
           </mat-form-field>
           <mat-form-field appearance="outline" style="flex: 1.5">
             <mat-label>Date *</mat-label>
-            <input matInput type="datetime-local" name="date" [(ngModel)]="date" required />
+            <input matInput type="datetime-local" name="date" [(ngModel)]="date" required data-testid="show-date-input" />
             @if (dateError()) { <mat-error>{{ dateError() }}</mat-error> }
           </mat-form-field>
         </div>
@@ -57,7 +57,7 @@ function toLocalDatetimeString(date: Date): string {
         </mat-form-field>
 
         <div class="form-actions">
-          <button mat-raised-button color="primary" type="submit">Enregistrer</button>
+          <button mat-raised-button color="primary" type="submit" data-testid="save-btn">Enregistrer</button>
           <button mat-button type="button" (click)="dialogRef.close()">Annuler</button>
         </div>
       </form>

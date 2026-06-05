@@ -23,8 +23,8 @@ test.describe('Backoffice — Venues', () => {
 
   test("ouvre le dialog Angular Material au clic sur 'Ajouter un lieu'", async ({ page }) => {
     await page.goto('/backoffice/venues')
-    await page.getByRole('button', { name: 'Ajouter un lieu' }).click()
+    await page.getByTestId('add-venue-btn').click()
     await expect(page.locator('[role="dialog"]')).toBeVisible()
-    await expect(page.getByText('Nouveau lieu')).toBeVisible()
+    await expect(page.getByTestId('venue-dialog-title')).toBeVisible()
   })
 })
