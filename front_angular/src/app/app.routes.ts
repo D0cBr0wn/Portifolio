@@ -1,4 +1,7 @@
 import { Routes } from '@angular/router';
+import { authGuard } from './core/guards/auth.guard';
+import { guestGuard } from './core/guards/guest.guard';
+import { adminGuard } from './core/guards/admin.guard';
 
 export const routes: Routes = [
   {
@@ -13,19 +16,19 @@ export const routes: Routes = [
   },
   {
     path: 'login',
-    canActivate: [() => import('./core/guards/guest.guard').then((m) => m.guestGuard)],
+    canActivate: [guestGuard],
     loadComponent: () =>
       import('./pages/login/login.component').then((m) => m.LoginComponent),
   },
   {
     path: 'register',
-    canActivate: [() => import('./core/guards/guest.guard').then((m) => m.guestGuard)],
+    canActivate: [guestGuard],
     loadComponent: () =>
       import('./pages/register/register.component').then((m) => m.RegisterComponent),
   },
   {
     path: 'backoffice',
-    canActivate: [() => import('./core/guards/auth.guard').then((m) => m.authGuard)],
+    canActivate: [authGuard],
     children: [
       {
         path: 'venues',
@@ -44,13 +47,13 @@ export const routes: Routes = [
       },
       {
         path: 'users',
-        canActivate: [() => import('./core/guards/admin.guard').then((m) => m.adminGuard)],
+        canActivate: [adminGuard],
         loadComponent: () =>
           import('./pages/backoffice/users/users.component').then((m) => m.UsersComponent),
       },
       {
         path: 'users/:id',
-        canActivate: [() => import('./core/guards/admin.guard').then((m) => m.adminGuard)],
+        canActivate: [adminGuard],
         loadComponent: () =>
           import('./pages/backoffice/user-detail/user-detail.component').then((m) => m.UserDetailComponent),
       },
