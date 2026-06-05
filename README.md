@@ -4,20 +4,20 @@ Site d'artiste avec backoffice de gestion de concerts. Projet de portfolio démo
 
 ## Stack
 
-| Couche | Technologie |
-|---|---|
-| Backend | Node.js · Express 5 · TypeScript · Prisma · PostgreSQL (via Docker) |
-| Auth | JWT · TOTP MFA (Google Authenticator) · bcrypt |
-| Frontend Vue | Vue 3 SPA · Vite · Vuetify 3 · Pinia · Vue Router 4 — port **5173** |
-| Frontend React | React 19 · Vite · MUI v6 · Zustand v5 · React Router v7 — port **5174** |
-| Frontend Angular | Angular 18 · Angular Material · Signals · HttpClient — port **5175** |
-| Frontend Nuxt | Nuxt 3 · @nuxt/ui *(squelette, à venir)* |
-| Shared | `@portfolio/shared` — classes TypeScript partagées (Show, Venue, types API) |
-| Tests back | Jest · Supertest · Prisma mocké |
-| Tests front Vue | Vitest · Vue Test Utils · Playwright E2E |
-| Tests front React | Vitest · Testing Library · Playwright E2E |
-| Tests front Angular | Jest · jest-preset-angular · Playwright E2E |
-| Monorepo | pnpm workspaces |
+| Couche              | Technologie                                                                 |
+| ------------------- | --------------------------------------------------------------------------- |
+| Backend             | Node.js · Express 5 · TypeScript · Prisma · PostgreSQL (via Docker)         |
+| Auth                | JWT · TOTP MFA (Google Authenticator) · bcrypt                              |
+| Frontend Vue        | Vue 3 SPA · Vite · Vuetify 3 · Pinia · Vue Router 4 — port **5173**         |
+| Frontend React      | React 19 · Vite · MUI v6 · Zustand v5 · React Router v7 — port **5174**     |
+| Frontend Angular    | Angular 18 · Angular Material · Signals · HttpClient — port **5175**        |
+| Frontend Nuxt       | Nuxt 3 · @nuxt/ui _(squelette, à venir)_                                    |
+| Shared              | `@portfolio/shared` — classes TypeScript partagées (Show, Venue, types API) |
+| Tests back          | Jest · Supertest · Prisma mocké                                             |
+| Tests front Vue     | Vitest · Vue Test Utils · Playwright E2E                                    |
+| Tests front React   | Vitest · Testing Library · Playwright E2E                                   |
+| Tests front Angular | Jest · jest-preset-angular · Playwright E2E                                 |
+| Monorepo            | pnpm workspaces                                                             |
 
 ## Prérequis
 
@@ -65,11 +65,12 @@ ADMIN_EMAIL=
 ```
 
 > **Générer un JWT_SECRET sécurisé :**
+>
 > ```bash
 > node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 > ```
 
-### Frontends — URL du backend *(optionnel)*
+### Frontends — URL du backend _(optionnel)_
 
 Vue et React utilisent une variable d'environnement Vite, Angular un fichier TypeScript :
 
@@ -91,10 +92,10 @@ Le backend utilise **PostgreSQL** via Docker. Le container est défini dans `bac
 cd back
 
 # Démarrer PostgreSQL + API dans Docker (recommandé)
-docker-compose up --build
+docker compose up --build
 
-# Première fois : appliquer les migrations dans le container
-docker-compose exec -T api npx prisma migrate deploy
+# Première fois (et après chaque reset de volume) : appliquer les migrations
+docker compose exec api npx prisma migrate deploy
 
 # Ouvrir Prisma Studio (pointe sur le PostgreSQL local, port 5432)
 npx prisma studio
@@ -107,7 +108,7 @@ npx prisma studio
 ### Avec Docker (recommandé — backend complet)
 
 ```bash
-cd back && docker-compose up --build   # PostgreSQL + API sur :3000
+cd back && docker compose up --build   # PostgreSQL + API sur :3000
 ```
 
 Puis dans d'autres terminaux :
@@ -120,7 +121,7 @@ pnpm dev:angular   # port 5175
 
 ### En local (hot-reload API)
 
-PostgreSQL doit tourner séparément (ex. `docker-compose up postgres` dans `back/`).
+PostgreSQL doit tourner séparément (ex. `docker compose up postgres` dans `back/`).
 
 ```bash
 pnpm dev:back      # nodemon + ts-node, port 3000
