@@ -3,6 +3,8 @@ import { test, expect } from '@playwright/test'
 const API = 'http://localhost:3000/api'
 const JWT = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoidGVzdEBleGFtcGxlLmNvbSIsImlhdCI6OTk5OTk5OTk5OSwiZXhwIjo5OTk5OTk5OTk5fQ.test'
 
+const mockVenuesFull = [{ id: 1, name: 'Le Zénith', city: 'Paris', address1: null, address2: null, zipCode: null, createdBy: null, createdAt: new Date().toISOString() }]
+
 test.describe('Backoffice — Venues', () => {
   test.beforeEach(async ({ page }) => {
     await page.addInitScript((token) => {
@@ -11,12 +13,14 @@ test.describe('Backoffice — Venues', () => {
 
     await page.route(`${API}/venues`, async route => {
       if (route.request().method() === 'GET') {
-        await route.fulfill({ json: [{ id: 1, name: 'Le Zénith', city: 'Paris', address1: null, address2: null, zipCode: null }] })
+        await route.fulfill({ json: mockVenuesFull })
       } else {
         await route.fulfill({ status: 201, json: { id: 2, name: 'Le Bataclan', city: 'Paris', address1: null, address2: null, zipCode: null } })
       }
     })
+    await page.route(`${API}/backoffice/venues`, route => route.fulfill({ json: mockVenuesFull }))
     await page.route(`${API}/shows`, route => route.fulfill({ json: [] }))
+    await page.route(`${API}/backoffice/shows`, route => route.fulfill({ json: [] }))
   })
 
   test('affiche le tableau des lieux', async ({ page }) => {
@@ -46,6 +50,15 @@ test.describe('Backoffice — Venues', () => {
 
 test.describe('Backoffice — Shows', () => {
   const mockVenues = [{ id: 1, name: 'Le Zénith', city: 'Paris', address1: null, address2: null, zipCode: null }]
+  const mockShowsFull = [{
+    id: 1,
+    label: 'Concert été',
+    date: new Date(Date.now() + 30 * 24 * 3600 * 1000).toISOString(),
+    venueId: 1,
+    venue: mockVenues[0],
+    createdBy: null,
+    createdAt: new Date().toISOString(),
+  }]
 
   test.beforeEach(async ({ page }) => {
     await page.addInitScript((token) => {
@@ -53,21 +66,9 @@ test.describe('Backoffice — Shows', () => {
     }, JWT)
 
     await page.route(`${API}/venues`, route => route.fulfill({ json: mockVenues }))
-    await page.route(`${API}/shows`, async route => {
-      if (route.request().method() === 'GET') {
-        await route.fulfill({
-          json: [{
-            id: 1,
-            label: 'Concert été',
-            date: new Date(Date.now() + 30 * 24 * 3600 * 1000).toISOString(),
-            venueId: 1,
-            venue: mockVenues[0],
-          }],
-        })
-      } else {
-        await route.fulfill({ status: 201, json: { id: 2, label: 'Nouveau concert', date: new Date().toISOString(), venueId: 1 } })
-      }
-    })
+    await page.route(`${API}/backoffice/venues`, route => route.fulfill({ json: mockVenues }))
+    await page.route(`${API}/shows`, route => route.fulfill({ json: [] }))
+    await page.route(`${API}/backoffice/shows`, route => route.fulfill({ json: mockShowsFull }))
   })
 
   test('affiche le tableau des concerts', async ({ page }) => {
