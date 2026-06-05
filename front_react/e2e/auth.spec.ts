@@ -11,6 +11,8 @@ test.describe('Authentification', () => {
   test('login sans MFA → redirige vers backoffice', async ({ page }) => {
     await page.route(`${API}/auth/login`, route => route.fulfill({ json: { token: JWT } }))
     await page.route(`${API}/venues`, route => route.fulfill({ json: [] }))
+    await page.route(`${API}/backoffice/venues`, route => route.fulfill({ json: [] }))
+    await page.route(`${API}/backoffice/shows`, route => route.fulfill({ json: [] }))
 
     await page.goto('/login')
     await expect(page.getByTestId('login-title')).toBeVisible()
@@ -57,6 +59,8 @@ test.describe('Authentification', () => {
   test('logout → retour sur /login', async ({ page }) => {
     await page.route(`${API}/auth/login`, route => route.fulfill({ json: { token: JWT } }))
     await page.route(`${API}/venues`, route => route.fulfill({ json: [] }))
+    await page.route(`${API}/backoffice/venues`, route => route.fulfill({ json: [] }))
+    await page.route(`${API}/backoffice/shows`, route => route.fulfill({ json: [] }))
 
     await page.goto('/login')
     await page.getByTestId('email-input').fill('test@example.com')
