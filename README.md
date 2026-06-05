@@ -6,7 +6,8 @@ Site d'artiste avec backoffice de gestion de concerts. Projet de portfolio démo
 
 | Couche | Technologie |
 |---|---|
-| Backend | Node.js · Express 5 · TypeScript · Prisma · PostgreSQL (via Docker) |
+| Backend Node.js | Node.js · Express 5 · TypeScript · Prisma · PostgreSQL (via Docker) |
+| Backend Python | Python 3.12 · FastAPI · SQLAlchemy 2 async · Alembic · Pydantic v2 |
 | Auth | JWT · TOTP MFA (Google Authenticator) · bcrypt |
 | Frontend Vue | Vue 3 SPA · Vite · Vuetify 3 · Pinia · Vue Router 4 — port **5173** |
 | Frontend React | React 19 · Vite · MUI v6 · Zustand v5 · React Router v7 — port **5174** |
@@ -179,18 +180,48 @@ cd front_react   && pnpm test:e2e   # port 5174 — auth, shows, backoffice
 cd front_angular && pnpm test:e2e   # port 5175 — auth, shows, backoffice
 ```
 
+## Switcher de backend
+
+Les deux backends exposent le **même contrat API** sur le port **3000**. Les trois frontends se reconnectent sans aucune modification de configuration.
+
+### Backend Node.js (`back/`)
+
+```bash
+cd back && docker-compose up --build
+```
+
+### Backend Python (`back_python/`)
+
+```bash
+cd back_python
+
+# Local (SQLite)
+uv venv .venv --python 3.12
+uv pip install -r requirements.txt
+cp .env.example .env
+alembic upgrade head
+uvicorn app.main:app --reload --port 3000
+
+# Docker (PostgreSQL)
+docker-compose up --build
+docker-compose exec api alembic upgrade head
+```
+
+---
+
 ## Structure du monorepo
 
 ```
 Portifolio/
 ├── back/                    # @portfolio/back — API Express 5
+├── back_python/             # API FastAPI Python — même contrat que back/
 │   ├── src/
 │   │   ├── routes/          # shows, venues, users, auth, mfa, backoffice
 │   │   ├── middleware/      # auth, rate limiting, IP ban, MFA, adminTrap
 │   │   └── schemas/         # validation Zod
 │   └── prisma/
 │       └── schema.prisma
-├── front_vue/               # @portfolio/front-vue — Vue 3 (port 5173)
+├── front_vue/               # @portfolio/front-vue  — Vue 3 (port 5173)
 │   └── src/
 │       ├── services/        # api, show, venue, auth, user, backoffice
 │       ├── stores/          # Pinia : auth, show, venue, user
