@@ -104,7 +104,7 @@ npx prisma studio
 
 ## Lancer le projet
 
-### Avec Docker (recommandé — backend complet)
+### Avec Docker (recommandé — hot-reload inclus)
 
 ```bash
 cd back && docker-compose up --build   # PostgreSQL + API sur :3000
@@ -116,27 +116,6 @@ Puis dans d'autres terminaux :
 pnpm dev:vue       # port 5173
 pnpm dev:react     # port 5174
 pnpm dev:angular   # port 5175
-```
-
-### En local (hot-reload API)
-
-PostgreSQL doit tourner séparément (ex. `docker-compose up postgres` dans `back/`).
-
-```bash
-pnpm dev:back      # nodemon + ts-node, port 3000
-
-pnpm dev:vue       # port 5173
-pnpm dev:react     # port 5174
-pnpm dev:angular   # port 5175
-```
-
-### Depuis chaque workspace
-
-```bash
-cd back          && pnpm dev   # port 3000
-cd front_vue     && pnpm dev   # port 5173
-cd front_react   && pnpm dev   # port 5174
-cd front_angular && pnpm dev   # port 5175
 ```
 
 ## Tests
