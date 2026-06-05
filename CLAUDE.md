@@ -1,50 +1,193 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+## Project Overview
 
-## Project overview
+Odyssey of One is a technical showcase project used to demonstrate full-stack engineering skills for job opportunities.
 
-"Odyssey of One" — a full-stack app with a Node.js/Express backend (`back/`) and a Nuxt 3 frontend (`front/`). `front_old/` is a deprecated version; ignore it.
+The repository contains:
 
-## Backend (`back/`)
+- A Node.js / Express / TypeScript backend (`back/`)
+- Three independent front-end implementations exposing the same business domain:
+  - Vue
+  - React
+  - Angular
 
-```bash
-npm run dev        # nodemon + ts-node, hot reload on :3000
-npm run build      # tsc → dist/
-npm run lint       # eslint
-npm run lint:fix   # eslint --fix
-npm run format     # prettier
-```
+The goal is to showcase architecture, API design, testing, TypeScript, and multi-framework front-end development.
 
-**Docker (preferred for running the API):**
-```bash
-docker-compose up --build          # starts API on :3000
-docker-compose exec api npx prisma migrate dev   # run migrations inside container
-```
+---
 
-**Prisma:**
-- Schema: `prisma/schema.prisma`
-- Client generated to `generated/prisma_client/` (non-default path) — always import from `../../generated/prisma_client`
-- Local dev uses SQLite (`prisma/dev.db`); Docker uses PostgreSQL via `DATABASE_URL`
-- After schema changes: `npx prisma migrate dev` (local) or `docker-compose exec api npx prisma migrate dev` (Docker)
+## Working Rules
 
-## Frontend (`front/`)
+Before making changes:
 
-```bash
-npm run dev        # nuxt dev, hot reload
-npm run build      # nuxt build
-npm run generate   # static generation
-npm run preview    # preview production build
-```
+1. Analyze existing code patterns.
+2. Follow the established architecture.
+3. Prefer minimal, targeted changes.
+4. Do not refactor unrelated code.
+5. Ask before introducing new dependencies.
+6. Keep implementations simple and maintainable.
 
-Modules: `@nuxt/ui`, `@nuxt/icon`, `@nuxt/eslint`, `@nuxt/test-utils`.
+---
+
+## Repository Exploration
+
+Never explore or analyze:
+
+- node_modules/
+- dist/
+- build/
+- .next/
+- coverage/
+- logs/
+- generated assets
+- lock files unless explicitly required
+
+Focus on source code and configuration files only.
+
+---
 
 ## Plans
 
-Always write plans in `.claude/plans/` (project root), never in `~/.claude/plans/` or any other location.
+Always write plans in:
 
-## Architecture
+.claude/plans/
 
-- **Backend**: Express 5 + TypeScript. Routes in `src/routes/` are mounted at `/shows` and `/venues`. Each route file instantiates its own `PrismaClient`. Request bodies validated with Zod schemas before hitting Prisma. Logging via Pino (`src/logger.ts`).
-- **Frontend**: Nuxt 3, currently being built from scratch. `front_old/` used Vuetify + Pinia and can serve as reference for patterns.
-- **Data models**: `Show` (id, label, date, venueId) belongs to `Venue` (id, name, city).
+Never write plans in:
+
+~/.claude/
+~/.claude/plans/
+or any external location.
+
+Plan requirements:
+
+- Always include backend and frontend test work when relevant.
+- After creating the plan, create a prioritized backlog.
+- Backlog items should be sized to approximately 1–3 hours of work each and time must be mentionned.
+- Each backlog item should be independently deliverable.
+- Each backlog item should be suitable for a separate commit and pull request.
+- Prefer small, reviewable changes over large batches of work.
+- Identify dependencies between backlog items.
+
+---
+
+## Scope Control
+
+When asked to implement a feature:
+
+- Modify only files directly related to the feature.
+- Do not refactor unrelated code.
+- Do not rename files unless explicitly requested.
+- Do not change architecture unless explicitly requested.
+- Prefer consistency with the existing codebase over introducing new patterns.
+
+## Execution / GIT
+
+- always work from the dev branch
+- each baclog task must be in a git feature
+- do a pull request after each element of backlog is done
+
+## Backend
+
+Location:
+
+back/
+
+Stack:
+
+- Express 5
+- TypeScript
+- Prisma
+- Zod
+- Pino
+
+Useful commands:
+
+```bash
+npm run dev
+npm run build
+npm run lint
+npm run lint:fix
+npm run format
+```
+
+### Docker
+
+Preferred way to run the API:
+
+```bash
+docker-compose up --build
+docker-compose exec api npx prisma migrate dev
+```
+
+### Prisma
+
+Schema:
+
+```text
+prisma/schema.prisma
+```
+
+Important:
+
+- Prisma client is generated into `generated/prisma_client/`
+- Always import Prisma from `generated/prisma_client`
+- Local development uses SQLite
+- Docker uses PostgreSQL through `DATABASE_URL`
+
+After schema changes:
+
+```bash
+npx prisma migrate dev
+```
+
+or
+
+```bash
+docker-compose exec api npx prisma migrate dev
+```
+
+---
+
+## Frontends
+
+This repository intentionally contains multiple front-end implementations.
+
+Do not assume a single front-end framework.
+
+When working on a front-end task, first identify whether the target application is:
+
+- Vue
+- React
+- Angular
+
+and follow framework-specific conventions.
+
+---
+
+## Domain Model
+
+Venue
+
+- id
+- name
+- city
+
+Show
+
+- id
+- label
+- date
+- venueId
+
+Relationships:
+
+- A Show belongs to a Venue.
+
+---
+
+## Architecture Notes
+
+- Routes are mounted under `/shows` and `/venues`
+- Request validation uses Zod
+- Logging uses Pino
+- Follow existing patterns before introducing new abstractions
