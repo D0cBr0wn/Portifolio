@@ -22,7 +22,7 @@ export default function Home() {
   return (
     <PublicLayout>
       <Box sx={{ textAlign: 'center', pt: 6, pb: 4 }}>
-        <Typography variant="h2" sx={{ fontSize: '3.5rem', fontWeight: 300, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'primary.main' }}>
+        <Typography variant="h2" sx={{ fontSize: '3.5rem', fontWeight: 300, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#c59a47' }}>
           Portfolio
         </Typography>
         <Typography sx={{ fontSize: '1.2rem', color: '#aaa', mt: 1, letterSpacing: '0.05em', maxWidth: 700, mx: 'auto' }}>
@@ -46,8 +46,13 @@ export default function Home() {
           <Grid container spacing={2}>
             {nextShows.map((show) => (
               <Grid item xs={12} sm={6} md={4} key={show.id}>
-                <Card sx={{ height: '100%' }}>
-                  <CardHeader title={show.label} subheader={show.getFormattedDate()} />
+                <Card sx={{ height: '100%', backgroundColor: '#222 !important', border: '1px solid #333 !important' }}>
+                  <CardHeader
+                    title={show.label}
+                    subheader={show.getFormattedDate()}
+                    titleTypographyProps={{ sx: { color: '#ddd' } }}
+                    subheaderTypographyProps={{ sx: { color: '#c59a47' } }}
+                  />
                   {show.venue && (
                     <CardContent sx={{ pt: 0 }}>
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, color: '#aaa', fontSize: '0.9rem' }}>
@@ -64,7 +69,7 @@ export default function Home() {
             component={Link}
             to="/shows"
             endIcon={<ArrowForwardIcon />}
-            sx={{ mt: 3, color: 'primary.main' }}
+            sx={{ mt: 3, color: '#c59a47' }}
           >
             Voir tous les concerts
           </Button>
