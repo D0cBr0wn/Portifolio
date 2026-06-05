@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { Router } from '@angular/router';
+import { Router, RouterStateSnapshot } from '@angular/router';
 import { AuthStore } from '../stores/auth.store';
 import { authGuard } from './auth.guard';
 
@@ -21,15 +21,17 @@ describe('authGuard', () => {
 
   it('retourne true si authentifié', () => {
     mockAuth.isAuthenticated.mockReturnValue(true);
-    const result = TestBed.runInInjectionContext(() => authGuard());
+    const mockState = { url: '/protected' } as RouterStateSnapshot;
+    const result = TestBed.runInInjectionContext(() => authGuard(undefined, mockState));
     expect(result).toBe(true);
     expect(mockRouter.navigate).not.toHaveBeenCalled();
   });
 
   it('redirige vers /login si non authentifié', () => {
     mockAuth.isAuthenticated.mockReturnValue(false);
-    const result = TestBed.runInInjectionContext(() => authGuard());
+    const mockState = { url: '/protected' } as RouterStateSnapshot;
+    const result = TestBed.runInInjectionContext(() => authGuard(undefined, mockState));
     expect(result).toBe(false);
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/login']);
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/login'], { queryParams: { returnUrl: '/protected' } });
   });
 });
