@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
+  },
   "scripts": {
     "postinstall": "prisma generate",
     "dev": "nodemon --exec ts-node src/index.ts",
@@ -10,6 +13,7 @@
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
     "format": "prettier --write .",
+    "seed": "prisma db seed",
     "pretest": "prisma generate",
     "test": "jest --runInBand",
     "test:watch": "jest --watch",
