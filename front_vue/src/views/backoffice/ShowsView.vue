@@ -96,13 +96,14 @@ import AdminLayout from '@/components/layout/AdminLayout.vue'
 import ShowForm from '@/components/backoffice/ShowForm.vue'
 import { useShowStore } from '@/stores/showStore'
 import { useVenueStore } from '@/stores/venueStore'
+import { Show } from '@portfolio/shared'
 import type { ShowWithCreator, ShowData } from '@portfolio/shared'
 
 const showStore = useShowStore()
 const venueStore = useVenueStore()
 const dialog = ref(false)
 const editDialog = ref(false)
-const editingShow = ref<ShowWithCreator | null>(null)
+const editingShow = ref<Show | null>(null)
 const deleteDialog = ref(false)
 const deleteTarget = ref<ShowWithCreator | null>(null)
 
@@ -133,7 +134,7 @@ async function handleCreate(data: Omit<ShowData, 'id' | 'venue'>) {
 }
 
 function openEdit(show: ShowWithCreator) {
-  editingShow.value = show
+  editingShow.value = new Show(show)
   editDialog.value = true
 }
 
