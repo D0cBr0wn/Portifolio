@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate, Outlet, useLocation } from 'react-router-dom'
 import { useAuthStore } from '@/stores/authStore'
 import Home from '@/pages/Home'
 import Shows from '@/pages/Shows'
@@ -12,7 +12,9 @@ import UserDetail from '@/pages/backoffice/UserDetail'
 
 function PrivateRoute() {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
-  return isAuthenticated ? <Outlet /> : <Navigate to="/login" replace />
+  const location = useLocation()
+  if (isAuthenticated) return <Outlet />
+  return <Navigate to={`/login?returnUrl=${encodeURIComponent(location.pathname + location.search)}`} replace />
 }
 
 function AdminRoute() {

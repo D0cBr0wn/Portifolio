@@ -1,6 +1,6 @@
 import { Component, inject, signal, ViewChild, ElementRef, AfterViewInit, effect } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -191,6 +191,7 @@ export class LoginComponent implements AfterViewInit {
   private readonly authService = inject(AuthService);
   private readonly authStore = inject(AuthStore);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
 
   readonly step = signal<Step>('credentials');
   readonly loading = signal(false);
@@ -227,6 +228,12 @@ export class LoginComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {}
 
+  private redirectAfterLogin(): void {
+    const returnUrl = this.route.snapshot.queryParams['returnUrl'];
+    const target = returnUrl && returnUrl.startsWith('/') ? returnUrl : '/backoffice/venues';
+    this.router.navigateByUrl(target);
+  }
+
   filterDigits(target: 'mfa' | 'setup'): void {
     if (target === 'mfa') {
       this.mfaCode = this.mfaCode.replace(/\D/g, '').slice(0, 6);
@@ -255,7 +262,7 @@ export class LoginComponent implements AfterViewInit {
           this.step.set('mfa');
         } else if (res.token) {
           this.authStore.setToken(res.token);
-          this.router.navigate(['/backoffice/venues']);
+          this.redirectAfterLogin();
         }
       },
       error: () => {
