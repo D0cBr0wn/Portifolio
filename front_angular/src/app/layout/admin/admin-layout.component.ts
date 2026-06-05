@@ -6,7 +6,6 @@ import { MatListModule } from '@angular/material/list';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { AuthStore } from '../../core/stores/auth.store';
-import { TechBadgeComponent } from '../../shared/components/tech-badge.component';
 
 interface NavItem {
   label: string;
@@ -31,7 +30,6 @@ const NAV_ITEMS: NavItem[] = [
     MatListModule,
     MatButtonModule,
     MatIconModule,
-    TechBadgeComponent,
   ],
   template: `
     <mat-sidenav-container class="admin-container">
@@ -70,8 +68,6 @@ const NAV_ITEMS: NavItem[] = [
         </main>
       </mat-sidenav-content>
     </mat-sidenav-container>
-
-    <app-tech-badge />
   `,
   styles: [`
     .admin-container {
@@ -103,11 +99,11 @@ const NAV_ITEMS: NavItem[] = [
 
     .nav-item {
       &.active-nav {
-        background-color: rgba(197, 154, 71, 0.15);
-        color: #c59a47;
+        background-color: rgba(98, 0, 238, 0.12);
+        color: #6200EE;
 
         mat-icon {
-          color: #c59a47;
+          color: #6200EE;
         }
       }
     }

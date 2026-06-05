@@ -99,9 +99,9 @@ type Step = 'init' | 'qr' | 'done';
     }
 
     .secret-hint {
-      color: #aaa;
+      color: rgba(0,0,0,0.6);
       font-size: 0.85rem;
-      code { background: #333; padding: 2px 4px; border-radius: 3px; }
+      code { background: rgba(0,0,0,0.08); color: inherit; padding: 2px 4px; border-radius: 3px; }
     }
 
     .otp-field {

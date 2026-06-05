@@ -37,7 +37,7 @@ export default function Shows() {
 
   return (
     <PublicLayout>
-      <Typography variant="h4" sx={{ fontWeight: 300, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'primary.main', mb: 4 }}>
+      <Typography variant="h4" sx={{ fontWeight: 300, letterSpacing: '0.15em', textTransform: 'uppercase', color: '#c59a47', mb: 4 }}>
         Concerts
       </Typography>
 
@@ -92,7 +92,7 @@ function ShowItem({ show }: { show: Show }) {
       }}
     >
       <Typography sx={{ fontSize: '1rem', color: '#e0e0e0', fontVariantNumeric: 'tabular-nums' }}>
-        <Box component="span" sx={{ color: 'primary.main' }}>{formatDate(show)}</Box>
+        <Box component="span" sx={{ color: '#c59a47' }}>{formatDate(show)}</Box>
         {'  '}{formatRest(show)}
       </Typography>
       {show.label && (

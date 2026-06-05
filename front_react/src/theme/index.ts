@@ -2,16 +2,16 @@ import { createTheme } from '@mui/material/styles'
 
 const theme = createTheme({
   palette: {
-    mode: 'dark',
+    mode: 'light',
     primary: {
-      main: '#c59a47',
+      main: '#6200EE',
     },
     secondary: {
-      main: '#bb86fc',
+      main: '#03DAC6',
     },
     background: {
-      default: '#1a1a1a',
-      paper: '#2a2a2a',
+      default: '#FFFFFF',
+      paper: '#F5F5F5',
     },
     error: {
       main: '#cf6679',
@@ -24,36 +24,29 @@ const theme = createTheme({
     },
   },
   typography: {
-    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+    fontFamily: '"Arial", system-ui, sans-serif',
   },
   components: {
-    MuiAppBar: {
-      styleOverrides: {
-        root: {
-          backgroundColor: '#1976d2',
-        },
-      },
-    },
     MuiDrawer: {
       styleOverrides: {
         paper: {
-          backgroundColor: '#2a2a2a',
-          borderRight: '1px solid rgba(255,255,255,0.08)',
+          backgroundColor: '#FFFFFF',
+          borderRight: '1px solid rgba(0,0,0,0.12)',
         },
       },
     },
     MuiCard: {
       styleOverrides: {
         root: {
-          backgroundColor: '#222',
-          border: '1px solid #333',
+          backgroundColor: '#FFFFFF',
+          border: '1px solid rgba(0,0,0,0.12)',
         },
       },
     },
     MuiDialog: {
       styleOverrides: {
         paper: {
-          backgroundColor: '#2a2a2a',
+          backgroundColor: '#FFFFFF',
         },
       },
     },

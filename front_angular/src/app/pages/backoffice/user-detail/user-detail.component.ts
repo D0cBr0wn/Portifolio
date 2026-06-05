@@ -205,7 +205,7 @@ function formatDate(iso: string): string {
     .info-label {
       width: 100px;
       font-size: 0.8rem;
-      color: #888;
+      color: rgba(0,0,0,0.6);
       flex-shrink: 0;
     }
 
@@ -217,12 +217,12 @@ function formatDate(iso: string): string {
       border-radius: 12px;
       font-size: 0.75rem;
       font-weight: 500;
-      background: rgba(255,255,255,0.08);
-      color: #ccc;
+      background: rgba(0,0,0,0.08);
+      color: rgba(0,0,0,0.6);
 
       &.role-admin {
-        background: rgba(197, 154, 71, 0.2);
-        color: #c59a47;
+        background: rgba(98, 0, 238, 0.15);
+        color: #6200EE;
       }
     }
 
@@ -241,7 +241,7 @@ function formatDate(iso: string): string {
 
     .mfa-description {
       font-size: 0.875rem;
-      color: #aaa;
+      color: rgba(0,0,0,0.6);
       margin: 0.5rem 0 0;
     }
 

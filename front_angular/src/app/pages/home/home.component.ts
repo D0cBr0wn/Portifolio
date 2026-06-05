@@ -105,6 +105,11 @@ import { ShowStore } from '../../core/stores/show.store';
 
     .show-card {
       height: 100%;
+      background: #222 !important;
+      border: 1px solid #333 !important;
+
+      ::ng-deep .mat-mdc-card-title { color: #ddd; }
+      ::ng-deep .mat-mdc-card-subtitle { color: #c59a47; }
     }
 
     .venue-info {

@@ -9,7 +9,6 @@ import PeopleIcon from '@mui/icons-material/People'
 import { NavLink, useNavigate } from 'react-router-dom'
 import type { ReactNode } from 'react'
 import { useAuthStore } from '@/stores/authStore'
-import TechBadge from '@/components/TechBadge'
 
 const DRAWER_WIDTH = 240
 
@@ -59,7 +58,7 @@ export default function AdminLayout({ children }: Props) {
                 component={NavLink}
                 to={item.to}
                 sx={{
-                  '&.active': { backgroundColor: 'rgba(197, 154, 71, 0.15)', color: 'primary.main' },
+                  '&.active': { backgroundColor: 'rgba(98, 0, 238, 0.12)', color: 'primary.main' },
                   '&.active .MuiListItemIcon-root': { color: 'primary.main' },
                 }}
               >
@@ -74,7 +73,7 @@ export default function AdminLayout({ children }: Props) {
                 component={NavLink}
                 to="/backoffice/users"
                 sx={{
-                  '&.active': { backgroundColor: 'rgba(197, 154, 71, 0.15)', color: 'primary.main' },
+                  '&.active': { backgroundColor: 'rgba(98, 0, 238, 0.12)', color: 'primary.main' },
                   '&.active .MuiListItemIcon-root': { color: 'primary.main' },
                 }}
               >
@@ -91,7 +90,6 @@ export default function AdminLayout({ children }: Props) {
         {children}
       </Box>
 
-      <TechBadge />
     </Box>
   )
 }

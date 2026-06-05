@@ -1,6 +1,6 @@
 import { Component, inject, signal, ViewChild, ElementRef, AfterViewInit, effect } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -128,6 +128,34 @@ type Step = 'credentials' | 'mfa' | 'mfa-setup';
     .login-card {
       width: 100%;
       max-width: 420px;
+      background: #2a2a2a !important;
+      color: #e0e0e0;
+    }
+
+    .login-card ::ng-deep .mat-mdc-form-field-input-control,
+    .login-card ::ng-deep .mat-mdc-floating-label,
+    .login-card ::ng-deep .mdc-text-field__input {
+      color: #e0e0e0 !important;
+    }
+
+    .login-card ::ng-deep .mat-mdc-floating-label:not(.mdc-floating-label--float-above) {
+      color: #aaa !important;
+    }
+
+    .login-card ::ng-deep .mdc-notched-outline__leading,
+    .login-card ::ng-deep .mdc-notched-outline__notch,
+    .login-card ::ng-deep .mdc-notched-outline__trailing {
+      border-color: rgba(255, 255, 255, 0.3) !important;
+    }
+
+    .login-card ::ng-deep .mdc-text-field--focused .mdc-notched-outline__leading,
+    .login-card ::ng-deep .mdc-text-field--focused .mdc-notched-outline__notch,
+    .login-card ::ng-deep .mdc-text-field--focused .mdc-notched-outline__trailing {
+      border-color: #bb86fc !important;
+    }
+
+    .login-card ::ng-deep .mdc-text-field--focused .mat-mdc-floating-label {
+      color: #bb86fc !important;
     }
 
     .card-title {
@@ -191,6 +219,7 @@ export class LoginComponent implements AfterViewInit {
   private readonly authService = inject(AuthService);
   private readonly authStore = inject(AuthStore);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
 
   readonly step = signal<Step>('credentials');
   readonly loading = signal(false);
@@ -227,6 +256,12 @@ export class LoginComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {}
 
+  private redirectAfterLogin(): void {
+    const returnUrl = this.route.snapshot.queryParams['returnUrl'];
+    const target = returnUrl && returnUrl.startsWith('/') ? returnUrl : '/backoffice/venues';
+    this.router.navigateByUrl(target);
+  }
+
   filterDigits(target: 'mfa' | 'setup'): void {
     if (target === 'mfa') {
       this.mfaCode = this.mfaCode.replace(/\D/g, '').slice(0, 6);
@@ -255,7 +290,7 @@ export class LoginComponent implements AfterViewInit {
           this.step.set('mfa');
         } else if (res.token) {
           this.authStore.setToken(res.token);
-          this.router.navigate(['/backoffice/venues']);
+          this.redirectAfterLogin();
         }
       },
       error: () => {
