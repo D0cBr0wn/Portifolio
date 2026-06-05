@@ -15,6 +15,8 @@ test.describe('Authentification', () => {
     await page.route(`${API}/auth/login`, route =>
       route.fulfill({ json: { token: JWT } })
     )
+    await page.route(`${API}/backoffice/venues`, route => route.fulfill({ json: [] }))
+    await page.route(`${API}/backoffice/shows`, route => route.fulfill({ json: [] }))
 
     await page.goto('/login')
     await expect(page.getByTestId('login-title')).toBeVisible()
@@ -44,12 +46,14 @@ test.describe('Authentification', () => {
     await page.route(`${API}/auth/login`, route =>
       route.fulfill({ status: 206, json: { mfaRequired: true, userId: 1 } })
     )
-    await page.route(`${API}/mfa/verify`, route =>
+    await page.route(`${API}/mfa/login`, route =>
       route.fulfill({ json: { verified: true, token: JWT } })
     )
     await page.route(`${API}/venues`, route =>
       route.fulfill({ json: [] })
     )
+    await page.route(`${API}/backoffice/venues`, route => route.fulfill({ json: [] }))
+    await page.route(`${API}/backoffice/shows`, route => route.fulfill({ json: [] }))
 
     await page.goto('/login')
     await page.getByTestId('email-input').locator('input').fill('test@example.com')
@@ -58,17 +62,10 @@ test.describe('Authentification', () => {
 
     await expect(page.getByTestId('login-title')).toContainText('Vérification MFA')
 
-    // Saisie du code MFA via les inputs OTP
-    const otpInputs = page.getByTestId('otp-wrapper').locator('input')
-    const count = await otpInputs.count()
-    if (count >= 6) {
-      for (let i = 0; i < 6; i++) {
-        await otpInputs.nth(i).fill(String(i + 1))
-      }
-    } else {
-      await otpInputs.first().fill('123456')
-    }
-
+    // Saisie du code MFA — pressSequentially déclenche les events internes Vuetify OTP
+    // Vuetify OTP: pressSequentially déclenche les vrais keyboard events sur chaque input
+    await page.getByTestId('otp-wrapper').locator('input').first().pressSequentially('123456')
+    await expect(page.getByTestId('mfa-submit')).toBeEnabled({ timeout: 3000 })
     await page.getByTestId('mfa-submit').click()
     await expect(page).toHaveURL(/\/backoffice\/venues/)
   })
@@ -101,6 +98,8 @@ test.describe('Authentification', () => {
     await page.route(`${API}/venues`, route =>
       route.fulfill({ json: [] })
     )
+    await page.route(`${API}/backoffice/venues`, route => route.fulfill({ json: [] }))
+    await page.route(`${API}/backoffice/shows`, route => route.fulfill({ json: [] }))
 
     // Login
     await page.goto('/login')
