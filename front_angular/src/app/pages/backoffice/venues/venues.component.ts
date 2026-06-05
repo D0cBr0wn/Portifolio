@@ -141,14 +141,14 @@ function formatAddress(row: VenueWithCreator): string {
     }
 
     .confirm-dialog {
-      background: #2a2a2a;
+      background: #fff;
       border-radius: 8px;
       padding: 1.5rem;
       min-width: 320px;
       max-width: 480px;
 
       h3 { margin: 0 0 1rem; font-size: 1.1rem; }
-      p { color: #aaa; margin: 0 0 1.5rem; }
+      p { color: rgba(0,0,0,0.6); margin: 0 0 1.5rem; }
     }
 
     .confirm-actions {

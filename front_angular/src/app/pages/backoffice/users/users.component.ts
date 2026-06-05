@@ -177,7 +177,7 @@ function formatDate(iso: string): string {
     .result-count {
       margin-left: auto;
       font-size: 0.875rem;
-      color: #aaa;
+      color: rgba(0,0,0,0.6);
     }
 
     .error-msg {
@@ -193,7 +193,7 @@ function formatDate(iso: string): string {
 
     .clickable-row {
       cursor: pointer;
-      &:hover { background: rgba(255,255,255,0.04); }
+      &:hover { background: rgba(0,0,0,0.04); }
     }
 
     .role-chip {
@@ -202,12 +202,12 @@ function formatDate(iso: string): string {
       border-radius: 12px;
       font-size: 0.75rem;
       font-weight: 500;
-      background: rgba(255,255,255,0.08);
-      color: #ccc;
+      background: rgba(0,0,0,0.08);
+      color: rgba(0,0,0,0.6);
 
       &.role-admin {
-        background: rgba(197, 154, 71, 0.2);
-        color: #c59a47;
+        background: rgba(98, 0, 238, 0.15);
+        color: #6200EE;
       }
     }
 
@@ -236,14 +236,14 @@ function formatDate(iso: string): string {
     }
 
     .confirm-dialog {
-      background: #2a2a2a;
+      background: #fff;
       border-radius: 8px;
       padding: 1.5rem;
       min-width: 320px;
       max-width: 480px;
 
       h3 { margin: 0 0 1rem; font-size: 1.1rem; }
-      p { color: #aaa; margin: 0 0 1.5rem; }
+      p { color: rgba(0,0,0,0.6); margin: 0 0 1.5rem; }
     }
 
     .confirm-actions {
