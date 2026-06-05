@@ -1,0 +1,48 @@
+version: '3'
+services:
+  api:
+    build:
+      context: .
+    ports:
+      - '3000:3000'
+    volumes:
+      - .:/app
+    environment:
+      DATABASE_URL: postgresql+asyncpg://ooodbuser:password@postgres:5432/ooo_db
+      JWT_SECRET: ${JWT_SECRET:-change_me_in_production}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@example.com}
+    networks:
+      - ooo-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: uvicorn app.main:app --host 0.0.0.0 --port 3000 --reload
+
+  postgres:
+    image: postgres:15
+    restart: always
+    environment:
+      - POSTGRES_DB=ooo_db
+      - POSTGRES_USER=ooodbuser
+      - POSTGRES_PASSWORD=password
+    ports:
+      - '5432:5432'
+    networks:
+      - ooo-network
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ooodbuser -d ooo_db']
+      interval: 5s
+      timeout: 2s
+      retries: 20
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    command: postgres -c listen_addresses='*'
+    logging:
+      options:
+        max-size: '10m'
+        max-file: '3'
+
+networks:
+  ooo-network:
+volumes:
+  postgres_data:
