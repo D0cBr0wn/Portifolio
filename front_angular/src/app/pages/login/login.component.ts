@@ -128,6 +128,34 @@ type Step = 'credentials' | 'mfa' | 'mfa-setup';
     .login-card {
       width: 100%;
       max-width: 420px;
+      background: #2a2a2a !important;
+      color: #e0e0e0;
+    }
+
+    .login-card ::ng-deep .mat-mdc-form-field-input-control,
+    .login-card ::ng-deep .mat-mdc-floating-label,
+    .login-card ::ng-deep .mdc-text-field__input {
+      color: #e0e0e0 !important;
+    }
+
+    .login-card ::ng-deep .mat-mdc-floating-label:not(.mdc-floating-label--float-above) {
+      color: #aaa !important;
+    }
+
+    .login-card ::ng-deep .mdc-notched-outline__leading,
+    .login-card ::ng-deep .mdc-notched-outline__notch,
+    .login-card ::ng-deep .mdc-notched-outline__trailing {
+      border-color: rgba(255, 255, 255, 0.3) !important;
+    }
+
+    .login-card ::ng-deep .mdc-text-field--focused .mdc-notched-outline__leading,
+    .login-card ::ng-deep .mdc-text-field--focused .mdc-notched-outline__notch,
+    .login-card ::ng-deep .mdc-text-field--focused .mdc-notched-outline__trailing {
+      border-color: #bb86fc !important;
+    }
+
+    .login-card ::ng-deep .mdc-text-field--focused .mat-mdc-floating-label {
+      color: #bb86fc !important;
     }
 
     .card-title {
