@@ -1,6 +1,6 @@
 <template>
   <v-form @submit.prevent="submit" ref="formRef">
-    <p class="text-h6 mb-4">{{ initial ? 'Modifier le concert' : 'Nouveau concert' }}</p>
+    <p class="text-h6 mb-4" data-testid="show-dialog-title">{{ initial ? 'Modifier le concert' : 'Nouveau concert' }}</p>
     <v-row>
       <v-col cols="12" sm="7">
         <v-text-field
@@ -8,6 +8,7 @@
           label="Nom du concert"
           variant="outlined"
           density="comfortable"
+          data-testid="show-label-input"
         />
       </v-col>
       <v-col cols="12" sm="5">
@@ -18,6 +19,7 @@
           variant="outlined"
           density="comfortable"
           :rules="[required]"
+          data-testid="show-date-input"
         />
       </v-col>
       <v-col cols="12">

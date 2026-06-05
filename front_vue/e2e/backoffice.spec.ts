@@ -26,23 +26,21 @@ test.describe('Backoffice — Venues', () => {
 
   test("ouvre le dialog d'ajout au clic sur 'Ajouter un lieu'", async ({ page }) => {
     await page.goto('/backoffice/venues')
-    await page.getByRole('button', { name: 'Ajouter un lieu' }).click()
-    await expect(page.getByText('Nouveau lieu')).toBeVisible()
+    await page.getByTestId('add-venue-btn').click()
+    await expect(page.getByTestId('venue-dialog-title')).toBeVisible()
   })
 
   test('crée un nouveau lieu et ferme le dialog', async ({ page }) => {
     await page.goto('/backoffice/venues')
-    await page.getByRole('button', { name: 'Ajouter un lieu' }).click()
-    await expect(page.getByText('Nouveau lieu')).toBeVisible()
+    await page.getByTestId('add-venue-btn').click()
+    await expect(page.getByTestId('venue-dialog-title')).toBeVisible()
 
-    // Remplir les champs (les inputs dans le dialog)
-    const dialog = page.locator('.v-dialog--active, [role="dialog"]').filter({ hasText: 'Nouveau lieu' })
-    await dialog.locator('input').nth(0).fill('Le Bataclan')
-    await dialog.locator('input').nth(1).fill('Paris')
+    await page.getByTestId('venue-name-input').locator('input').fill('Le Bataclan')
+    await page.getByTestId('venue-city-input').locator('input').fill('Paris')
 
-    await dialog.getByRole('button', { name: 'Enregistrer' }).click()
+    await page.getByTestId('save-btn').click()
 
-    await expect(page.getByText('Nouveau lieu')).not.toBeVisible({ timeout: 5000 })
+    await expect(page.getByTestId('venue-dialog-title')).not.toBeVisible({ timeout: 5000 })
   })
 })
 
@@ -79,17 +77,15 @@ test.describe('Backoffice — Shows', () => {
 
   test("ouvre le dialog d'ajout au clic sur 'Ajouter un concert'", async ({ page }) => {
     await page.goto('/backoffice/shows')
-    await page.getByRole('button', { name: 'Ajouter un concert' }).click()
-    await expect(page.getByText('Nouveau concert')).toBeVisible()
+    await page.getByTestId('add-show-btn').click()
+    await expect(page.getByTestId('show-dialog-title')).toBeVisible()
   })
 
   test('le dialog contient les champs label, date et lieu', async ({ page }) => {
     await page.goto('/backoffice/shows')
-    await page.getByRole('button', { name: 'Ajouter un concert' }).click()
+    await page.getByTestId('add-show-btn').click()
 
-    const dialog = page.locator('.v-dialog--active, [role="dialog"]').filter({ hasText: 'Nouveau concert' })
-    // Au moins 2 inputs visibles (label + date)
-    await expect(dialog.locator('input').first()).toBeVisible()
-    await expect(dialog.locator('input').nth(1)).toBeVisible()
+    await expect(page.getByTestId('show-label-input').locator('input')).toBeVisible()
+    await expect(page.getByTestId('show-date-input').locator('input')).toBeVisible()
   })
 })

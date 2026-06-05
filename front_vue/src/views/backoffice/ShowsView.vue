@@ -2,7 +2,7 @@
   <AdminLayout>
     <div class="d-flex align-center justify-space-between mb-6">
       <h1 class="text-h5">Concerts</h1>
-      <v-btn color="primary" prepend-icon="mdi-plus" @click="dialog = true">
+      <v-btn color="primary" prepend-icon="mdi-plus" data-testid="add-show-btn" @click="dialog = true">
         Ajouter un concert
       </v-btn>
     </div>

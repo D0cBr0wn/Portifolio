@@ -17,11 +17,11 @@ test.describe('Authentification', () => {
     )
 
     await page.goto('/login')
-    await expect(page.getByText('Connexion')).toBeVisible()
+    await expect(page.getByTestId('login-title')).toBeVisible()
 
-    await page.locator('input[type="email"]').fill('test@example.com')
-    await page.locator('input[type="password"]').fill('password123')
-    await page.locator('button', { hasText: 'Se connecter' }).click()
+    await page.getByTestId('email-input').locator('input').fill('test@example.com')
+    await page.getByTestId('password-input').locator('input').fill('password123')
+    await page.getByTestId('login-submit').click()
 
     await expect(page).toHaveURL(/\/backoffice\/venues/)
   })
@@ -32,12 +32,12 @@ test.describe('Authentification', () => {
     )
 
     await page.goto('/login')
-    await page.locator('input[type="email"]').fill('test@example.com')
-    await page.locator('input[type="password"]').fill('password123')
-    await page.locator('button', { hasText: 'Se connecter' }).click()
+    await page.getByTestId('email-input').locator('input').fill('test@example.com')
+    await page.getByTestId('password-input').locator('input').fill('password123')
+    await page.getByTestId('login-submit').click()
 
-    await expect(page.getByText('Vérification MFA')).toBeVisible()
-    await expect(page.getByText('Google Authenticator')).toBeVisible()
+    await expect(page.getByTestId('login-title')).toContainText('Vérification MFA')
+    await expect(page.getByTestId('mfa-hint')).toBeVisible()
   })
 
   test('MFA complet → accès backoffice', async ({ page }) => {
@@ -52,14 +52,14 @@ test.describe('Authentification', () => {
     )
 
     await page.goto('/login')
-    await page.locator('input[type="email"]').fill('test@example.com')
-    await page.locator('input[type="password"]').fill('password123')
-    await page.locator('button', { hasText: 'Se connecter' }).click()
+    await page.getByTestId('email-input').locator('input').fill('test@example.com')
+    await page.getByTestId('password-input').locator('input').fill('password123')
+    await page.getByTestId('login-submit').click()
 
-    await expect(page.getByText('Vérification MFA')).toBeVisible()
+    await expect(page.getByTestId('login-title')).toContainText('Vérification MFA')
 
     // Saisie du code MFA via les inputs OTP
-    const otpInputs = page.locator('input[type="number"], input[inputmode="numeric"]')
+    const otpInputs = page.getByTestId('otp-wrapper').locator('input')
     const count = await otpInputs.count()
     if (count >= 6) {
       for (let i = 0; i < 6; i++) {
@@ -69,7 +69,7 @@ test.describe('Authentification', () => {
       await otpInputs.first().fill('123456')
     }
 
-    await page.locator('button', { hasText: 'Vérifier' }).click()
+    await page.getByTestId('mfa-submit').click()
     await expect(page).toHaveURL(/\/backoffice\/venues/)
   })
 
@@ -79,11 +79,11 @@ test.describe('Authentification', () => {
     )
 
     await page.goto('/login')
-    await page.locator('input[type="email"]').fill('wrong@example.com')
-    await page.locator('input[type="password"]').fill('wrongpass')
-    await page.locator('button', { hasText: 'Se connecter' }).click()
+    await page.getByTestId('email-input').locator('input').fill('wrong@example.com')
+    await page.getByTestId('password-input').locator('input').fill('wrongpass')
+    await page.getByTestId('login-submit').click()
 
-    await expect(page.getByText('Identifiants invalides')).toBeVisible()
+    await expect(page.getByTestId('server-error')).toBeVisible()
   })
 
   test('accès /backoffice sans token → redirect /login', async ({ page }) => {
@@ -104,13 +104,13 @@ test.describe('Authentification', () => {
 
     // Login
     await page.goto('/login')
-    await page.locator('input[type="email"]').fill('test@example.com')
-    await page.locator('input[type="password"]').fill('password123')
-    await page.locator('button', { hasText: 'Se connecter' }).click()
+    await page.getByTestId('email-input').locator('input').fill('test@example.com')
+    await page.getByTestId('password-input').locator('input').fill('password123')
+    await page.getByTestId('login-submit').click()
     await expect(page).toHaveURL(/\/backoffice\/venues/)
 
     // Logout
-    await page.locator('button', { hasText: 'Déconnexion' }).click()
+    await page.getByTestId('logout-btn').click()
     await expect(page).toHaveURL(/\/login/)
   })
 })

@@ -1,6 +1,6 @@
 <template>
   <v-form @submit.prevent="submit" ref="formRef">
-    <p class="text-h6 mb-4">{{ initial ? 'Modifier le lieu' : 'Nouveau lieu' }}</p>
+    <p class="text-h6 mb-4" data-testid="venue-dialog-title">{{ initial ? 'Modifier le lieu' : 'Nouveau lieu' }}</p>
     <v-row>
       <v-col cols="12" sm="6">
         <v-text-field
@@ -9,6 +9,7 @@
           variant="outlined"
           density="comfortable"
           :rules="[required]"
+          data-testid="venue-name-input"
         />
       </v-col>
       <v-col cols="12" sm="6">
@@ -18,6 +19,7 @@
           variant="outlined"
           density="comfortable"
           :rules="[required]"
+          data-testid="venue-city-input"
         />
       </v-col>
       <v-col cols="12" sm="8">
@@ -38,7 +40,7 @@
       </v-col>
     </v-row>
     <div class="d-flex gap-2 mt-2">
-      <v-btn type="submit" color="primary" :loading="loading">Enregistrer</v-btn>
+      <v-btn type="submit" color="primary" :loading="loading" data-testid="save-btn">Enregistrer</v-btn>
       <v-btn variant="text" @click="$emit('cancel')">Annuler</v-btn>
     </div>
   </v-form>
