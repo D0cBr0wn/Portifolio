@@ -134,7 +134,6 @@ Important:
 
 - Prisma client is generated into `generated/prisma_client/`
 - Always import Prisma from `generated/prisma_client`
-- Local development uses SQLite
 - Docker uses PostgreSQL through `DATABASE_URL`
 
 After schema changes:
@@ -213,17 +212,6 @@ Stack:
 - pyotp + qrcode (MFA)
 - slowapi (rate limiting)
 - pytest + httpx (tests)
-
-### Dev local (SQLite)
-
-```bash
-cd back_python
-uv venv .venv --python 3.12
-uv pip install -r requirements.txt
-cp .env.example .env
-alembic upgrade head
-uvicorn app.main:app --reload --port 3000
-```
 
 ### Docker (PostgreSQL)
 
