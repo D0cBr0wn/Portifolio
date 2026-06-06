@@ -69,7 +69,12 @@ router.post('/login', loginLimiter, async (req: Request, res: Response): Promise
     }
 
     if (user.mfaSecret) {
-      res.status(206).json({ mfaRequired: true, userId: user.id, message: 'MFA required' })
+      const mfaPendingToken = jwt.sign(
+        { userId: user.id, email: user.email, role: user.role, scope: 'mfa-pending' },
+        process.env.JWT_SECRET!,
+        { expiresIn: '5m' }
+      )
+      res.status(206).json({ mfaRequired: true, mfaPendingToken })
       return
     }
 

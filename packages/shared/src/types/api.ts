@@ -20,7 +20,7 @@ export interface AuthResponse {
   token?: string
   mfaRequired?: boolean
   mfaSetupRequired?: boolean
-  userId?: number
+  mfaPendingToken?: string
   setupToken?: string
   message?: string
 }

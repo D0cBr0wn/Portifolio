@@ -115,7 +115,7 @@ describe('POST /api/auth/login', () => {
     expect(decoded.role).toBe('USER')
   })
 
-  it('retourne 206 + mfaRequired si MFA activé', async () => {
+  it('retourne 206 + mfaPendingToken si MFA activé', async () => {
     const bcrypt = await import('bcryptjs')
     const hash = await bcrypt.hash('password123', 1)
 
@@ -129,8 +129,14 @@ describe('POST /api/auth/login', () => {
 
     expect(res.status).toBe(206)
     expect(res.body.mfaRequired).toBe(true)
-    expect(res.body.userId).toBe(1)
+    expect(res.body.mfaPendingToken).toBeDefined()
+    expect(res.body.userId).toBeUndefined()
     expect(res.body.token).toBeUndefined()
+
+    const jwt = await import('jsonwebtoken')
+    const decoded = jwt.verify(res.body.mfaPendingToken, process.env.JWT_SECRET!) as { scope: string; userId: number }
+    expect(decoded.scope).toBe('mfa-pending')
+    expect(decoded.userId).toBe(1)
   })
 
   it('retourne 401 avec message générique si mot de passe incorrect', async () => {

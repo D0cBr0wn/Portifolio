@@ -159,7 +159,7 @@ const qrCodeDataURL = ref('')
 const pendingSetupToken = ref('')
 const loading = ref(false)
 const serverError = ref('')
-const pendingUserId = ref<number | null>(null)
+const pendingMfaToken = ref('')
 
 const errors = ref({ email: '', password: '' })
 const otpInputRef = ref<{ focus: () => void } | null>(null)
@@ -188,8 +188,8 @@ async function submitCredentials() {
       step.value = 'mfa-setup'
       const setup = await authService.setupMfaWithToken(res.setupToken)
       qrCodeDataURL.value = setup.qrCodeDataURL
-    } else if (res.mfaRequired && res.userId) {
-      pendingUserId.value = res.userId
+    } else if (res.mfaRequired && res.mfaPendingToken) {
+      pendingMfaToken.value = res.mfaPendingToken
       step.value = 'mfa'
     } else if (res.token) {
       authStore.setToken(res.token)
@@ -219,11 +219,11 @@ async function submitMfaSetup() {
 }
 
 async function submitMfa() {
-  if (!pendingUserId.value || mfaCode.value.length < 6) return
+  if (!pendingMfaToken.value || mfaCode.value.length < 6) return
   loading.value = true
   serverError.value = ''
   try {
-    const res = await authService.verifyMfa(pendingUserId.value, mfaCode.value)
+    const res = await authService.verifyMfa(pendingMfaToken.value, mfaCode.value)
     authStore.setToken(res.token)
     router.push('/backoffice/venues')
   } catch {

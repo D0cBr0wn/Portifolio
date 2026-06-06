@@ -32,7 +32,7 @@ export default function Login() {
   const [mfaSetupCode, setMfaSetupCode] = useState('')
   const [qrCodeDataURL, setQrCodeDataURL] = useState('')
   const [pendingSetupToken, setPendingSetupToken] = useState('')
-  const [pendingUserId, setPendingUserId] = useState<number | null>(null)
+  const [pendingMfaToken, setPendingMfaToken] = useState('')
   const [loading, setLoading] = useState(false)
   const [serverError, setServerError] = useState('')
   const [errors, setErrors] = useState({ email: '', password: '' })
@@ -65,8 +65,8 @@ export default function Login() {
         setStep('mfa-setup')
         const setup = await authService.setupMfaWithToken(res.setupToken)
         setQrCodeDataURL(setup.qrCodeDataURL)
-      } else if (res.mfaRequired && res.userId) {
-        setPendingUserId(res.userId)
+      } else if (res.mfaRequired && res.mfaPendingToken) {
+        setPendingMfaToken(res.mfaPendingToken)
         setStep('mfa')
       } else if (res.token) {
         setToken(res.token)
@@ -98,11 +98,11 @@ export default function Login() {
 
   async function submitMfa(evt: React.FormEvent) {
     evt.preventDefault()
-    if (!pendingUserId || mfaCode.length < 6) return
+    if (!pendingMfaToken || mfaCode.length < 6) return
     setLoading(true)
     setServerError('')
     try {
-      const res = await authService.verifyMfa(pendingUserId, mfaCode)
+      const res = await authService.verifyMfa(pendingMfaToken, mfaCode)
       setToken(res.token)
       redirectAfterLogin()
     } catch {

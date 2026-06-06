@@ -2,7 +2,7 @@ export interface JwtUserPayload {
   userId: number
   email: string
   role: 'USER' | 'ADMIN'
-  scope?: 'mfa-setup'
+  scope?: 'mfa-setup' | 'mfa-pending'
 }
 
 declare global {

@@ -4,7 +4,7 @@ from fastapi.responses import JSONResponse
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.auth import create_access_token, create_mfa_setup_token
+from app.auth import create_access_token, create_mfa_pending_token, create_mfa_setup_token
 from app.database import get_db
 from app.main import limiter
 from app.models import User
@@ -77,8 +77,9 @@ async def login(
         )
 
     if user.mfaSecret:
+        pending_token = create_mfa_pending_token(user.id, user.email, user.role.value)
         return JSONResponse(
-            {"mfaRequired": True, "userId": user.id, "message": "MFA required"},
+            {"mfaRequired": True, "mfaPendingToken": pending_token},
             status_code=206,
         )
 
