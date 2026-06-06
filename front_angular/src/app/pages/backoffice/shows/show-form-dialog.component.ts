@@ -5,11 +5,11 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
-import type { Show, ShowData, Venue } from '@portfolio/shared';
+import type { ShowData, Venue } from '@portfolio/shared';
 
 interface DialogData {
   venues: Venue[];
-  initial: Show | null;
+  initial: ShowData | null;
 }
 
 function toLocalDatetimeString(date: Date): string {
@@ -88,7 +88,7 @@ export class ShowFormDialogComponent implements OnInit {
     const init = this.data.initial;
     if (init) {
       this.label = init.label ?? '';
-      this.date = toLocalDatetimeString(init.date);
+      this.date = toLocalDatetimeString(new Date(init.date));
       this.venueId = init.venueId;
       this.details = init.details ?? '';
     }
