@@ -27,6 +27,13 @@ def create_mfa_setup_token(user_id: int, email: str, role: str) -> str:
     )
 
 
+def create_mfa_pending_token(user_id: int, email: str, role: str) -> str:
+    return create_token(
+        {"userId": user_id, "email": email, "role": role, "scope": "mfa-pending"},
+        expires_delta=timedelta(minutes=5),
+    )
+
+
 def verify_token(token: str) -> dict:
     try:
         return jwt.decode(token, settings.jwt_secret, algorithms=[ALGORITHM])

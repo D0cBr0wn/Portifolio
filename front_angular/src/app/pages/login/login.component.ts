@@ -238,7 +238,7 @@ export class LoginComponent implements AfterViewInit {
   mfaSetupCode = '';
 
   private pendingSetupToken = '';
-  private pendingUserId: number | null = null;
+  private pendingMfaToken = '';
 
   readonly stepTitle = () => {
     const s = this.step();
@@ -288,8 +288,8 @@ export class LoginComponent implements AfterViewInit {
           this.authService.setupMfaWithToken(res.setupToken).subscribe({
             next: (setup) => this.qrCodeDataURL.set(setup.qrCodeDataURL),
           });
-        } else if (res.mfaRequired && res.userId) {
-          this.pendingUserId = res.userId;
+        } else if (res.mfaRequired && res.mfaPendingToken) {
+          this.pendingMfaToken = res.mfaPendingToken;
           this.step.set('mfa');
         } else if (res.token) {
           this.authStore.setToken(res.token);
@@ -323,10 +323,10 @@ export class LoginComponent implements AfterViewInit {
   }
 
   submitMfa(): void {
-    if (!this.pendingUserId || this.mfaCode.length < 6) return;
+    if (!this.pendingMfaToken || this.mfaCode.length < 6) return;
     this.loading.set(true);
     this.serverError.set('');
-    this.authService.verifyMfa(this.pendingUserId, this.mfaCode).subscribe({
+    this.authService.verifyMfa(this.pendingMfaToken, this.mfaCode).subscribe({
       next: (res) => {
         this.authStore.setToken(res.token);
         this.router.navigate(['/backoffice/venues']);

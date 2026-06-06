@@ -6,22 +6,18 @@ import qrcode.image.svg
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
-from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.auth import create_access_token
 from app.database import get_db
-from app.dependencies import get_current_user, get_mfa_setup_user
+from app.dependencies import get_current_user, get_mfa_pending_user, get_mfa_setup_user
 from app.models import User
 
 router = APIRouter()
 
 
 class MfaLoginIn(BaseModel):
-    user_id: int
     token: str
-
-    model_config = {"alias_generator": lambda s: s, "populate_by_name": True}
 
 
 class MfaVerifyIn(BaseModel):
@@ -61,18 +57,15 @@ async def mfa_setup(
 @router.post("/login")
 async def mfa_login(
     body: MfaLoginIn,
-    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_mfa_pending_user),
 ):
-    result = await db.execute(select(User).where(User.id == body.user_id))
-    user = result.scalar_one_or_none()
-
-    if not user or not user.mfaSecret:
+    if not current_user.mfaSecret:
         raise HTTPException(status_code=400, detail="MFA non configuré")
 
-    if not _verify_totp(user.mfaSecret, body.token):
+    if not _verify_totp(current_user.mfaSecret, body.token):
         raise HTTPException(status_code=401, detail="Code invalide")
 
-    token = create_access_token(user.id, user.email, user.role.value)
+    token = create_access_token(current_user.id, current_user.email, current_user.role.value)
     return {"verified": True, "token": token}
 
 
