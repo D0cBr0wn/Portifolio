@@ -36,12 +36,12 @@ describe('authService', () => {
   })
 
   describe('verifyMfa()', () => {
-    it('envoie userId + token et retourne MfaVerifyResponse', async () => {
+    it('envoie pendingToken + code et retourne MfaVerifyResponse', async () => {
       const resp = { verified: true, token: 'mfa-tok' }
-      mockApi.post.mockResolvedValue(resp)
-      const result = await authService.verifyMfa(42, '123456')
+      mockApi.postAs.mockResolvedValue(resp)
+      const result = await authService.verifyMfa('pending-jwt', '123456')
       expect(result.verified).toBe(true)
-      expect(mockApi.post).toHaveBeenCalledWith('/mfa/login', { userId: 42, token: '123456' })
+      expect(mockApi.postAs).toHaveBeenCalledWith('/mfa/login', { token: '123456' }, 'pending-jwt')
     })
   })
 
