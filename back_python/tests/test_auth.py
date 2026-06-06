@@ -1,4 +1,7 @@
+import app.database as db_module
 import pytest
+from app.models import User
+from sqlalchemy import select
 
 
 @pytest.mark.asyncio
@@ -56,9 +59,6 @@ async def test_register_is_admin_ignored(client):
     await client.post("/api/auth/register", json={"email": "first@test.com", "password": "secret123"})
     resp = await client.post("/api/auth/register", json={"email": "attacker@test.com", "password": "secret123", "isAdmin": True})
     assert resp.status_code == 201
-    import app.database as db_module
-    from app.models import User
-    from sqlalchemy import select
     async with db_module.async_session_factory() as db:
         result = await db.execute(select(User).where(User.email == "attacker@test.com"))
         user = result.scalar_one()
