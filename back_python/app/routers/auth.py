@@ -34,7 +34,7 @@ async def register(
         hashed = _hash(body.password)
         result = await db.execute(select(func.count()).select_from(User))
         count = result.scalar_one()
-        role = "ADMIN" if (body.is_admin or count == 0) else "USER"
+        role = "ADMIN" if count == 0 else "USER"
         user = User(email=body.email, password=hashed, role=role)
         db.add(user)
         await db.commit()

@@ -17,7 +17,6 @@ class BaseSchema(BaseModel):
 class RegisterIn(BaseModel):
     email: EmailStr
     password: str
-    is_admin: bool = False
 
     model_config = ConfigDict(alias_generator=to_camel, populate_by_name=True)
 
