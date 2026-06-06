@@ -25,6 +25,11 @@ Site d'artiste avec backoffice de gestion de concerts. Projet de portfolio démo
 - Node.js ≥ 20
 - pnpm ≥ 9 (`npm install -g pnpm`)
 - Docker (pour le backend PostgreSQL)
+- Python 3.12 (pour le backend Python et ses tests)
+- `python3.12-venv` — module de création d'environnements virtuels Python, nécessaire pour isoler les dépendances du backend Python et lancer `pytest` en local (non inclus dans le paquet Python par défaut sur Debian/Ubuntu) :
+  ```bash
+  sudo apt install python3.12-venv
+  ```
 
 ## Installation
 
@@ -92,13 +97,13 @@ Le backend utilise **PostgreSQL** via Docker. Le container est défini dans `bac
 cd back
 
 # Démarrer PostgreSQL + API dans Docker (recommandé)
-docker-compose up --build
+docker compose up --build
 
 # Première fois : appliquer les migrations dans le container
-docker-compose exec -T api npx prisma migrate deploy
+docker compose exec -T api npx prisma migrate deploy
 
 # Pré-remplir la base avec les données de démo (idempotent)
-docker-compose exec -T api npx prisma db seed
+docker compose exec -T api npx prisma db seed
 
 # Ouvrir Prisma Studio (pointe sur le PostgreSQL local, port 5432)
 npx prisma studio
@@ -122,13 +127,13 @@ Le seed recrée un jeu de données de référence (idempotent — relancer la co
 
 ```bash
 # Backend Node.js — avec Docker
-docker-compose exec -T api npx prisma db seed
+docker compose exec -T api npx prisma db seed
 
 # Backend Node.js — sans Docker (depuis back/)
 npx prisma db seed
 
 # Backend Python — avec Docker (depuis back_python/)
-docker-compose exec api python seed.py
+docker compose exec api python seed.py
 ```
 
 ## Lancer le projet
@@ -136,7 +141,7 @@ docker-compose exec api python seed.py
 ### Avec Docker (recommandé — hot-reload inclus)
 
 ```bash
-cd back && docker-compose up --build   # PostgreSQL + API sur :3000
+cd back && docker compose up --build   # PostgreSQL + API sur :3000
 ```
 
 Puis dans d'autres terminaux :
@@ -151,17 +156,17 @@ pnpm dev:angular   # port 5175
 
 ### Tests unitaires
 
-316 tests au total répartis sur 5 suites.
+340 tests au total répartis sur 5 suites.
 
 ```bash
 # Tous les workspaces d'un coup
 pnpm test
 
 # Par workspace
-pnpm test:back     # Jest + Supertest — 142 tests, seuil couverture 70 %
-pnpm test:vue      # Vitest + Vue Test Utils — 48 tests
-pnpm test:react    # Vitest + Testing Library — 58 tests
-pnpm test:angular  # Jest + jest-preset-angular — 54 tests
+pnpm test:back     # Jest + Supertest — 150 tests, seuil couverture 70 %
+pnpm test:vue      # Vitest + Vue Test Utils — 55 tests
+pnpm test:react    # Vitest + Testing Library — 65 tests
+pnpm test:angular  # Jest + jest-preset-angular — 56 tests
 pnpm test:shared   # Vitest — 14 tests (classes Show et Venue)
 
 # Couverture (rapport HTML généré dans coverage/)
@@ -190,15 +195,15 @@ Les deux backends exposent le **même contrat API** sur le port **3000**. Les tr
 ### Backend Node.js (`back/`)
 
 ```bash
-cd back && docker-compose up --build
+cd back && docker compose up --build
 ```
 
 ### Backend Python (`back_python/`)
 
 ```bash
-cd back_python && docker-compose up --build
-docker-compose exec api alembic upgrade head
-docker-compose exec api python seed.py
+cd back_python && docker compose up --build
+docker compose exec api alembic upgrade head
+docker compose exec api python seed.py
 ```
 
 ---
@@ -209,12 +214,11 @@ docker-compose exec api python seed.py
 Portifolio/
 ├── back/                    # @portfolio/back — API Express 5
 ├── back_python/             # API FastAPI Python — même contrat que back/
-│   ├── src/
-│   │   ├── routes/          # shows, venues, users, auth, mfa, backoffice
-│   │   ├── middleware/      # auth, rate limiting, IP ban, MFA, adminTrap
-│   │   └── schemas/         # validation Zod
-│   └── prisma/
-│       └── schema.prisma
+│   ├── app/
+│   │   ├── routers/         # shows, venues, users, auth, mfa, backoffice
+│   │   ├── middleware/      # ip_ban
+│   │   └── schemas.py       # validation Pydantic
+│   └── alembic/             # migrations SQLAlchemy
 ├── front_vue/               # @portfolio/front-vue  — Vue 3 (port 5173)
 │   └── src/
 │       ├── services/        # api, show, venue, auth, user, backoffice
