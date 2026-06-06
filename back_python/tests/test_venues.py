@@ -10,7 +10,8 @@ async def _get_token(client):
 
 async def _get_user_token(client):
     """Register a second user (USER role) and return their token."""
-    await client.post("/api/auth/register", json={"email": "user2@test.com", "password": "secret123"})
+    reg = await client.post("/api/auth/register", json={"email": "user2@test.com", "password": "secret123"})
+    assert reg.status_code == 201
     resp = await client.post("/api/auth/login", json={"email": "user2@test.com", "password": "secret123"})
     return resp.json()["token"]
 
@@ -122,6 +123,18 @@ async def test_delete_venue_requires_admin(client):
     user_token = await _get_user_token(client)
     resp = await client.delete(f"/api/venues/{vid}", headers={"Authorization": f"Bearer {user_token}"})
     assert resp.status_code == 403
+
+
+@pytest.mark.asyncio
+async def test_update_venue_requires_auth(client):
+    resp = await client.put("/api/venues/1", json={"name": "X", "city": "Y"})
+    assert resp.status_code == 401
+
+
+@pytest.mark.asyncio
+async def test_delete_venue_requires_auth(client):
+    resp = await client.delete("/api/venues/1")
+    assert resp.status_code == 401
 
 
 @pytest.mark.asyncio
