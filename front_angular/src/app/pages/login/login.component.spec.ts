@@ -47,7 +47,7 @@ describe('LoginComponent', () => {
   });
 
   it('affiche l\'étape MFA après une réponse mfaRequired', async () => {
-    authService.login.mockReturnValue(of({ mfaRequired: true, userId: 42 }));
+    authService.login.mockReturnValue(of({ mfaRequired: true, mfaPendingToken: 'pending-jwt' }));
     fixture.componentInstance.email = 'a@b.com';
     fixture.componentInstance.password = 'pass';
     await fixture.componentInstance.submitCredentials();

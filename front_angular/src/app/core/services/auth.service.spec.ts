@@ -46,13 +46,14 @@ describe('AuthService', () => {
     req.flush({ id: 1, email: 'a@b.com' });
   });
 
-  it('verifyMfa() POST /mfa/login avec userId + token', (done) => {
-    service.verifyMfa(42, '123456').subscribe((res) => {
+  it('verifyMfa() POST /mfa/login avec Bearer token + code', (done) => {
+    service.verifyMfa('pending-jwt', '123456').subscribe((res) => {
       expect(res.verified).toBe(true);
       done();
     });
     const req = http.expectOne(`${BASE}/mfa/login`);
-    expect(req.request.body).toEqual({ userId: 42, token: '123456' });
+    expect(req.request.headers.get('Authorization')).toBe('Bearer pending-jwt');
+    expect(req.request.body).toEqual({ token: '123456' });
     req.flush({ verified: true, token: 'jwt' });
   });
 });
