@@ -30,6 +30,10 @@ function authHeader() {
   return `Bearer ${jwt.sign({ userId: 1, email: 'user@test.com', role: 'USER' }, SECRET, { expiresIn: '1h' })}`
 }
 
+function adminHeader() {
+  return `Bearer ${jwt.sign({ userId: 1, email: 'admin@test.com', role: 'ADMIN' }, SECRET, { expiresIn: '1h' })}`
+}
+
 const fakeVenue = { id: 1, name: 'Le Zénith', city: 'Paris', address1: null, address2: null, zipCode: null }
 
 describe('GET /api/venues', () => {
@@ -127,12 +131,20 @@ describe('PUT /api/venues/:id', () => {
     expect(res.status).toBe(401)
   })
 
-  it('modifie une venue et retourne 200', async () => {
+  it('retourne 403 si rôle USER (non admin)', async () => {
+    const res = await request(app)
+      .put('/api/venues/1')
+      .set('Authorization', authHeader())
+      .send({ name: 'Modifié' })
+    expect(res.status).toBe(403)
+  })
+
+  it('modifie une venue et retourne 200 (admin)', async () => {
     venueMock.update.mockResolvedValue({ ...fakeVenue, name: 'Modifié' })
 
     const res = await request(app)
       .put('/api/venues/1')
-      .set('Authorization', authHeader())
+      .set('Authorization', adminHeader())
       .send({ name: 'Modifié' })
 
     expect(res.status).toBe(200)
@@ -144,7 +156,7 @@ describe('PUT /api/venues/:id', () => {
 
     const res = await request(app)
       .put('/api/venues/999')
-      .set('Authorization', authHeader())
+      .set('Authorization', adminHeader())
       .send({ name: 'X' })
 
     expect(res.status).toBe(404)
@@ -153,7 +165,7 @@ describe('PUT /api/venues/:id', () => {
   it('retourne 400 si id non numérique', async () => {
     const res = await request(app)
       .put('/api/venues/abc')
-      .set('Authorization', authHeader())
+      .set('Authorization', adminHeader())
       .send({ name: 'X' })
 
     expect(res.status).toBe(400)
@@ -168,12 +180,19 @@ describe('DELETE /api/venues/:id', () => {
     expect(res.status).toBe(401)
   })
 
-  it('supprime une venue et retourne 204', async () => {
+  it('retourne 403 si rôle USER (non admin)', async () => {
+    const res = await request(app)
+      .delete('/api/venues/1')
+      .set('Authorization', authHeader())
+    expect(res.status).toBe(403)
+  })
+
+  it('supprime une venue et retourne 204 (admin)', async () => {
     venueMock.delete.mockResolvedValue(fakeVenue)
 
     const res = await request(app)
       .delete('/api/venues/1')
-      .set('Authorization', authHeader())
+      .set('Authorization', adminHeader())
 
     expect(res.status).toBe(204)
   })
@@ -183,7 +202,7 @@ describe('DELETE /api/venues/:id', () => {
 
     const res = await request(app)
       .delete('/api/venues/999')
-      .set('Authorization', authHeader())
+      .set('Authorization', adminHeader())
 
     expect(res.status).toBe(404)
   })
@@ -193,7 +212,7 @@ describe('DELETE /api/venues/:id', () => {
 
     const res = await request(app)
       .delete('/api/venues/1')
-      .set('Authorization', authHeader())
+      .set('Authorization', adminHeader())
 
     expect(res.status).toBe(409)
     expect(res.body.error).toMatch(/concerts/)
