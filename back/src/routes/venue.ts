@@ -2,6 +2,7 @@ import { Router } from 'express'
 import type { Request, Response } from 'express'
 import prisma from '../lib/prisma'
 import { authenticateToken } from '../middleware/authMiddleware'
+import { requireAdmin } from '../middleware/requireAdmin'
 import { venueSchema } from '../schemas/venue.schema'
 
 const router = Router()
@@ -21,7 +22,7 @@ router.post('/', authenticateToken, async (req, res) => {
   }
 })
 
-router.put('/:id', authenticateToken, async (req: Request, res: Response) => {
+router.put('/:id', authenticateToken, requireAdmin, async (req: Request, res: Response) => {
   const id = parseInt(String(req.params.id), 10)
   if (isNaN(id)) {
     res.status(400).json({ error: 'ID invalide' })
@@ -40,7 +41,7 @@ router.put('/:id', authenticateToken, async (req: Request, res: Response) => {
   }
 })
 
-router.delete('/:id', authenticateToken, async (req: Request, res: Response) => {
+router.delete('/:id', authenticateToken, requireAdmin, async (req: Request, res: Response) => {
   const id = parseInt(String(req.params.id), 10)
   if (isNaN(id)) {
     res.status(400).json({ error: 'ID invalide' })

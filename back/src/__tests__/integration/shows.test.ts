@@ -30,6 +30,10 @@ function authHeader() {
   return `Bearer ${jwt.sign({ userId: 1, email: 'user@test.com', role: 'USER' }, SECRET, { expiresIn: '1h' })}`
 }
 
+function adminHeader() {
+  return `Bearer ${jwt.sign({ userId: 1, email: 'admin@test.com', role: 'ADMIN' }, SECRET, { expiresIn: '1h' })}`
+}
+
 const fakeShow = {
   id: 1, label: 'Concert été', date: '2025-07-14T20:00:00.000Z', venueId: 1,
   venue: { id: 1, name: 'Le Zénith', city: 'Paris' },
@@ -125,12 +129,20 @@ describe('PUT /api/shows/:id', () => {
     expect(res.status).toBe(401)
   })
 
-  it('modifie un show et retourne 200', async () => {
+  it('retourne 403 si rôle USER (non admin)', async () => {
+    const res = await request(app)
+      .put('/api/shows/1')
+      .set('Authorization', authHeader())
+      .send({ label: 'Modifié' })
+    expect(res.status).toBe(403)
+  })
+
+  it('modifie un show et retourne 200 (admin)', async () => {
     showMock.update.mockResolvedValue({ ...fakeShow, label: 'Modifié' })
 
     const res = await request(app)
       .put('/api/shows/1')
-      .set('Authorization', authHeader())
+      .set('Authorization', adminHeader())
       .send({ label: 'Modifié' })
 
     expect(res.status).toBe(200)
@@ -142,7 +154,7 @@ describe('PUT /api/shows/:id', () => {
 
     const res = await request(app)
       .put('/api/shows/999')
-      .set('Authorization', authHeader())
+      .set('Authorization', adminHeader())
       .send({ label: 'X' })
 
     expect(res.status).toBe(404)
@@ -151,7 +163,7 @@ describe('PUT /api/shows/:id', () => {
   it('retourne 400 si id non numérique', async () => {
     const res = await request(app)
       .put('/api/shows/abc')
-      .set('Authorization', authHeader())
+      .set('Authorization', adminHeader())
       .send({ label: 'X' })
 
     expect(res.status).toBe(400)
@@ -166,12 +178,19 @@ describe('DELETE /api/shows/:id', () => {
     expect(res.status).toBe(401)
   })
 
-  it('supprime un show et retourne 204', async () => {
+  it('retourne 403 si rôle USER (non admin)', async () => {
+    const res = await request(app)
+      .delete('/api/shows/1')
+      .set('Authorization', authHeader())
+    expect(res.status).toBe(403)
+  })
+
+  it('supprime un show et retourne 204 (admin)', async () => {
     showMock.delete.mockResolvedValue(fakeShow)
 
     const res = await request(app)
       .delete('/api/shows/1')
-      .set('Authorization', authHeader())
+      .set('Authorization', adminHeader())
 
     expect(res.status).toBe(204)
   })
@@ -181,7 +200,7 @@ describe('DELETE /api/shows/:id', () => {
 
     const res = await request(app)
       .delete('/api/shows/999')
-      .set('Authorization', authHeader())
+      .set('Authorization', adminHeader())
 
     expect(res.status).toBe(404)
   })
