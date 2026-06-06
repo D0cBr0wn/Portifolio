@@ -117,7 +117,7 @@ describe('POST /api/mfa/setup', () => {
     expect(res.status).toBe(401)
   })
 
-  it('retourne 403 si scope != mfa-setup (token sans scope)', async () => {
+  it('retourne 403 si le scope n\'est pas mfa-setup (token sans scope)', async () => {
     const token = makeToken(1, 'test@test.com')
     const res = await request(app)
       .post('/api/mfa/setup')
@@ -150,7 +150,7 @@ describe('POST /api/mfa/verify', () => {
     expect(res.status).toBe(401)
   })
 
-  it('retourne 403 si scope != mfa-setup (token sans scope)', async () => {
+  it('retourne 403 si le scope n\'est pas mfa-setup (token sans scope)', async () => {
     const token = makeToken(1, 'test@test.com')
     const res = await request(app)
       .post('/api/mfa/verify')
