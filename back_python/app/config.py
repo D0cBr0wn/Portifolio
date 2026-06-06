@@ -19,7 +19,7 @@ class Settings(BaseSettings):
     def validate_jwt_secret(self) -> "Settings":
         if self.jwt_secret == _PLACEHOLDER_SECRET:
             raise ValueError(
-                "JWT_SECRET must be set to a unique secret — the default placeholder is publicly known."
+                "JWT_SECRET must be set to a unique secret in production"
             )
         return self
 

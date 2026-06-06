@@ -1,7 +1,3 @@
-import os
-
-os.environ.setdefault("JWT_SECRET", "test-secret-for-pytest-at-least-32chars!")
-
 import pytest
 import pytest_asyncio
 from httpx import ASGITransport, AsyncClient
