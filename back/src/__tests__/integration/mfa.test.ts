@@ -46,11 +46,20 @@ describe('POST /api/mfa/login', () => {
     expect(res.status).toBe(401)
   })
 
-  it('retourne 403 si scope != mfa-pending', async () => {
+  it('retourne 403 si scope != mfa-pending (token sans scope)', async () => {
     const wrongToken = makeToken(1, 'test@test.com')
     const res = await request(app)
       .post('/api/mfa/login')
       .set('Authorization', `Bearer ${wrongToken}`)
+      .send({ token: '123456' })
+    expect(res.status).toBe(403)
+  })
+
+  it('retourne 403 si scope = mfa-setup', async () => {
+    const setupToken = makeToken(1, 'test@test.com', 'USER', 'mfa-setup')
+    const res = await request(app)
+      .post('/api/mfa/login')
+      .set('Authorization', `Bearer ${setupToken}`)
       .send({ token: '123456' })
     expect(res.status).toBe(403)
   })

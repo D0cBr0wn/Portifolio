@@ -6,7 +6,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
 from starlette.responses import JSONResponse
 
-from app.database import async_session_factory
+import app.database as db_module
 from app.models import IpBan
 
 
@@ -14,7 +14,7 @@ class IpBanMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
         ip = request.client.host if request.client else "unknown"
 
-        async with async_session_factory() as db:
+        async with db_module.async_session_factory() as db:
             await _purge_expired(db)
             ban = await _get_active_ban(db, ip)
 
