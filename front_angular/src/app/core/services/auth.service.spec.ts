@@ -49,6 +49,7 @@ describe('AuthService', () => {
   it('verifyMfa() POST /mfa/login avec Bearer token + code', (done) => {
     service.verifyMfa('pending-jwt', '123456').subscribe((res) => {
       expect(res.verified).toBe(true);
+      expect(res.token).toBe('jwt');
       done();
     });
     const req = http.expectOne(`${BASE}/mfa/login`);
