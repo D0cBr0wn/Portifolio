@@ -56,9 +56,9 @@
 
 <script setup lang="ts">
 import { ref, reactive, onMounted } from 'vue'
-import type { Venue, Show, ShowData } from '@portfolio/shared'
+import type { Venue, ShowData } from '@portfolio/shared'
 
-const props = defineProps<{ venues: Venue[]; loading?: boolean; initial?: Show }>()
+const props = defineProps<{ venues: Venue[]; loading?: boolean; initial?: ShowData }>()
 
 const emit = defineEmits<{
   submit: [data: Omit<ShowData, 'id' | 'venue'>]
@@ -75,7 +75,7 @@ const form = reactive({
 
 onMounted(() => {
   if (props.initial) {
-    const d = props.initial.date
+    const d = new Date(props.initial.date)
     const pad = (n: number) => String(n).padStart(2, '0')
     const localStr = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`
     Object.assign(form, {
