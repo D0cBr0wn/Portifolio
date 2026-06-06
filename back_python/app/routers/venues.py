@@ -4,7 +4,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
-from app.dependencies import get_current_user
+from app.dependencies import get_current_user, require_admin
 from app.models import User, Venue
 from app.schemas import VenueIn, VenueOut
 
@@ -52,7 +52,7 @@ async def create_venue(
 async def update_venue(
     venue_id: int,
     body: VenueIn,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_admin),
     db: AsyncSession = Depends(get_db),
 ):
     result = await db.execute(select(Venue).where(Venue.id == venue_id))
@@ -73,7 +73,7 @@ async def update_venue(
 @router.delete("/{venue_id}", status_code=204)
 async def delete_venue(
     venue_id: int,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_admin),
     db: AsyncSession = Depends(get_db),
 ):
     result = await db.execute(select(Venue).where(Venue.id == venue_id))

@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from app.database import get_db
-from app.dependencies import get_current_user
+from app.dependencies import get_current_user, require_admin
 from app.models import Show, User, Venue
 from app.schemas import ShowIn
 
@@ -64,7 +64,7 @@ async def create_show(
 async def update_show(
     show_id: int,
     body: ShowIn,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_admin),
     db: AsyncSession = Depends(get_db),
 ):
     result = await db.execute(select(Show).options(selectinload(Show.venue)).where(Show.id == show_id))
@@ -84,7 +84,7 @@ async def update_show(
 @router.delete("/{show_id}", status_code=204)
 async def delete_show(
     show_id: int,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_admin),
     db: AsyncSession = Depends(get_db),
 ):
     result = await db.execute(select(Show).where(Show.id == show_id))
