@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
 import { Box, Button, Grid, MenuItem, TextField, Typography } from '@mui/material'
-import type { Show, ShowData, Venue } from '@portfolio/shared'
+import type { ShowData, Venue } from '@portfolio/shared'
 
 interface Props {
   venues: Venue[]
-  initial?: Show
+  initial?: ShowData
   loading?: boolean
   onSubmit: (data: Omit<ShowData, 'id' | 'venue'>) => void
   onCancel: () => void
@@ -25,7 +25,7 @@ export default function ShowForm({ venues, initial, loading, onSubmit, onCancel 
   useEffect(() => {
     if (initial) {
       setLabel(initial.label ?? '')
-      setDate(toLocalDatetimeString(initial.date))
+      setDate(toLocalDatetimeString(new Date(initial.date)))
       setVenueId(initial.venueId)
       setDetails(initial.details ?? '')
     }
