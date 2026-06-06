@@ -9,6 +9,10 @@ import qrcode from 'qrcode'
 const router = Router()
 
 router.post('/setup', authenticateToken, async (req: Request, res: Response) => {
+  if (req.user?.scope !== 'mfa-setup') {
+    res.status(403).json({ error: 'Scope insuffisant' })
+    return
+  }
   const userId = req.user?.userId
 
   const secret = speakeasy.generateSecret({
@@ -60,8 +64,11 @@ router.post('/login', authenticateToken, async (req: Request, res: Response) => 
 })
 
 router.post('/verify', authenticateToken, async (req: Request, res: Response) => {
+  if (req.user?.scope !== 'mfa-setup') {
+    res.status(403).json({ error: 'Scope insuffisant' })
+    return
+  }
   const userId = req.user?.userId
-  const isMfaSetup = req.user?.scope === 'mfa-setup'
   const { token } = req.body
 
   if (!userId) {
@@ -87,9 +94,7 @@ router.post('/verify', authenticateToken, async (req: Request, res: Response) =>
     return
   }
 
-  if (isMfaSetup) {
-    await prisma.user.update({ where: { id: userId }, data: { mfaRequired: false } })
-  }
+  await prisma.user.update({ where: { id: userId }, data: { mfaRequired: false } })
 
   const finalToken = jwt.sign({ userId: user.id, email: user.email, role: user.role }, process.env.JWT_SECRET!, { expiresIn: '1h' })
   res.json({ verified: true, token: finalToken })

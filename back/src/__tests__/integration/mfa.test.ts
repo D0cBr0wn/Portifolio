@@ -117,10 +117,18 @@ describe('POST /api/mfa/setup', () => {
     expect(res.status).toBe(401)
   })
 
-  it('retourne le QR code et le secret avec un token valide', async () => {
+  it('retourne 403 si scope != mfa-setup (token sans scope)', async () => {
+    const token = makeToken(1, 'test@test.com')
+    const res = await request(app)
+      .post('/api/mfa/setup')
+      .set('Authorization', `Bearer ${token}`)
+    expect(res.status).toBe(403)
+  })
+
+  it('retourne le QR code et le secret avec un token mfa-setup', async () => {
     userMock.update.mockResolvedValue({})
 
-    const token = makeToken(1, 'test@test.com')
+    const token = makeToken(1, 'test@test.com', 'USER', 'mfa-setup')
     const res = await request(app)
       .post('/api/mfa/setup')
       .set('Authorization', `Bearer ${token}`)
@@ -142,12 +150,21 @@ describe('POST /api/mfa/verify', () => {
     expect(res.status).toBe(401)
   })
 
+  it('retourne 403 si scope != mfa-setup (token sans scope)', async () => {
+    const token = makeToken(1, 'test@test.com')
+    const res = await request(app)
+      .post('/api/mfa/verify')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ token: '123456' })
+    expect(res.status).toBe(403)
+  })
+
   it('retourne 400 si MFA non configuré pour l\'utilisateur', async () => {
     userMock.findUnique.mockResolvedValue({
       id: 1, email: 'test@test.com', password: '', role: 'USER', mfaSecret: null, banUntil: null,
     })
 
-    const token = makeToken(1, 'test@test.com')
+    const token = makeToken(1, 'test@test.com', 'USER', 'mfa-setup')
     const res = await request(app)
       .post('/api/mfa/verify')
       .set('Authorization', `Bearer ${token}`)
@@ -162,7 +179,7 @@ describe('POST /api/mfa/verify', () => {
     })
     speakeasy.totp.verify.mockReturnValue(false)
 
-    const token = makeToken(1, 'test@test.com')
+    const token = makeToken(1, 'test@test.com', 'USER', 'mfa-setup')
     const res = await request(app)
       .post('/api/mfa/verify')
       .set('Authorization', `Bearer ${token}`)
@@ -172,13 +189,14 @@ describe('POST /api/mfa/verify', () => {
     expect(res.body.error).toBe('Identifiants invalides')
   })
 
-  it('retourne un JWT final si code TOTP valide', async () => {
+  it('retourne un JWT final et met mfaRequired à false si code TOTP valide', async () => {
     userMock.findUnique.mockResolvedValue({
       id: 1, email: 'test@test.com', password: '', role: 'USER', mfaSecret: 'JBSWY3DPEHPK3PXP', banUntil: null,
     })
+    userMock.update.mockResolvedValue({})
     speakeasy.totp.verify.mockReturnValue(true)
 
-    const token = makeToken(1, 'test@test.com')
+    const token = makeToken(1, 'test@test.com', 'USER', 'mfa-setup')
     const res = await request(app)
       .post('/api/mfa/verify')
       .set('Authorization', `Bearer ${token}`)
@@ -187,31 +205,13 @@ describe('POST /api/mfa/verify', () => {
     expect(res.status).toBe(200)
     expect(res.body.verified).toBe(true)
     expect(res.body.token).toBeDefined()
+    expect(userMock.update).toHaveBeenCalledWith(
+      expect.objectContaining({ data: { mfaRequired: false } })
+    )
 
     const decoded = jwt.verify(res.body.token, SECRET) as { userId: number; email: string; role: string }
     expect(decoded.userId).toBe(1)
     expect(decoded.email).toBe('test@test.com')
     expect(decoded.role).toBe('USER')
-  })
-
-  it('met mfaRequired à false et retourne JWT final si scope=mfa-setup', async () => {
-    userMock.findUnique.mockResolvedValue({
-      id: 1, email: 'test@test.com', password: '', role: 'USER', mfaSecret: 'JBSWY3DPEHPK3PXP', banUntil: null,
-    })
-    userMock.update.mockResolvedValue({})
-    speakeasy.totp.verify.mockReturnValue(true)
-
-    const setupToken = makeToken(1, 'test@test.com', 'USER', 'mfa-setup')
-    const res = await request(app)
-      .post('/api/mfa/verify')
-      .set('Authorization', `Bearer ${setupToken}`)
-      .send({ token: '123456' })
-
-    expect(res.status).toBe(200)
-    expect(res.body.verified).toBe(true)
-    expect(res.body.token).toBeDefined()
-    expect(userMock.update).toHaveBeenCalledWith(
-      expect.objectContaining({ data: { mfaRequired: false } })
-    )
   })
 })
