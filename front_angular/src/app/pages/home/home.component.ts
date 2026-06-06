@@ -125,6 +125,8 @@ import { ShowStore } from '../../core/stores/show.store';
     .see-all-btn {
       margin-top: 1rem;
       color: #c59a47;
+      text-transform: none;
+      letter-spacing: normal;
     }
 
     .error-msg {
