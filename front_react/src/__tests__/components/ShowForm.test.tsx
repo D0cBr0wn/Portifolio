@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import ShowForm from '../../components/backoffice/ShowForm'
-import { Show, Venue } from '@portfolio/shared'
+import { Venue } from '@portfolio/shared'
 
 const onSubmit = vi.fn()
 const onCancel = vi.fn()
@@ -24,13 +24,13 @@ describe('ShowForm', () => {
   })
 
   it('affiche le titre "Modifier le concert" avec initial', () => {
-    const show = new Show({ id: 1, date: '2025-07-14T20:00:00.000Z', venueId: 1 })
+    const show = { id: 1, date: '2025-07-14T20:00:00.000Z', venueId: 1 }
     render(<ShowForm venues={venues} initial={show} onSubmit={onSubmit} onCancel={onCancel} />)
     expect(screen.getByText('Modifier le concert')).toBeInTheDocument()
   })
 
-  it('pré-remplit la date sans lever TypeError quand initial.date est un objet Date', () => {
-    const show = new Show({ id: 1, date: '2025-07-14T20:00:00.000Z', venueId: 1, label: 'Été' })
+  it('pré-remplit la date depuis une chaîne ISO', () => {
+    const show = { id: 1, date: '2025-07-14T20:00:00.000Z', venueId: 1, label: 'Été' }
     render(<ShowForm venues={venues} initial={show} onSubmit={onSubmit} onCancel={onCancel} />)
     const dateInput = document.querySelector('input[type="datetime-local"]') as HTMLInputElement
     expect(dateInput).not.toBeNull()
@@ -38,7 +38,7 @@ describe('ShowForm', () => {
   })
 
   it('pré-remplit le label avec la valeur de initial', () => {
-    const show = new Show({ id: 1, date: '2025-07-14T20:00:00.000Z', venueId: 1, label: 'Festival été' })
+    const show = { id: 1, date: '2025-07-14T20:00:00.000Z', venueId: 1, label: 'Festival été' }
     render(<ShowForm venues={venues} initial={show} onSubmit={onSubmit} onCancel={onCancel} />)
     expect(screen.getByDisplayValue('Festival été')).toBeInTheDocument()
   })
