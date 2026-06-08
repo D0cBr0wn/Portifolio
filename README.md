@@ -6,21 +6,21 @@ This portfolio project, based on a simplified music venue website, demonstrates 
 
 The repository is organized as a pnpm monorepo. It contains two interchangeable backends (Node.js and Python), three independent frontends (Vue, React, Angular), and a shared TypeScript types package used by all frontends.
 
-| Layer               | Technology                                                                  |
-| ------------------- | --------------------------------------------------------------------------- |
-| Node.js Backend     | Node.js · Express 5 · TypeScript · Prisma · PostgreSQL (via Docker)         |
-| Python Backend      | Python 3.12 · FastAPI · SQLAlchemy 2 async · Alembic · Pydantic v2          |
-| Auth                | JWT · TOTP MFA (Google Authenticator) · bcrypt                              |
-| Vue Frontend        | Vue 3 SPA · Vite · Vuetify 3 · Pinia · Vue Router 4 — port **5173**         |
-| React Frontend      | React 19 · Vite · MUI v6 · Zustand v5 · React Router v7 — port **5174**     |
-| Angular Frontend    | Angular 18 · Angular Material · Signals · HttpClient — port **5175**        |
-| Nuxt Frontend       | Nuxt 3 · @nuxt/ui _(skeleton, coming soon)_                                 |
-| Shared              | `@portfolio/shared` — shared TypeScript classes (Show, Venue, API types)    |
-| Back tests          | Jest · Supertest · mocked Prisma                                            |
-| Vue front tests     | Vitest · Vue Test Utils · Playwright E2E                                    |
-| React front tests   | Vitest · Testing Library · Playwright E2E                                   |
-| Angular front tests | Jest · jest-preset-angular · Playwright E2E                                 |
-| Monorepo            | pnpm workspaces                                                             |
+| Layer               | Technology                                                               |
+| ------------------- | ------------------------------------------------------------------------ |
+| Node.js Backend     | Node.js · Express 5 · TypeScript · Prisma · PostgreSQL (via Docker)      |
+| Python Backend      | Python 3.12 · FastAPI · SQLAlchemy 2 async · Alembic · Pydantic v2       |
+| Auth                | JWT · TOTP MFA (Google Authenticator) · bcrypt                           |
+| Vue Frontend        | Vue 3 SPA · Vite · Vuetify 3 · Pinia · Vue Router 4 — port **5173**      |
+| React Frontend      | React 19 · Vite · MUI v6 · Zustand v5 · React Router v7 — port **5174**  |
+| Angular Frontend    | Angular 18 · Angular Material · Signals · HttpClient — port **5175**     |
+| Nuxt Frontend       | Nuxt 3 · @nuxt/ui _(skeleton, coming soon)_                              |
+| Shared              | `@portfolio/shared` — shared TypeScript classes (Show, Venue, API types) |
+| Back tests          | Jest · Supertest · mocked Prisma                                         |
+| Vue front tests     | Vitest · Vue Test Utils · Playwright E2E                                 |
+| React front tests   | Vitest · Testing Library · Playwright E2E                                |
+| Angular front tests | Jest · jest-preset-angular · Playwright E2E                              |
+| Monorepo            | pnpm workspaces                                                          |
 
 ## Authentication and MFA
 
@@ -111,6 +111,20 @@ docker compose exec -T api npx prisma migrate deploy
 docker compose exec -T api npx prisma db seed
 ```
 
+### Switching backends
+
+Both backends expose the **same API contract** on port **3000**. All three frontends reconnect without any configuration change.
+
+```bash
+# Node.js backend
+cd back && docker compose up --build
+
+# Python backend
+cd back_python && docker compose up --build
+docker compose --project-directory back_python exec api alembic upgrade head
+docker compose --project-directory back_python exec api python seed.py
+```
+
 ### Frontend configuration _(optional)_
 
 The default value is `http://localhost:3000/api`. To change it:
@@ -144,26 +158,15 @@ pnpm dev:angular   # port 5175
 
 The seed creates 5 venues, 5 shows (4 past, 1 upcoming) and 3 accounts:
 
-| Email              | Password | Role  |
-| ------------------ | -------- | ----- |
-| test@test.com      | password | ADMIN |
-| superuser@test.com | password | ADMIN |
-| user@test.com      | password | USER  |
+| Email              | Password | Role  | MFA                             |
+| ------------------ | -------- | ----- | ------------------------------- |
+| test@test.com      | password | ADMIN | —                               |
+| superuser@test.com | password | ADMIN | TOTP pre-configured (see below) |
+| user@test.com      | password | USER  | —                               |
 
-### Switching backends
-
-Both backends expose the **same API contract** on port **3000**. All three frontends reconnect without any configuration change.
-
-```bash
-# Node.js backend
-cd back && docker compose up --build
-
-# Python backend
-cd back_python
-docker compose up --build
-docker compose exec api alembic upgrade head
-docker compose exec api python seed.py
-```
+> **superuser MFA** — The `superuser@test.com` account has MFA enabled with the fixed TOTP secret
+> `JBSWY3DPEHPK3PXP`. Use any authenticator app or generate a code with
+> `pyotp.TOTP('JBSWY3DPEHPK3PXP').now()`. The E2E test suites rely on this account having MFA enabled.
 
 ### Tests
 
