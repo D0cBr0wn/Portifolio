@@ -76,19 +76,11 @@ cp back/.env.example back/.env
 
 Required variables:
 
-```env
+````env
 # Required
 JWT_SECRET=<random string of at least 32 characters>
 DATABASE_URL=postgresql://ooodbuser:password@localhost:5432/ooo_db
 FRONTEND_URL=http://localhost:5173,http://localhost:5174,http://localhost:5175
-
-# Optional (email alerts on suspicious login attempts)
-SMTP_HOST=
-SMTP_PORT=587
-SMTP_USER=
-SMTP_PASS=
-ADMIN_EMAIL=
-```
 
 > **Generate a secure JWT_SECRET:**
 >
@@ -109,7 +101,7 @@ docker compose exec -T api npx prisma migrate deploy
 
 # Seed the database with demo data (idempotent)
 docker compose exec -T api npx prisma db seed
-```
+````
 
 ### Switching backends
 
