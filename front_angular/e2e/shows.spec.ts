@@ -32,7 +32,7 @@ test.describe('Page publique — Concerts', () => {
     await expect(page.getByTestId('shows-heading')).toBeVisible()
   })
 
-  test('affiche les concerts à venir', async ({ page }) => {
+  test('affiche les concerts', async ({ page }) => {
     await page.goto('/shows')
     await expect(page.getByText('Concert du Printemps')).toBeVisible()
     await expect(page.getByText('Fête de la Musique')).toBeVisible()
@@ -63,6 +63,7 @@ test.describe("Page d'accueil", () => {
   test('affiche les prochains concerts', async ({ page }) => {
     await page.goto('/')
     await expect(page.getByText('Concert du Printemps')).toBeVisible()
+    await expect(page.getByText('Concert passé')).not.toBeVisible()
   })
 
   test("le lien 'Voir tous les concerts' navigue vers /shows", async ({ page }) => {
