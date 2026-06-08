@@ -134,7 +134,7 @@ pnpm dev:angular   # port 5175
 
 ### Switching backends
 
-Both backends expose the **same API contract** on port **3000**. All three frontends reconnect without any configuration change.
+Both backends expose the **same API contract** on port **3000**. All three frontends reconnect without any configuration change. You must stop the previous backend before trying the new one.
 
 ```bash
 # Node.js backend
