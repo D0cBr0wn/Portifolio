@@ -4,19 +4,25 @@ const API = 'http://localhost:3000/api'
 
 const mockShows = [
   {
-    id: 1, label: 'Concert du Printemps',
+    id: 1,
+    label: 'Concert du Printemps',
     date: new Date(Date.now() + 30 * 24 * 3600 * 1000).toISOString(),
-    venueId: 1, venue: { id: 1, name: 'Le Zénith', city: 'Paris' },
+    venueId: 1,
+    venue: { id: 1, name: 'Le Zénith', city: 'Paris' },
   },
   {
-    id: 2, label: 'Fête de la Musique',
+    id: 2,
+    label: 'Fête de la Musique',
     date: new Date(Date.now() + 60 * 24 * 3600 * 1000).toISOString(),
-    venueId: 2, venue: { id: 2, name: 'Le Bataclan', city: 'Paris' },
+    venueId: 2,
+    venue: { id: 2, name: 'Le Bataclan', city: 'Paris' },
   },
   {
-    id: 3, label: 'Concert passé',
+    id: 3,
+    label: 'Concert passé',
     date: new Date(Date.now() - 30 * 24 * 3600 * 1000).toISOString(),
-    venueId: 1, venue: { id: 1, name: 'Le Zénith', city: 'Paris' },
+    venueId: 1,
+    venue: { id: 1, name: 'Le Zénith', city: 'Paris' },
   },
 ]
 
@@ -56,6 +62,7 @@ test.describe("Page d'accueil", () => {
   })
 
   test('accessible sans authentification', async ({ page }) => {
+    await page.addInitScript(() => sessionStorage.clear())
     await page.goto('/')
     await expect(page.getByTestId('home-heading')).toBeVisible()
   })
