@@ -3,21 +3,15 @@ import { test, expect } from '@playwright/test'
 const API = 'http://localhost:3000/api'
 const JWT = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoidGVzdEBleGFtcGxlLmNvbSIsImlhdCI6OTk5OTk5OTk5OSwiZXhwIjo5OTk5OTk5OTk5fQ.test'
 
-const mockVenuesFull = [
+const mockVenues = [
   { id: 1, name: 'Le Zénith', city: 'Paris', address1: null, address2: null, zipCode: null, createdBy: null, createdAt: new Date().toISOString() },
 ]
 
 test.describe('Backoffice — Venues', () => {
   test.beforeEach(async ({ page }) => {
     await page.addInitScript((token) => sessionStorage.setItem('token', token), JWT)
-    await page.route(`${API}/venues`, async route => {
-      if (route.request().method() === 'GET') {
-        await route.fulfill({ json: mockVenuesFull })
-      } else {
-        await route.fulfill({ status: 201, json: { id: 2, name: 'Le Bataclan', city: 'Paris', address1: null, address2: null, zipCode: null } })
-      }
-    })
-    await page.route(`${API}/backoffice/venues`, route => route.fulfill({ json: mockVenuesFull }))
+    await page.route(`${API}/venues`, route => route.fulfill({ json: mockVenues }))
+    await page.route(`${API}/backoffice/venues`, route => route.fulfill({ json: mockVenues }))
     await page.route(`${API}/shows`, route => route.fulfill({ json: [] }))
     await page.route(`${API}/backoffice/shows`, route => route.fulfill({ json: [] }))
   })
@@ -35,6 +29,13 @@ test.describe('Backoffice — Venues', () => {
   })
 
   test('crée un nouveau lieu et ferme le dialog', async ({ page }) => {
+    await page.route(`${API}/venues`, async route => {
+      if (route.request().method() === 'POST') {
+        await route.fulfill({ status: 201, json: { id: 2, name: 'Le Bataclan', city: 'Paris', address1: null, address2: null, zipCode: null } })
+      } else {
+        await route.fallback()
+      }
+    })
     await page.goto('/backoffice/venues')
     await page.getByTestId('add-venue-btn').click()
     await expect(page.getByTestId('venue-dialog-title')).toBeVisible()
@@ -49,7 +50,6 @@ test.describe('Backoffice — Venues', () => {
 })
 
 test.describe('Backoffice — Shows', () => {
-  const mockVenues = [{ id: 1, name: 'Le Zénith', city: 'Paris', address1: null, address2: null, zipCode: null }]
   const mockShowsFull = [{
     id: 1,
     label: 'Concert été',
@@ -85,5 +85,6 @@ test.describe('Backoffice — Shows', () => {
 
     await expect(page.getByTestId('show-label-input')).toBeVisible()
     await expect(page.getByTestId('show-date-input')).toBeVisible()
+    await expect(page.getByTestId('show-venue-select')).toBeVisible()
   })
 })

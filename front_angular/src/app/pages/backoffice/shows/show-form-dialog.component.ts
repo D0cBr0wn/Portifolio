@@ -40,7 +40,7 @@ function toLocalDatetimeString(date: Date): string {
 
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>Lieu *</mat-label>
-          <mat-select name="venueId" [(ngModel)]="venueId" required>
+          <mat-select name="venueId" [(ngModel)]="venueId" required data-testid="show-venue-select">
             @for (v of data.venues; track v.id) {
               <mat-option [value]="v.id">{{ v.name }}</mat-option>
             }
