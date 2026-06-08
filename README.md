@@ -144,11 +144,15 @@ pnpm dev:angular   # port 5175
 
 The seed creates 5 venues, 5 shows (4 past, 1 upcoming) and 3 accounts:
 
-| Email              | Password | Role  |
-| ------------------ | -------- | ----- |
-| test@test.com      | password | ADMIN |
-| superuser@test.com | password | ADMIN |
-| user@test.com      | password | USER  |
+| Email              | Password | Role  | MFA                          |
+| ------------------ | -------- | ----- | ---------------------------- |
+| test@test.com      | password | ADMIN | —                            |
+| superuser@test.com | password | ADMIN | TOTP pre-configured (see below) |
+| user@test.com      | password | USER  | —                            |
+
+> **superuser MFA** — The `superuser@test.com` account has MFA enabled with the fixed TOTP secret
+> `JBSWY3DPEHPK3PXP`. Use any authenticator app or generate a code with
+> `pyotp.TOTP('JBSWY3DPEHPK3PXP').now()`. The E2E test suites rely on this account having MFA enabled.
 
 ### Switching backends
 
@@ -159,10 +163,9 @@ Both backends expose the **same API contract** on port **3000**. All three front
 cd back && docker compose up --build
 
 # Python backend
-cd back_python
-docker compose up --build
-docker compose exec api alembic upgrade head
-docker compose exec api python seed.py
+cd back_python && docker compose up --build
+docker compose -f back_python/docker-compose.yml exec api alembic upgrade head
+docker compose -f back_python/docker-compose.yml exec api python seed.py
 ```
 
 ### Tests
