@@ -164,8 +164,8 @@ cd back && docker compose up --build
 
 # Python backend
 cd back_python && docker compose up --build
-docker compose -f back_python/docker-compose.yml exec api alembic upgrade head
-docker compose -f back_python/docker-compose.yml exec api python seed.py
+docker compose --project-directory back_python exec api alembic upgrade head
+docker compose --project-directory back_python exec api python seed.py
 ```
 
 ### Tests
