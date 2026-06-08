@@ -74,6 +74,7 @@ export default function ShowForm({ venues, initial, loading, onSubmit, onCancel 
             select label="Lieu *" fullWidth variant="outlined" size="small"
             value={venueId} onChange={(e) => setVenueId(Number(e.target.value))}
             error={!!errors.venueId} helperText={errors.venueId || (venues.length === 0 ? 'Aucun lieu disponible — créez-en un d\'abord.' : '')}
+            data-testid="show-venue-select"
           >
             {venues.map((v) => (
               <MenuItem key={v.id} value={v.id}>{v.name}</MenuItem>
