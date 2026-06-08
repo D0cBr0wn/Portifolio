@@ -103,20 +103,6 @@ docker compose exec -T api npx prisma migrate deploy
 docker compose exec -T api npx prisma db seed
 ````
 
-### Switching backends
-
-Both backends expose the **same API contract** on port **3000**. All three frontends reconnect without any configuration change.
-
-```bash
-# Node.js backend
-cd back && docker compose up --build
-
-# Python backend
-cd back_python && docker compose up --build
-docker compose --project-directory back_python exec api alembic upgrade head
-docker compose --project-directory back_python exec api python seed.py
-```
-
 ### Frontend configuration _(optional)_
 
 The default value is `http://localhost:3000/api`. To change it:
@@ -145,6 +131,24 @@ pnpm dev:vue       # port 5173
 pnpm dev:react     # port 5174
 pnpm dev:angular   # port 5175
 ```
+
+### Switching backends
+
+Both backends expose the **same API contract** on port **3000**. All three frontends reconnect without any configuration change.
+
+```bash
+# Node.js backend
+cd back && docker compose up --build
+
+# Python backend
+cd back_python && docker compose up --build
+docker compose --project-directory back_python exec api alembic upgrade head
+docker compose --project-directory back_python exec api python seed.py
+```
+
+### Switching frontends
+
+Simply click on the tech badge on the bottom right corner !
 
 ### Demo accounts
 
