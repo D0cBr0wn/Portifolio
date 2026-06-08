@@ -30,6 +30,25 @@ test.describe('Authentification', () => {
     await expect(page).toHaveURL(/\/backoffice\/venues/);
   });
 
+  test("login avec MFA → affiche l'étape code", async ({ page }) => {
+    await page.route(`${API}/auth/login`, (route) =>
+      route.fulfill({
+        status: 206,
+        json: { mfaRequired: true, mfaPendingToken: 'pending-jwt' },
+      }),
+    );
+
+    await page.goto('/login');
+    await page.getByTestId('email-input').fill('superuser@test.com');
+    await page.getByTestId('password-input').fill('password');
+    await page.getByTestId('login-submit').click();
+
+    await expect(page.getByTestId('login-title')).toContainText(
+      'Vérification MFA',
+    );
+    await expect(page.getByTestId('mfa-hint')).toBeVisible();
+  });
+
   test('MFA complet → accès backoffice', async ({ page }) => {
     await page.route(`${API}/auth/login`, (route) =>
       route.fulfill({ status: 206, json: { mfaRequired: true, mfaPendingToken: 'pending-token-123' } }),
@@ -37,6 +56,7 @@ test.describe('Authentification', () => {
     await page.route(`${API}/mfa/login`, (route) =>
       route.fulfill({ json: { verified: true, token: JWT } }),
     );
+    await page.route(`${API}/venues`, (route) => route.fulfill({ json: [] }));
     await page.route(`${API}/backoffice/venues`, (route) =>
       route.fulfill({ json: [] }),
     );
@@ -55,25 +75,6 @@ test.describe('Authentification', () => {
     await expect(page.getByTestId('mfa-submit')).toBeEnabled({ timeout: 3000 });
     await page.getByTestId('mfa-submit').click();
     await expect(page).toHaveURL(/\/backoffice\/venues/);
-  });
-
-  test("login avec MFA → affiche l'étape code", async ({ page }) => {
-    await page.route(`${API}/auth/login`, (route) =>
-      route.fulfill({
-        status: 206,
-        json: { mfaRequired: true, mfaPendingToken: 'pending-jwt' },
-      }),
-    );
-
-    await page.goto('/login');
-    await page.getByTestId('email-input').fill('superuser@test.com');
-    await page.getByTestId('password-input').fill('password');
-    await page.getByTestId('login-submit').click();
-
-    await expect(page.getByTestId('login-title')).toContainText(
-      'Vérification MFA',
-    );
-    await expect(page.getByTestId('mfa-hint')).toBeVisible();
   });
 
   test("mauvais credentials → message d'erreur", async ({ page }) => {
