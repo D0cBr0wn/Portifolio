@@ -8,7 +8,6 @@ import { AdminLayoutComponent } from '../../../layout/admin/admin-layout.compone
 import { ShowStore } from '../../../core/stores/show.store';
 import { VenueStore } from '../../../core/stores/venue.store';
 import { ShowFormDialogComponent } from './show-form-dialog.component';
-import { Show } from '@portfolio/shared';
 import type { ShowData, ShowWithCreator } from '@portfolio/shared';
 
 function formatDate(iso: string): string {
@@ -30,7 +29,7 @@ function formatDate(iso: string): string {
     <app-admin-layout>
       <div class="page-header">
         <h1 class="page-title">Concerts</h1>
-        <button mat-raised-button color="primary" (click)="openCreate()">
+        <button mat-raised-button color="primary" (click)="openCreate()" data-testid="add-show-btn">
           <mat-icon>add</mat-icon> Ajouter un concert
         </button>
       </div>
@@ -180,7 +179,7 @@ export class BackofficeShowsComponent implements OnInit {
     const ref = this.dialog.open(ShowFormDialogComponent, {
       maxWidth: '640px',
       width: '100%',
-      data: { venues: this.venueStore.venues(), initial: new Show(row) },
+      data: { venues: this.venueStore.venues(), initial: row },
     });
     ref.afterClosed().subscribe(async (data: Omit<ShowData, 'id' | 'venue'> | undefined) => {
       if (!data) return;

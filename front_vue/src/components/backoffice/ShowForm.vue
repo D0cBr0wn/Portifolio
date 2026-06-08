@@ -1,6 +1,6 @@
 <template>
   <v-form @submit.prevent="submit" ref="formRef">
-    <p class="text-h6 mb-4">{{ initial ? 'Modifier le concert' : 'Nouveau concert' }}</p>
+    <p class="text-h6 mb-4" data-testid="show-dialog-title">{{ initial ? 'Modifier le concert' : 'Nouveau concert' }}</p>
     <v-row>
       <v-col cols="12" sm="7">
         <v-text-field
@@ -8,6 +8,7 @@
           label="Nom du concert"
           variant="outlined"
           density="comfortable"
+          data-testid="show-label-input"
         />
       </v-col>
       <v-col cols="12" sm="5">
@@ -18,6 +19,7 @@
           variant="outlined"
           density="comfortable"
           :rules="[required]"
+          data-testid="show-date-input"
         />
       </v-col>
       <v-col cols="12">
@@ -54,9 +56,9 @@
 
 <script setup lang="ts">
 import { ref, reactive, onMounted } from 'vue'
-import type { Venue, Show, ShowData } from '@portfolio/shared'
+import type { Venue, ShowData } from '@portfolio/shared'
 
-const props = defineProps<{ venues: Venue[]; loading?: boolean; initial?: Show }>()
+const props = defineProps<{ venues: Venue[]; loading?: boolean; initial?: ShowData }>()
 
 const emit = defineEmits<{
   submit: [data: Omit<ShowData, 'id' | 'venue'>]
@@ -73,7 +75,7 @@ const form = reactive({
 
 onMounted(() => {
   if (props.initial) {
-    const d = props.initial.date
+    const d = new Date(props.initial.date)
     const pad = (n: number) => String(n).padStart(2, '0')
     const localStr = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`
     Object.assign(form, {

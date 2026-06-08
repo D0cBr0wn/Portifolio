@@ -16,18 +16,18 @@ interface DialogData {
   imports: [FormsModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatButtonModule],
   template: `
     <div class="form-container">
-      <h2>{{ data.initial ? 'Modifier le lieu' : 'Nouveau lieu' }}</h2>
+      <h2 data-testid="venue-dialog-title">{{ data.initial ? 'Modifier le lieu' : 'Nouveau lieu' }}</h2>
 
       <form (ngSubmit)="submit()">
         <div class="form-row">
           <mat-form-field appearance="outline" class="flex-1">
             <mat-label>Nom du lieu *</mat-label>
-            <input matInput name="name" [(ngModel)]="name" required />
+            <input matInput name="name" [(ngModel)]="name" required data-testid="venue-name-input" />
             @if (nameError()) { <mat-error>{{ nameError() }}</mat-error> }
           </mat-form-field>
           <mat-form-field appearance="outline" class="flex-1">
             <mat-label>Ville *</mat-label>
-            <input matInput name="city" [(ngModel)]="city" required />
+            <input matInput name="city" [(ngModel)]="city" required data-testid="venue-city-input" />
             @if (cityError()) { <mat-error>{{ cityError() }}</mat-error> }
           </mat-form-field>
         </div>
@@ -44,7 +44,7 @@ interface DialogData {
         </div>
 
         <div class="form-actions">
-          <button mat-raised-button color="primary" type="submit">Enregistrer</button>
+          <button mat-raised-button color="primary" type="submit" data-testid="save-btn">Enregistrer</button>
           <button mat-button type="button" (click)="dialogRef.close()">Annuler</button>
         </div>
       </form>

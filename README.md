@@ -1,62 +1,88 @@
-# Portfolio — Auboulot
+# Portfolio
 
-Site d'artiste avec backoffice de gestion de concerts. Projet de portfolio démontrant la même application réalisée en plusieurs technologies frontend.
+This portfolio project, based on a simplified music venue website, demonstrates the same application built with multiple frontend technologies, backed by two interchangeable backends exposing the same API contract.
 
-## Stack
+## Tech stack
 
-| Couche              | Technologie                                                                 |
+The repository is organized as a pnpm monorepo. It contains two interchangeable backends (Node.js and Python), three independent frontends (Vue, React, Angular), and a shared TypeScript types package used by all frontends.
+
+| Layer               | Technology                                                                  |
 | ------------------- | --------------------------------------------------------------------------- |
-| Backend             | Node.js · Express 5 · TypeScript · Prisma · PostgreSQL (via Docker)         |
+| Node.js Backend     | Node.js · Express 5 · TypeScript · Prisma · PostgreSQL (via Docker)         |
+| Python Backend      | Python 3.12 · FastAPI · SQLAlchemy 2 async · Alembic · Pydantic v2          |
 | Auth                | JWT · TOTP MFA (Google Authenticator) · bcrypt                              |
-| Frontend Vue        | Vue 3 SPA · Vite · Vuetify 3 · Pinia · Vue Router 4 — port **5173**         |
-| Frontend React      | React 19 · Vite · MUI v6 · Zustand v5 · React Router v7 — port **5174**     |
-| Frontend Angular    | Angular 18 · Angular Material · Signals · HttpClient — port **5175**        |
-| Frontend Nuxt       | Nuxt 3 · @nuxt/ui _(squelette, à venir)_                                    |
-| Shared              | `@portfolio/shared` — classes TypeScript partagées (Show, Venue, types API) |
-| Tests back          | Jest · Supertest · Prisma mocké                                             |
-| Tests front Vue     | Vitest · Vue Test Utils · Playwright E2E                                    |
-| Tests front React   | Vitest · Testing Library · Playwright E2E                                   |
-| Tests front Angular | Jest · jest-preset-angular · Playwright E2E                                 |
+| Vue Frontend        | Vue 3 SPA · Vite · Vuetify 3 · Pinia · Vue Router 4 — port **5173**         |
+| React Frontend      | React 19 · Vite · MUI v6 · Zustand v5 · React Router v7 — port **5174**     |
+| Angular Frontend    | Angular 18 · Angular Material · Signals · HttpClient — port **5175**        |
+| Nuxt Frontend       | Nuxt 3 · @nuxt/ui _(skeleton, coming soon)_                                 |
+| Shared              | `@portfolio/shared` — shared TypeScript classes (Show, Venue, API types)    |
+| Back tests          | Jest · Supertest · mocked Prisma                                            |
+| Vue front tests     | Vitest · Vue Test Utils · Playwright E2E                                    |
+| React front tests   | Vitest · Testing Library · Playwright E2E                                   |
+| Angular front tests | Jest · jest-preset-angular · Playwright E2E                                 |
 | Monorepo            | pnpm workspaces                                                             |
 
-## Prérequis
+## Authentication and MFA
+
+The application implements JWT authentication with optional MFA via TOTP (Google Authenticator). On first login, the user is guided through setting up their authenticator app. Subsequent logins prompt for the 6-digit code if MFA is enabled.
+
+```
+1. POST /api/auth/login  { email, password }
+      → 200 { token }                        # MFA not enabled → direct access
+      → 206 { mfaRequired, userId }          # MFA enabled → step 2
+      → 206 { mfaSetupRequired, setupToken } # first login, MFA to configure → step 2b
+
+2.  POST /api/mfa/login   { userId, token }  # TOTP code (MFA enabled)
+      → 200 { token }                        # final JWT
+
+2b. POST /api/mfa/setup   {}  (Authorization: Bearer <setupToken>)
+      → 200 { qrCodeDataURL, secret }        # QR code to scan
+    POST /api/mfa/verify  { token }          # confirm with the TOTP code
+      → 200 { token }                        # final JWT
+
+3. All backoffice routes require: Authorization: Bearer <token>
+4. Admin routes (/users, /backoffice/*) require role = ADMIN
+```
+
+## Prerequisites
 
 - Node.js ≥ 20
 - pnpm ≥ 9 (`npm install -g pnpm`)
-- Docker (pour le backend PostgreSQL)
+- Docker (for the PostgreSQL backend)
+- Python 3.12 (for the Python backend and its tests)
+- `python3.12-venv` — required to isolate Python backend dependencies (not included by default on Debian/Ubuntu):
+  ```bash
+  sudo apt install python3.12-venv
+  ```
 
 ## Installation
 
 ```bash
-# Cloner le dépôt
+# 1. Clone the repository
 git clone <url> && cd Portifolio
 
-# Installer toutes les dépendances (tous les workspaces d'un coup)
+# 2. Install all dependencies (all workspaces at once)
 pnpm install
 
-# Compiler le package partagé (requis avant de lancer les frontends)
+# 3. Build the shared package (required before starting the frontends)
 pnpm build:shared
 ```
 
-## Configuration
-
-### Backend — `back/.env`
-
-Créer le fichier `back/.env` à partir de l'exemple :
+### Backend configuration — `back/.env`
 
 ```bash
 cp back/.env.example back/.env
 ```
 
-Variables requises :
+Required variables:
 
 ```env
-# Obligatoires
-JWT_SECRET=<chaîne aléatoire d'au moins 32 caractères>
+# Required
+JWT_SECRET=<random string of at least 32 characters>
 DATABASE_URL=postgresql://ooodbuser:password@localhost:5432/ooo_db
 FRONTEND_URL=http://localhost:5173,http://localhost:5174,http://localhost:5175
 
-# Optionnelles (alertes email sur tentatives suspectes)
+# Optional (email alerts on suspicious login attempts)
 SMTP_HOST=
 SMTP_PORT=587
 SMTP_USER=
@@ -64,136 +90,107 @@ SMTP_PASS=
 ADMIN_EMAIL=
 ```
 
-> **Générer un JWT_SECRET sécurisé :**
+> **Generate a secure JWT_SECRET:**
 >
 > ```bash
 > node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 > ```
 
-### Frontends — URL du backend _(optionnel)_
-
-Vue et React utilisent une variable d'environnement Vite, Angular un fichier TypeScript :
+### Database
 
 ```bash
-# front_vue/.env.local  ou  front_react/.env.local
+cd back
+
+# Start PostgreSQL + API in Docker (recommended)
+docker compose up --build
+
+# Apply migrations
+docker compose exec -T api npx prisma migrate deploy
+
+# Seed the database with demo data (idempotent)
+docker compose exec -T api npx prisma db seed
+```
+
+### Frontend configuration _(optional)_
+
+The default value is `http://localhost:3000/api`. To change it:
+
+```bash
+# front_vue/.env.local  or  front_react/.env.local
 VITE_API_BASE=http://localhost:3000/api
 
 # front_angular/src/environments/environment.ts
 export const environment = { production: false, apiBase: 'http://localhost:3000/api' }
 ```
 
-La valeur par défaut dans les trois cas est `http://localhost:3000/api`.
+## Usage
 
-## Base de données
-
-Le backend utilise **PostgreSQL** via Docker. Le container est défini dans `back/docker-compose.yml`.
+### Running the project
 
 ```bash
-cd back
+# Backend + database (Docker, hot-reload included)
+cd back && docker compose up --build   # API on :3000
+```
 
-# Démarrer PostgreSQL + API dans Docker (recommandé)
+Then in separate terminals:
+
+```bash
+pnpm dev:vue       # port 5173
+pnpm dev:react     # port 5174
+pnpm dev:angular   # port 5175
+```
+
+### Demo accounts
+
+The seed creates 5 venues, 5 shows (4 past, 1 upcoming) and 3 accounts:
+
+| Email              | Password | Role  |
+| ------------------ | -------- | ----- |
+| test@test.com      | password | ADMIN |
+| superuser@test.com | password | ADMIN |
+| user@test.com      | password | USER  |
+
+### Switching backends
+
+Both backends expose the **same API contract** on port **3000**. All three frontends reconnect without any configuration change.
+
+```bash
+# Node.js backend
+cd back && docker compose up --build
+
+# Python backend
+cd back_python
 docker compose up --build
-
-# Première fois (et après chaque reset de volume) : appliquer les migrations
-docker compose exec api npx prisma migrate deploy
-
-# Pré-remplir la base avec les données de démo (idempotent)
-docker-compose exec -T api npx prisma db seed
-
-# Ouvrir Prisma Studio (pointe sur le PostgreSQL local, port 5432)
-npx prisma studio
+docker compose exec api alembic upgrade head
+docker compose exec api python seed.py
 ```
 
-> **Sans Docker** : démarrer un PostgreSQL local, mettre `DATABASE_URL` à jour dans `back/.env`, puis `npx prisma migrate deploy` dans `back/`.
+### Tests
 
-## Données de démonstration
-
-Le seed recrée un jeu de données de référence (idempotent — relancer la commande remet la base dans son état initial) :
-
-- 5 salles de concert
-- 5 concerts (4 passés, 1 à venir)
-- 3 comptes utilisateurs
-
-| Email           | Mot de passe | Rôle  |
-|-----------------|--------------|-------|
-| test@test.com   | password     | ADMIN |
-| admin@demo.com  | password     | ADMIN |
-| user@test.com   | password     | USER  |
+340 unit tests spread across 5 suites.
 
 ```bash
-# Avec Docker
-docker-compose exec -T api npx prisma db seed
-
-# Sans Docker (depuis back/)
-npx prisma db seed
-```
-
-## Lancer le projet
-
-### Avec Docker (recommandé — backend complet)
-
-```bash
-cd back && docker compose up --build   # PostgreSQL + API sur :3000
-```
-
-Puis dans d'autres terminaux :
-
-```bash
-pnpm dev:vue       # port 5173
-pnpm dev:react     # port 5174
-pnpm dev:angular   # port 5175
-```
-
-### En local (hot-reload API)
-
-PostgreSQL doit tourner séparément (ex. `docker compose up postgres` dans `back/`).
-
-```bash
-pnpm dev:back      # nodemon + ts-node, port 3000
-
-pnpm dev:vue       # port 5173
-pnpm dev:react     # port 5174
-pnpm dev:angular   # port 5175
-```
-
-### Depuis chaque workspace
-
-```bash
-cd back          && pnpm dev   # port 3000
-cd front_vue     && pnpm dev   # port 5173
-cd front_react   && pnpm dev   # port 5174
-cd front_angular && pnpm dev   # port 5175
-```
-
-## Tests
-
-### Tests unitaires
-
-316 tests au total répartis sur 5 suites.
-
-```bash
-# Tous les workspaces d'un coup
+# All workspaces at once
 pnpm test
 
-# Par workspace
-pnpm test:back     # Jest + Supertest — 142 tests, seuil couverture 70 %
-pnpm test:vue      # Vitest + Vue Test Utils — 48 tests
-pnpm test:react    # Vitest + Testing Library — 58 tests
-pnpm test:angular  # Jest + jest-preset-angular — 54 tests
-pnpm test:shared   # Vitest — 14 tests (classes Show et Venue)
+# Per workspace
+pnpm test:back     # Jest + Supertest — 150 tests, 70% coverage threshold
+pnpm test:vue      # Vitest + Vue Test Utils — 55 tests
+pnpm test:react    # Vitest + Testing Library — 65 tests
+pnpm test:angular  # Jest + jest-preset-angular — 56 tests
+pnpm test:shared   # Vitest — 14 tests (Show and Venue classes)
 
-# Couverture (rapport HTML généré dans coverage/)
+# Coverage (HTML report generated in coverage/)
 cd front_vue     && pnpm test:coverage
 cd front_react   && pnpm test:coverage
 cd front_angular && pnpm test:coverage
 ```
 
-> `pnpm test` et `pnpm test:back` nécessitent que PostgreSQL soit accessible (`DATABASE_URL` configuré).
+> `pnpm test` and `pnpm test:back` require PostgreSQL to be accessible (`DATABASE_URL` configured).
 
-### Tests E2E Playwright
+### Playwright E2E tests
 
-Les specs E2E mockent l'API via `page.route()` — **le backend n'a pas besoin de tourner**.  
-Le frontend ciblé doit être démarré, ou `webServer` dans `playwright.config.ts` le lance automatiquement.
+E2E specs mock the API via `page.route()` — **the backend does not need to be running**.
 
 ```bash
 cd front_vue     && pnpm test:e2e   # port 5173 — auth, shows, backoffice
@@ -201,69 +198,11 @@ cd front_react   && pnpm test:e2e   # port 5174 — auth, shows, backoffice
 cd front_angular && pnpm test:e2e   # port 5175 — auth, shows, backoffice
 ```
 
-## Structure du monorepo
+### Prisma Studio
 
+The database can be browsed using Prisma Studio:
+
+```bash
+# Open the Prisma Studio interface (points to local PostgreSQL, port 5432)
+npx prisma studio
 ```
-Portifolio/
-├── back/                    # @portfolio/back — API Express 5
-│   ├── src/
-│   │   ├── routes/          # shows, venues, users, auth, mfa, backoffice
-│   │   ├── middleware/      # auth, rate limiting, IP ban, MFA, adminTrap
-│   │   └── schemas/         # validation Zod
-│   └── prisma/
-│       └── schema.prisma
-├── front_vue/               # @portfolio/front-vue — Vue 3 (port 5173)
-│   └── src/
-│       ├── services/        # api, show, venue, auth, user, backoffice
-│       ├── stores/          # Pinia : auth, show, venue, user
-│       ├── views/           # Home, Shows, Login, Register, backoffice/*
-│       └── components/      # layouts, forms
-├── front_react/             # @portfolio/front-react — React 19 (port 5174)
-│   └── src/
-│       ├── services/        # api, show, venue, auth, user, backoffice
-│       ├── stores/          # Zustand : auth, show, venue, user
-│       ├── pages/           # Home, Shows, Login, Register, backoffice/*
-│       └── components/      # layouts, forms
-├── front_angular/           # @portfolio/front-angular — Angular 18 (port 5175)
-│   └── src/app/
-│       ├── core/
-│       │   ├── services/    # api, auth, show, venue, user, backoffice
-│       │   ├── stores/      # Signals : auth, show, venue, user
-│       │   └── guards/      # auth, admin, guest
-│       ├── pages/           # home, shows, login, register, backoffice/*
-│       └── layout/          # public, admin
-├── front_nuxt/              # squelette Nuxt 3 (hors workspace pnpm, à venir)
-├── packages/
-│   └── shared/              # @portfolio/shared — types partagés
-│       └── src/
-│           ├── models/      # class Show, class Venue
-│           └── types/       # ShowData, VenueData, UserData, AuthResponse…
-├── pnpm-workspace.yaml
-└── package.json             # scripts racine
-```
-
-## Flux d'authentification (MFA)
-
-```
-1. POST /api/auth/login  { email, password }
-      → 200 { token }                        # MFA non activé → accès direct
-      → 206 { mfaRequired, userId }          # MFA activé → étape 2
-      → 206 { mfaSetupRequired, setupToken } # premier login, MFA à configurer → étape 2b
-
-2.  POST /api/mfa/login   { userId, token }  # code TOTP (MFA activé)
-      → 200 { token }                        # JWT final
-
-2b. POST /api/mfa/setup   {}  (Authorization: Bearer <setupToken>)
-      → 200 { qrCodeDataURL, secret }        # QR code à scanner
-    POST /api/mfa/verify  { token }          # confirmer avec le code TOTP
-      → 200 { token }                        # JWT final
-
-3. Toutes les routes backoffice nécessitent : Authorization: Bearer <token>
-4. Routes admin (/users, /backoffice/*) nécessitent role = ADMIN
-```
-
-## Workflow Git
-
-- `main` — branche stable
-- `dev` — branche d'intégration
-- `feature/<nom>` ou `test/<nom>` — une branche par tâche, PR vers `dev`

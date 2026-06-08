@@ -79,15 +79,16 @@ describe('POST /api/auth/register', () => {
     expect(res.body.error).toBe('Identifiants invalides')
   })
 
-  it('crée un ADMIN si isAdmin=true', async () => {
-    userMock.create.mockResolvedValue({ id: 2, email: 'admin@demo.com', password: 'hash', role: 'ADMIN', mfaSecret: null, banUntil: null })
+  it('ignore isAdmin=true et crée un USER', async () => {
+    userMock.create.mockResolvedValue({ id: 2, email: 'user2@test.com', password: 'hash', role: 'USER', mfaSecret: null, banUntil: null })
+    userMock.count.mockResolvedValue(1)
 
     await request(app)
       .post('/api/auth/register')
-      .send({ email: 'admin@demo.com', password: 'password123', isAdmin: true })
+      .send({ email: 'user2@test.com', password: 'password123', isAdmin: true })
 
     expect(userMock.create).toHaveBeenCalledWith(
-      expect.objectContaining({ data: expect.objectContaining({ role: 'ADMIN' }) })
+      expect.objectContaining({ data: expect.objectContaining({ role: 'USER' }) })
     )
   })
 })
@@ -115,7 +116,7 @@ describe('POST /api/auth/login', () => {
     expect(decoded.role).toBe('USER')
   })
 
-  it('retourne 206 + mfaRequired si MFA activé', async () => {
+  it('retourne 206 + mfaPendingToken si MFA activé', async () => {
     const bcrypt = await import('bcryptjs')
     const hash = await bcrypt.hash('password123', 1)
 
@@ -129,8 +130,14 @@ describe('POST /api/auth/login', () => {
 
     expect(res.status).toBe(206)
     expect(res.body.mfaRequired).toBe(true)
-    expect(res.body.userId).toBe(1)
+    expect(res.body.mfaPendingToken).toBeDefined()
+    expect(res.body.userId).toBeUndefined()
     expect(res.body.token).toBeUndefined()
+
+    const jwt = await import('jsonwebtoken')
+    const decoded = jwt.verify(res.body.mfaPendingToken, process.env.JWT_SECRET!) as { scope: string; userId: number }
+    expect(decoded.scope).toBe('mfa-pending')
+    expect(decoded.userId).toBe(1)
   })
 
   it('retourne 401 avec message générique si mot de passe incorrect', async () => {

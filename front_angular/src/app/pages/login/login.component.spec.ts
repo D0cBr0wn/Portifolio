@@ -47,13 +47,33 @@ describe('LoginComponent', () => {
   });
 
   it('affiche l\'étape MFA après une réponse mfaRequired', async () => {
-    authService.login.mockReturnValue(of({ mfaRequired: true, userId: 42 }));
+    authService.login.mockReturnValue(of({ mfaRequired: true, mfaPendingToken: 'pending-jwt' }));
     fixture.componentInstance.email = 'a@b.com';
     fixture.componentInstance.password = 'pass';
     await fixture.componentInstance.submitCredentials();
     fixture.detectChanges();
     expect(fixture.componentInstance.step()).toBe('mfa');
     expect(fixture.nativeElement.textContent).toContain('Vérification MFA');
+  });
+
+  it('reste sur credentials si mfaRequired sans mfaPendingToken', async () => {
+    authService.login.mockReturnValue(of({ mfaRequired: true }));
+    fixture.componentInstance.email = 'a@b.com';
+    fixture.componentInstance.password = 'pass';
+    await fixture.componentInstance.submitCredentials();
+    fixture.detectChanges();
+    expect(fixture.componentInstance.step()).toBe('credentials');
+  });
+
+  it('passe le pendingMfaToken à verifyMfa lors de la soumission MFA', async () => {
+    authService.login.mockReturnValue(of({ mfaRequired: true, mfaPendingToken: 'pending-jwt' }));
+    authService.verifyMfa.mockReturnValue(of({ verified: true, token: 'final-jwt' }));
+    fixture.componentInstance.email = 'a@b.com';
+    fixture.componentInstance.password = 'pass';
+    await fixture.componentInstance.submitCredentials();
+    fixture.componentInstance.mfaCode = '123456';
+    fixture.componentInstance.submitMfa();
+    expect(authService.verifyMfa).toHaveBeenCalledWith('pending-jwt', '123456');
   });
 
   it('affiche une erreur serveur sur identifiants invalides', async () => {

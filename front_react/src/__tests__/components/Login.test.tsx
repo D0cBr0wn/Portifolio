@@ -59,7 +59,7 @@ describe('Login', () => {
   })
 
   it('affiche l\'étape MFA après une réponse mfaRequired', async () => {
-    mockAuth.login.mockResolvedValue({ mfaRequired: true, userId: 42 })
+    mockAuth.login.mockResolvedValue({ mfaRequired: true, mfaPendingToken: 'pending-jwt' })
     renderLogin()
     await userEvent.type(screen.getByLabelText(/Email/i), 'a@b.com')
     await userEvent.type(screen.getByLabelText(/Mot de passe/i), 'pass')

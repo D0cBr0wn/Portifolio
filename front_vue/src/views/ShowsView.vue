@@ -1,6 +1,6 @@
 <template>
   <PublicLayout>
-    <h1 class="page-title">Concerts</h1>
+    <h1 class="page-title" data-testid="shows-heading">Concerts</h1>
 
     <v-progress-linear v-if="store.loading" indeterminate color="primary" class="mb-4" />
 

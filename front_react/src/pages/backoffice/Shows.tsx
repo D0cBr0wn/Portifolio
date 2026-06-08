@@ -12,7 +12,6 @@ import AdminLayout from '@/components/layout/AdminLayout'
 import ShowForm from '@/components/backoffice/ShowForm'
 import { useShowStore } from '@/stores/showStore'
 import { useVenueStore } from '@/stores/venueStore'
-import { Show } from '@portfolio/shared'
 import type { ShowData, ShowWithCreator } from '@portfolio/shared'
 
 function formatDate(iso: string) {
@@ -23,7 +22,7 @@ export default function BackofficeShows() {
   const showStore = useShowStore()
   const venueStore = useVenueStore()
   const [createOpen, setCreateOpen] = useState(false)
-  const [editTarget, setEditTarget] = useState<Show | null>(null)
+  const [editTarget, setEditTarget] = useState<ShowWithCreator | null>(null)
   const [deleteTarget, setDeleteTarget] = useState<ShowWithCreator | null>(null)
 
   useEffect(() => {
@@ -70,7 +69,7 @@ export default function BackofficeShows() {
       field: 'actions', headerName: '', width: 90, sortable: false,
       renderCell: ({ row }) => (
         <>
-          <IconButton size="small" onClick={() => setEditTarget(new Show(row))}><EditIcon fontSize="small" /></IconButton>
+          <IconButton size="small" onClick={() => setEditTarget(row)}><EditIcon fontSize="small" /></IconButton>
           <IconButton size="small" color="error" onClick={() => setDeleteTarget(row)}><DeleteIcon fontSize="small" /></IconButton>
         </>
       ),
@@ -81,7 +80,7 @@ export default function BackofficeShows() {
     <AdminLayout>
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
         <Typography variant="h5">Concerts</Typography>
-        <Button variant="contained" startIcon={<AddIcon />} onClick={() => setCreateOpen(true)}>
+        <Button variant="contained" startIcon={<AddIcon />} onClick={() => setCreateOpen(true)} data-testid="add-show-btn">
           Ajouter un concert
         </Button>
       </Box>

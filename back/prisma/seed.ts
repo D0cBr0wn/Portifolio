@@ -17,7 +17,7 @@ async function main() {
     }),
     prisma.user.create({
       data: {
-        email: 'admin@demo.com',
+        email: 'superuser@test.com',
         password: '$2b$12$QhhGT3ZbwVqGXEcbCBwobuNnKH2zNVCT.z21EHu7UZv.mUYlquDVa',
         role: Role.ADMIN,
       },

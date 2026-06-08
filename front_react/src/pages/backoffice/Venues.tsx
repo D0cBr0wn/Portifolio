@@ -75,7 +75,7 @@ export default function Venues() {
     <AdminLayout>
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
         <Typography variant="h5">Lieux de concerts</Typography>
-        <Button variant="contained" startIcon={<AddIcon />} onClick={() => setCreateOpen(true)}>
+        <Button variant="contained" startIcon={<AddIcon />} onClick={() => setCreateOpen(true)} data-testid="add-venue-btn">
           Ajouter un lieu
         </Button>
       </Box>

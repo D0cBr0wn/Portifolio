@@ -5,8 +5,8 @@ export const authService = {
   login: (email: string, password: string) =>
     api.post<AuthResponse>('/auth/login', { email, password }),
 
-  verifyMfa: (userId: number, token: string) =>
-    api.post<MfaVerifyResponse>('/mfa/login', { userId, token }),
+  verifyMfa: (pendingToken: string, code: string) =>
+    api.postAs<MfaVerifyResponse>('/mfa/login', { token: code }, pendingToken),
 
   setupMfa: () =>
     api.post<{ qrCodeDataURL: string; secret: string }>('/mfa/setup', {}),

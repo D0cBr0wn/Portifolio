@@ -1,7 +1,7 @@
 <template>
   <div class="login-page">
     <v-card class="login-card" elevation="8">
-      <v-card-title class="login-title">
+      <v-card-title class="login-title" data-testid="login-title">
         <span v-if="step === 'credentials'">Connexion</span>
         <span v-else-if="step === 'mfa'">Vérification MFA</span>
         <span v-else>Configuration MFA</span>
@@ -19,6 +19,7 @@
             autocomplete="email"
             :error-messages="errors.email"
             class="mb-3"
+            data-testid="email-input"
           />
           <v-text-field
             v-model="password"
@@ -31,8 +32,9 @@
             :append-inner-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
             class="mb-4"
             @click:append-inner="showPassword = !showPassword"
+            data-testid="password-input"
           />
-          <v-alert v-if="serverError" type="error" density="compact" class="mb-4">
+          <v-alert v-if="serverError" type="error" density="compact" class="mb-4" data-testid="server-error">
             {{ serverError }}
           </v-alert>
           <v-btn
@@ -41,6 +43,7 @@
             block
             size="large"
             :loading="loading"
+            data-testid="login-submit"
           >
             Se connecter
           </v-btn>
@@ -54,21 +57,23 @@
           <v-progress-circular indeterminate color="primary" class="d-flex mx-auto" />
         </template>
         <template v-else>
-          <p class="mfa-hint">
+          <p class="mfa-hint" data-testid="mfa-hint">
             Scannez ce QR code avec Google Authenticator ou une application TOTP compatible, puis entrez le code généré.
           </p>
           <div class="d-flex justify-center mb-4">
             <img :src="qrCodeDataURL" alt="QR Code MFA" width="180" height="180" />
           </div>
           <v-form @submit.prevent="submitMfaSetup">
-            <v-otp-input
-              ref="otpSetupRef"
-              v-model="mfaSetupCode"
-              length="6"
-              type="number"
-              class="mb-4"
-            />
-            <v-alert v-if="serverError" type="error" density="compact" class="mb-4">
+            <div data-testid="otp-wrapper">
+              <v-otp-input
+                ref="otpSetupRef"
+                v-model="mfaSetupCode"
+                length="6"
+                type="number"
+                class="mb-4"
+              />
+            </div>
+            <v-alert v-if="serverError" type="error" density="compact" class="mb-4" data-testid="server-error">
               {{ serverError }}
             </v-alert>
             <v-btn
@@ -78,6 +83,7 @@
               size="large"
               :loading="loading"
               :disabled="mfaSetupCode.length < 6"
+              data-testid="mfa-submit"
             >
               Confirmer
             </v-btn>
@@ -87,19 +93,21 @@
 
       <!-- Étape 2 : code Google Authenticator -->
       <v-card-text v-else>
-        <p class="mfa-hint">
+        <p class="mfa-hint" data-testid="mfa-hint">
           Saisissez le code à 6 chiffres affiché dans votre application
           Google Authenticator.
         </p>
         <v-form @submit.prevent="submitMfa">
-          <v-otp-input
-            ref="otpInputRef"
-            v-model="mfaCode"
-            length="6"
-            type="number"
-            class="mb-4"
-          />
-          <v-alert v-if="serverError" type="error" density="compact" class="mb-4">
+          <div data-testid="otp-wrapper">
+            <v-otp-input
+              ref="otpInputRef"
+              v-model="mfaCode"
+              length="6"
+              type="number"
+              class="mb-4"
+            />
+          </div>
+          <v-alert v-if="serverError" type="error" density="compact" class="mb-4" data-testid="server-error">
             {{ serverError }}
           </v-alert>
           <v-btn
@@ -109,6 +117,7 @@
             size="large"
             :loading="loading"
             :disabled="mfaCode.length < 6"
+            data-testid="mfa-submit"
           >
             Vérifier
           </v-btn>
@@ -150,7 +159,7 @@ const qrCodeDataURL = ref('')
 const pendingSetupToken = ref('')
 const loading = ref(false)
 const serverError = ref('')
-const pendingUserId = ref<number | null>(null)
+const pendingMfaToken = ref('')
 
 const errors = ref({ email: '', password: '' })
 const otpInputRef = ref<{ focus: () => void } | null>(null)
@@ -179,8 +188,8 @@ async function submitCredentials() {
       step.value = 'mfa-setup'
       const setup = await authService.setupMfaWithToken(res.setupToken)
       qrCodeDataURL.value = setup.qrCodeDataURL
-    } else if (res.mfaRequired && res.userId) {
-      pendingUserId.value = res.userId
+    } else if (res.mfaRequired && res.mfaPendingToken) {
+      pendingMfaToken.value = res.mfaPendingToken
       step.value = 'mfa'
     } else if (res.token) {
       authStore.setToken(res.token)
@@ -210,11 +219,11 @@ async function submitMfaSetup() {
 }
 
 async function submitMfa() {
-  if (!pendingUserId.value || mfaCode.value.length < 6) return
+  if (!pendingMfaToken.value || mfaCode.value.length < 6) return
   loading.value = true
   serverError.value = ''
   try {
-    const res = await authService.verifyMfa(pendingUserId.value, mfaCode.value)
+    const res = await authService.verifyMfa(pendingMfaToken.value, mfaCode.value)
     authStore.setToken(res.token)
     router.push('/backoffice/venues')
   } catch {

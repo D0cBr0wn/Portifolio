@@ -29,14 +29,14 @@ type Step = 'credentials' | 'mfa' | 'mfa-setup';
     <div class="login-wrapper">
       <mat-card class="login-card">
         <mat-card-content>
-          <h2 class="card-title">{{ stepTitle() }}</h2>
+          <h2 class="card-title" data-testid="login-title">{{ stepTitle() }}</h2>
 
           @if (step() === 'credentials') {
             <form (ngSubmit)="submitCredentials()">
               <mat-form-field appearance="outline" class="full-width">
                 <mat-label>Email</mat-label>
                 <input matInput type="email" name="email" [(ngModel)]="email"
-                       required autocomplete="email" />
+                       required autocomplete="email" data-testid="email-input" />
                 @if (emailError()) { <mat-error>{{ emailError() }}</mat-error> }
               </mat-form-field>
 
@@ -44,7 +44,7 @@ type Step = 'credentials' | 'mfa' | 'mfa-setup';
                 <mat-label>Mot de passe</mat-label>
                 <input matInput [type]="showPassword() ? 'text' : 'password'"
                        name="password" [(ngModel)]="password"
-                       required autocomplete="current-password" />
+                       required autocomplete="current-password" data-testid="password-input" />
                 <button mat-icon-button matSuffix type="button"
                         (click)="showPassword.set(!showPassword())">
                   <mat-icon>{{ showPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
@@ -53,11 +53,12 @@ type Step = 'credentials' | 'mfa' | 'mfa-setup';
               </mat-form-field>
 
               @if (serverError()) {
-                <div class="error-msg">{{ serverError() }}</div>
+                <div class="error-msg" data-testid="server-error">{{ serverError() }}</div>
               }
 
               <button mat-raised-button color="primary" type="submit"
-                      class="full-width submit-btn" [disabled]="loading()">
+                      class="full-width submit-btn" [disabled]="loading()"
+                      data-testid="login-submit">
                 @if (loading()) { <mat-spinner diameter="22" /> } @else { Se connecter }
               </button>
             </form>
@@ -69,7 +70,7 @@ type Step = 'credentials' | 'mfa' | 'mfa-setup';
                 <p class="hint">Votre administrateur a activé le MFA. Chargement du QR code…</p>
                 <mat-spinner style="margin: auto" />
               } @else {
-                <p class="hint">Scannez ce QR code avec Google Authenticator ou une app TOTP, puis entrez le code généré.</p>
+                <p class="hint" data-testid="mfa-hint">Scannez ce QR code avec Google Authenticator ou une app TOTP, puis entrez le code généré.</p>
                 <div class="qr-wrapper">
                   <img [src]="qrCodeDataURL()" alt="QR Code MFA" width="180" height="180" />
                 </div>
@@ -77,12 +78,13 @@ type Step = 'credentials' | 'mfa' | 'mfa-setup';
                   <mat-label>Code à 6 chiffres</mat-label>
                   <input matInput name="mfaSetupCode" [(ngModel)]="mfaSetupCode"
                          inputmode="numeric" maxlength="6"
-                         (input)="filterDigits('setup')" #setupInput />
+                         (input)="filterDigits('setup')" #setupInput data-testid="otp-input" />
                 </mat-form-field>
-                @if (serverError()) { <div class="error-msg">{{ serverError() }}</div> }
+                @if (serverError()) { <div class="error-msg" data-testid="server-error">{{ serverError() }}</div> }
                 <button mat-raised-button color="primary" type="submit"
                         class="full-width submit-btn"
-                        [disabled]="loading() || mfaSetupCode.length < 6">
+                        [disabled]="loading() || mfaSetupCode.length < 6"
+                        data-testid="mfa-submit">
                   @if (loading()) { <mat-spinner diameter="22" /> } @else { Confirmer }
                 </button>
               }
@@ -91,17 +93,18 @@ type Step = 'credentials' | 'mfa' | 'mfa-setup';
 
           @if (step() === 'mfa') {
             <form (ngSubmit)="submitMfa()">
-              <p class="hint">Saisissez le code à 6 chiffres de votre application Google Authenticator.</p>
+              <p class="hint" data-testid="mfa-hint">Saisissez le code à 6 chiffres de votre application Google Authenticator.</p>
               <mat-form-field appearance="outline" class="full-width otp-field">
                 <mat-label>Code à 6 chiffres</mat-label>
                 <input matInput name="mfaCode" [(ngModel)]="mfaCode"
                        inputmode="numeric" maxlength="6"
-                       (input)="filterDigits('mfa')" #mfaInput />
+                       (input)="filterDigits('mfa')" #mfaInput data-testid="otp-input" />
               </mat-form-field>
-              @if (serverError()) { <div class="error-msg">{{ serverError() }}</div> }
+              @if (serverError()) { <div class="error-msg" data-testid="server-error">{{ serverError() }}</div> }
               <button mat-raised-button color="primary" type="submit"
                       class="full-width submit-btn"
-                      [disabled]="loading() || mfaCode.length < 6">
+                      [disabled]="loading() || mfaCode.length < 6"
+                      data-testid="mfa-submit">
                 @if (loading()) { <mat-spinner diameter="22" /> } @else { Vérifier }
               </button>
               <button mat-button type="button" class="full-width"
@@ -235,7 +238,7 @@ export class LoginComponent implements AfterViewInit {
   mfaSetupCode = '';
 
   private pendingSetupToken = '';
-  private pendingUserId: number | null = null;
+  private pendingMfaToken = '';
 
   readonly stepTitle = () => {
     const s = this.step();
@@ -285,8 +288,8 @@ export class LoginComponent implements AfterViewInit {
           this.authService.setupMfaWithToken(res.setupToken).subscribe({
             next: (setup) => this.qrCodeDataURL.set(setup.qrCodeDataURL),
           });
-        } else if (res.mfaRequired && res.userId) {
-          this.pendingUserId = res.userId;
+        } else if (res.mfaRequired && res.mfaPendingToken) {
+          this.pendingMfaToken = res.mfaPendingToken;
           this.step.set('mfa');
         } else if (res.token) {
           this.authStore.setToken(res.token);
@@ -320,10 +323,10 @@ export class LoginComponent implements AfterViewInit {
   }
 
   submitMfa(): void {
-    if (!this.pendingUserId || this.mfaCode.length < 6) return;
+    if (!this.pendingMfaToken || this.mfaCode.length < 6) return;
     this.loading.set(true);
     this.serverError.set('');
-    this.authService.verifyMfa(this.pendingUserId, this.mfaCode).subscribe({
+    this.authService.verifyMfa(this.pendingMfaToken, this.mfaCode).subscribe({
       next: (res) => {
         this.authStore.setToken(res.token);
         this.router.navigate(['/backoffice/venues']);

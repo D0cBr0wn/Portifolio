@@ -5,11 +5,11 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
-import type { Show, ShowData, Venue } from '@portfolio/shared';
+import type { ShowData, Venue } from '@portfolio/shared';
 
 interface DialogData {
   venues: Venue[];
-  initial: Show | null;
+  initial: ShowData | null;
 }
 
 function toLocalDatetimeString(date: Date): string {
@@ -23,24 +23,24 @@ function toLocalDatetimeString(date: Date): string {
   imports: [FormsModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatButtonModule],
   template: `
     <div class="form-container">
-      <h2>{{ data.initial ? 'Modifier le concert' : 'Nouveau concert' }}</h2>
+      <h2 data-testid="show-dialog-title">{{ data.initial ? 'Modifier le concert' : 'Nouveau concert' }}</h2>
 
       <form (ngSubmit)="submit()">
         <div class="form-row">
           <mat-form-field appearance="outline" style="flex: 2">
             <mat-label>Nom du concert</mat-label>
-            <input matInput name="label" [(ngModel)]="label" />
+            <input matInput name="label" [(ngModel)]="label" data-testid="show-label-input" />
           </mat-form-field>
           <mat-form-field appearance="outline" style="flex: 1.5">
             <mat-label>Date *</mat-label>
-            <input matInput type="datetime-local" name="date" [(ngModel)]="date" required />
+            <input matInput type="datetime-local" name="date" [(ngModel)]="date" required data-testid="show-date-input" />
             @if (dateError()) { <mat-error>{{ dateError() }}</mat-error> }
           </mat-form-field>
         </div>
 
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>Lieu *</mat-label>
-          <mat-select name="venueId" [(ngModel)]="venueId" required>
+          <mat-select name="venueId" [(ngModel)]="venueId" required data-testid="show-venue-select">
             @for (v of data.venues; track v.id) {
               <mat-option [value]="v.id">{{ v.name }}</mat-option>
             }
@@ -57,7 +57,7 @@ function toLocalDatetimeString(date: Date): string {
         </mat-form-field>
 
         <div class="form-actions">
-          <button mat-raised-button color="primary" type="submit">Enregistrer</button>
+          <button mat-raised-button color="primary" type="submit" data-testid="save-btn">Enregistrer</button>
           <button mat-button type="button" (click)="dialogRef.close()">Annuler</button>
         </div>
       </form>
@@ -88,7 +88,7 @@ export class ShowFormDialogComponent implements OnInit {
     const init = this.data.initial;
     if (init) {
       this.label = init.label ?? '';
-      this.date = toLocalDatetimeString(init.date);
+      this.date = toLocalDatetimeString(new Date(init.date));
       this.venueId = init.venueId;
       this.details = init.details ?? '';
     }

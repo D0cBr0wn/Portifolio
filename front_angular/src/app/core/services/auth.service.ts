@@ -16,8 +16,9 @@ export class AuthService {
     return this.api.post('/auth/register', { email, password, isAdmin });
   }
 
-  verifyMfa(userId: number, token: string): Observable<MfaVerifyResponse> {
-    return this.api.post<MfaVerifyResponse>('/mfa/login', { userId, token });
+  verifyMfa(pendingToken: string, code: string): Observable<MfaVerifyResponse> {
+    const headers = new HttpHeaders({ Authorization: `Bearer ${pendingToken}` });
+    return this.api.post<MfaVerifyResponse>('/mfa/login', { token: code }, headers);
   }
 
   setupMfa(): Observable<{ qrCodeDataURL: string; secret: string }> {

@@ -13,7 +13,7 @@ import { ShowStore } from '../../core/stores/show.store';
   template: `
     <app-public-layout>
       <div class="hero-text">
-        <h1 class="hero-title">Portfolio</h1>
+        <h1 class="hero-title" data-testid="home-heading">Portfolio</h1>
         <p class="hero-desc">
           Odyssey Of One, is a raw, minimalist folk music project, built around
           Nico's guitar and voice, formerly the bass player of the post-hardcore
@@ -48,7 +48,7 @@ import { ShowStore } from '../../core/stores/show.store';
               </mat-card>
             }
           </div>
-          <a mat-button [routerLink]="'/shows'" class="see-all-btn">
+          <a mat-button [routerLink]="'/shows'" class="see-all-btn" data-testid="view-all-shows">
             Voir tous les concerts
             <mat-icon iconPositionEnd>arrow_forward</mat-icon>
           </a>
@@ -125,6 +125,8 @@ import { ShowStore } from '../../core/stores/show.store';
     .see-all-btn {
       margin-top: 1rem;
       color: #c59a47;
+      text-transform: none;
+      letter-spacing: normal;
     }
 
     .error-msg {

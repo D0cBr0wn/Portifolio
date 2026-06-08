@@ -3,7 +3,7 @@
     <v-app-bar color="primary" flat>
       <v-app-bar-title>Portfolio — Backoffice</v-app-bar-title>
       <template #append>
-        <v-btn variant="text" @click="handleLogout">Déconnexion</v-btn>
+        <v-btn variant="text" data-testid="logout-btn" @click="handleLogout">Déconnexion</v-btn>
       </template>
     </v-app-bar>
     <v-navigation-drawer permanent>

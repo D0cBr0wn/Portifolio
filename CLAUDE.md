@@ -7,6 +7,7 @@ Odyssey of One is a technical showcase project used to demonstrate full-stack en
 The repository contains:
 
 - A Node.js / Express / TypeScript backend (`back/`)
+- A Python / FastAPI backend (`back_python/`) — interchangeable with `back/`, same API contract
 - Three independent front-end implementations exposing the same business domain:
   - Vue
   - React
@@ -133,7 +134,6 @@ Important:
 
 - Prisma client is generated into `generated/prisma_client/`
 - Always import Prisma from `generated/prisma_client`
-- Local development uses SQLite
 - Docker uses PostgreSQL through `DATABASE_URL`
 
 After schema changes:
@@ -193,3 +193,61 @@ Relationships:
 - Request validation uses Zod
 - Logging uses Pino
 - Follow existing patterns before introducing new abstractions
+
+---
+
+## Python Backend (`back_python/`)
+
+Location:
+
+back_python/
+
+Stack:
+
+- FastAPI
+- SQLAlchemy 2.x async + Alembic
+- Pydantic v2 (camelCase aliases)
+- python-jose (JWT)
+- bcrypt (password hashing)
+- pyotp + qrcode (MFA)
+- slowapi (rate limiting)
+- pytest + httpx (tests)
+
+### Docker (PostgreSQL)
+
+```bash
+cd back_python
+docker-compose up --build
+docker-compose exec api alembic upgrade head
+```
+
+### Tests
+
+```bash
+cd back_python
+pytest tests/
+```
+
+### Switcher de backend
+
+Les deux backends (`back/` et `back_python/`) exposent le même contrat API sur le port **3000**. Pour switcher :
+
+- Arrêter le backend en cours
+- Démarrer l'autre sur le même port 3000
+- Les trois frontends se reconnectent sans aucune modification
+
+---
+
+## Agent skills
+
+### Issue tracker
+
+Issues live in GitHub Issues on this repo. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Default vocabulary: needs-triage, needs-info, ready-for-agent, ready-for-human, wontfix. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context layout — one `CONTEXT.md` + `docs/adr/` at the repo root. See `docs/agents/domain.md`.

@@ -34,7 +34,7 @@ function formatAddress(row: VenueWithCreator): string {
     <app-admin-layout>
       <div class="page-header">
         <h1 class="page-title">Lieux de concerts</h1>
-        <button mat-raised-button color="primary" (click)="openCreate()">
+        <button mat-raised-button color="primary" (click)="openCreate()" data-testid="add-venue-btn">
           <mat-icon>add</mat-icon> Ajouter un lieu
         </button>
       </div>

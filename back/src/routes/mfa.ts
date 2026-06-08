@@ -9,6 +9,10 @@ import qrcode from 'qrcode'
 const router = Router()
 
 router.post('/setup', authenticateToken, async (req: Request, res: Response) => {
+  if (req.user?.scope !== 'mfa-setup') {
+    res.status(403).json({ error: 'Scope insuffisant' })
+    return
+  }
   const userId = req.user?.userId
 
   const secret = speakeasy.generateSecret({
@@ -25,15 +29,19 @@ router.post('/setup', authenticateToken, async (req: Request, res: Response) => 
   res.json({ qrCodeDataURL, secret: secret.base32 })
 })
 
-router.post('/login', async (req: Request, res: Response) => {
-  const { userId, token } = req.body
+router.post('/login', authenticateToken, async (req: Request, res: Response) => {
+  if (req.user?.scope !== 'mfa-pending') {
+    res.status(403).json({ error: 'Scope insuffisant' })
+    return
+  }
 
-  if (!userId || !token) {
+  const { token } = req.body
+  if (!token) {
     res.status(400).json({ error: 'Données invalides' })
     return
   }
 
-  const user = await prisma.user.findUnique({ where: { id: Number(userId) } })
+  const user = await prisma.user.findUnique({ where: { id: req.user.userId } })
   if (!user?.mfaSecret) {
     res.status(400).json({ error: 'MFA non configuré' })
     return
@@ -56,6 +64,10 @@ router.post('/login', async (req: Request, res: Response) => {
 })
 
 router.post('/verify', authenticateToken, async (req: Request, res: Response) => {
+  if (req.user?.scope !== 'mfa-setup') {
+    res.status(403).json({ error: 'Scope insuffisant' })
+    return
+  }
   const userId = req.user?.userId
   const isMfaSetup = req.user?.scope === 'mfa-setup'
   const { token } = req.body

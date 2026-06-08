@@ -38,7 +38,7 @@ export default function AdminLayout({ children }: Props) {
           <Typography variant="h6" sx={{ flexGrow: 1 }}>
             Portfolio — Backoffice
           </Typography>
-          <Button color="inherit" onClick={handleLogout}>Déconnexion</Button>
+          <Button color="inherit" onClick={handleLogout} data-testid="logout-btn">Déconnexion</Button>
         </Toolbar>
       </AppBar>
 

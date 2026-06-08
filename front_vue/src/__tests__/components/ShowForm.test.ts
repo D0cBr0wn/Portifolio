@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { nextTick } from 'vue'
 import { mount } from '@vue/test-utils'
 import ShowForm from '../../components/backoffice/ShowForm.vue'
-import { Show, Venue } from '@portfolio/shared'
+import { Venue } from '@portfolio/shared'
 
 const VFormStub = {
   template: '<div><slot /></div>',
@@ -56,13 +56,13 @@ describe('ShowForm', () => {
   })
 
   it('affiche "Modifier le concert" avec initial', () => {
-    const show = new Show({ id: 1, date: '2025-07-14T20:00:00.000Z', venueId: 1 })
+    const show = { id: 1, date: '2025-07-14T20:00:00.000Z', venueId: 1 }
     const wrapper = mountForm({ initial: show })
     expect(wrapper.text()).toContain('Modifier le concert')
   })
 
-  it('pré-remplit la date sans lever TypeError quand initial.date est un objet Date', async () => {
-    const show = new Show({ id: 1, date: '2025-07-14T20:00:00.000Z', venueId: 1, label: 'Été' })
+  it('pré-remplit la date depuis une chaîne ISO', async () => {
+    const show = { id: 1, date: '2025-07-14T20:00:00.000Z', venueId: 1, label: 'Été' }
     const wrapper = mountForm({ initial: show })
     await nextTick()
     const dateInput = wrapper.findAll('input').find(i => i.attributes('data-label') === 'Date *')
@@ -71,7 +71,7 @@ describe('ShowForm', () => {
   })
 
   it('pré-remplit le label avec la valeur de initial', async () => {
-    const show = new Show({ id: 1, date: '2025-07-14T20:00:00.000Z', venueId: 1, label: 'Festival été' })
+    const show = { id: 1, date: '2025-07-14T20:00:00.000Z', venueId: 1, label: 'Festival été' }
     const wrapper = mountForm({ initial: show })
     await nextTick()
     const labelInput = wrapper.findAll('input').find(i => i.attributes('data-label') === 'Nom du concert')
