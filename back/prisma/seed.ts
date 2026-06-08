@@ -20,6 +20,8 @@ async function main() {
         email: 'superuser@test.com',
         password: '$2b$12$QhhGT3ZbwVqGXEcbCBwobuNnKH2zNVCT.z21EHu7UZv.mUYlquDVa',
         role: Role.ADMIN,
+        mfaSecret: 'JBSWY3DPEHPK3PXP',
+        mfaRequired: true,
       },
     }),
     prisma.user.create({
