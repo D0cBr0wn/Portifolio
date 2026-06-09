@@ -31,7 +31,7 @@
         <v-card-text class="pt-4" style="white-space: pre-wrap;">{{ selectedMessage.message }}</v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn variant="text" @click="detailDialog = false">Fermer</v-btn>
+          <v-btn variant="text" @click="detailDialog = false; selectedMessage = null">Fermer</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -67,11 +67,14 @@ onMounted(async () => {
   }
 })
 
-function formatDate(iso: string) {
-  return new Date(iso).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })
+function formatDate(iso: string | null | undefined) {
+  if (!iso) return '—'
+  const d = new Date(iso)
+  return isNaN(d.getTime()) ? '—' : d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })
 }
 
-function truncate(text: string, max = 100) {
+function truncate(text: string | null | undefined, max = 100) {
+  if (!text) return ''
   return text.length > max ? text.slice(0, max) + '…' : text
 }
 

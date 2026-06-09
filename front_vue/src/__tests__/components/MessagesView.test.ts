@@ -84,7 +84,7 @@ describe('MessagesView', () => {
     vi.mocked(contactService.getMessages).mockResolvedValue(mockMessages)
     const wrapper = mountView()
     await nextTick()
-    const vm = wrapper.vm as { truncate: (s: string, max?: number) => string }
+    const vm = wrapper.vm as { truncate: (s: string | null | undefined, max?: number) => string }
     const truncated = vm.truncate('A'.repeat(150))
     expect(truncated).toHaveLength(101) // 100 chars + ellipsis char
     expect(truncated.endsWith('…')).toBe(true)
@@ -94,17 +94,36 @@ describe('MessagesView', () => {
     vi.mocked(contactService.getMessages).mockResolvedValue(mockMessages)
     const wrapper = mountView()
     await nextTick()
-    const vm = wrapper.vm as { truncate: (s: string, max?: number) => string }
+    const vm = wrapper.vm as { truncate: (s: string | null | undefined, max?: number) => string }
     expect(vm.truncate('Bonjour !')).toBe('Bonjour !')
+  })
+
+  it('retourne une chaîne vide pour truncate(null)', async () => {
+    vi.mocked(contactService.getMessages).mockResolvedValue(mockMessages)
+    const wrapper = mountView()
+    await nextTick()
+    const vm = wrapper.vm as { truncate: (s: string | null | undefined, max?: number) => string }
+    expect(vm.truncate(null)).toBe('')
+    expect(vm.truncate(undefined)).toBe('')
   })
 
   it('formate une date ISO en français', async () => {
     vi.mocked(contactService.getMessages).mockResolvedValue(mockMessages)
     const wrapper = mountView()
     await nextTick()
-    const vm = wrapper.vm as { formatDate: (s: string) => string }
+    const vm = wrapper.vm as { formatDate: (s: string | null | undefined) => string }
     const result = vm.formatDate('2025-06-01T10:00:00.000Z')
     expect(result).toMatch(/2025/)
+  })
+
+  it('retourne "—" pour formatDate(null) ou date invalide', async () => {
+    vi.mocked(contactService.getMessages).mockResolvedValue(mockMessages)
+    const wrapper = mountView()
+    await nextTick()
+    const vm = wrapper.vm as { formatDate: (s: string | null | undefined) => string }
+    expect(vm.formatDate(null)).toBe('—')
+    expect(vm.formatDate(undefined)).toBe('—')
+    expect(vm.formatDate('not-a-date')).toBe('—')
   })
 
   it('ouvre la modale au clic sur un message', async () => {
