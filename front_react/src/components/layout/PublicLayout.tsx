@@ -31,6 +31,7 @@ export default function PublicLayout({ children }: Props) {
         <Box component="nav" sx={{ display: 'flex', gap: 4 }}>
           <NavLink to="/" end style={navStyle}>Accueil</NavLink>
           <NavLink to="/shows" style={navStyle}>Concerts</NavLink>
+          <NavLink to="/contact" style={navStyle}>Contact</NavLink>
         </Box>
       </Box>
 
