@@ -61,6 +61,14 @@ model IpBan {
   expiresAt DateTime
 }
 
+model ContactMessage {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String
+  message   String
+  createdAt DateTime @default(now())
+}
+
 model FailedLoginAttempt {
   id         Int      @id @default(autoincrement())
   ip         String
