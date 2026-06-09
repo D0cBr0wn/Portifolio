@@ -7,3 +7,11 @@ export const loginLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
 })
+
+export const contactLimiter = rateLimit({
+  windowMs: 10 * 60 * 1000,
+  max: 20,
+  message: { error: 'Trop de requêtes, réessayez plus tard' },
+  standardHeaders: true,
+  legacyHeaders: false,
+})

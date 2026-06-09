@@ -26,6 +26,7 @@ jest.mock('../../utils/sendAlerts', () => ({ sendAdminBanAlert: jest.fn() }))
 
 jest.mock('../../middleware/rateLimiterMiddleware', () => ({
   loginLimiter: (_req: unknown, _res: unknown, next: () => void) => next(),
+  contactLimiter: (_req: unknown, _res: unknown, next: () => void) => next(),
 }))
 
 import prisma from '../../lib/prisma'
