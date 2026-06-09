@@ -6,4 +6,3 @@ export const contactMessageSchema = z.object({
   message: z.string().min(1).max(2000),
 })
 
-export type ContactMessageInput = z.infer<typeof contactMessageSchema>

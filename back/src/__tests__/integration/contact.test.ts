@@ -91,6 +91,14 @@ describe('GET /api/contact', () => {
     expect(res.status).toBe(403)
   })
 
+  it('retourne 500 si erreur Prisma (admin)', async () => {
+    contactMock.findMany.mockRejectedValue(new Error('DB error'))
+
+    const res = await request(app).get('/api/contact').set('Authorization', adminHeader())
+
+    expect(res.status).toBe(500)
+  })
+
   it('retourne 200 avec liste triée par date desc (admin)', async () => {
     const messages = [
       { id: 2, name: 'Bob', email: 'bob@example.com', message: 'Later', createdAt: new Date('2025-02-01').toISOString() },

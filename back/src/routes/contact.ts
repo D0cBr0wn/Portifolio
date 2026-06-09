@@ -19,10 +19,14 @@ router.post('/', contactLimiter, async (req: Request, res: Response) => {
 })
 
 router.get('/', authenticateToken, requireAdmin, async (_req: Request, res: Response) => {
-  const messages = await prisma.contactMessage.findMany({
-    orderBy: { createdAt: 'desc' },
-  })
-  res.json(messages)
+  try {
+    const messages = await prisma.contactMessage.findMany({
+      orderBy: { createdAt: 'desc' },
+    })
+    res.json(messages)
+  } catch {
+    res.status(500).json({ error: 'Erreur serveur' })
+  }
 })
 
 export default router
