@@ -6,6 +6,7 @@ import PlaceIcon from '@mui/icons-material/Place'
 import MusicNoteIcon from '@mui/icons-material/MusicNote'
 import ShieldIcon from '@mui/icons-material/Shield'
 import PeopleIcon from '@mui/icons-material/People'
+import MailIcon from '@mui/icons-material/Mail'
 import { NavLink, useNavigate } from 'react-router-dom'
 import type { ReactNode } from 'react'
 import { useAuthStore } from '@/stores/authStore'
@@ -68,19 +69,34 @@ export default function AdminLayout({ children }: Props) {
             </ListItem>
           ))}
           {isAdmin && (
-            <ListItem disablePadding>
-              <ListItemButton
-                component={NavLink}
-                to="/backoffice/users"
-                sx={{
-                  '&.active': { backgroundColor: 'rgba(98, 0, 238, 0.12)', color: 'primary.main' },
-                  '&.active .MuiListItemIcon-root': { color: 'primary.main' },
-                }}
-              >
-                <ListItemIcon><PeopleIcon /></ListItemIcon>
-                <ListItemText primary="Utilisateurs" />
-              </ListItemButton>
-            </ListItem>
+            <>
+              <ListItem disablePadding>
+                <ListItemButton
+                  component={NavLink}
+                  to="/backoffice/users"
+                  sx={{
+                    '&.active': { backgroundColor: 'rgba(98, 0, 238, 0.12)', color: 'primary.main' },
+                    '&.active .MuiListItemIcon-root': { color: 'primary.main' },
+                  }}
+                >
+                  <ListItemIcon><PeopleIcon /></ListItemIcon>
+                  <ListItemText primary="Utilisateurs" />
+                </ListItemButton>
+              </ListItem>
+              <ListItem disablePadding>
+                <ListItemButton
+                  component={NavLink}
+                  to="/backoffice/messages"
+                  sx={{
+                    '&.active': { backgroundColor: 'rgba(98, 0, 238, 0.12)', color: 'primary.main' },
+                    '&.active .MuiListItemIcon-root': { color: 'primary.main' },
+                  }}
+                >
+                  <ListItemIcon><MailIcon /></ListItemIcon>
+                  <ListItemText primary="Messages" />
+                </ListItemButton>
+              </ListItem>
+            </>
           )}
         </List>
       </Drawer>

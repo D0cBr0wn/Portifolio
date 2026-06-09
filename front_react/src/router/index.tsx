@@ -9,6 +9,7 @@ import BackofficeShows from '@/pages/backoffice/Shows'
 import MfaSetup from '@/pages/backoffice/MfaSetup'
 import Users from '@/pages/backoffice/Users'
 import UserDetail from '@/pages/backoffice/UserDetail'
+import BackofficeMessages from '@/pages/backoffice/Messages'
 
 function PrivateRoute() {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
@@ -37,6 +38,7 @@ export default function AppRouter() {
           <Route element={<AdminRoute />}>
             <Route path="users" element={<Users />} />
             <Route path="users/:id" element={<UserDetail />} />
+            <Route path="messages" element={<BackofficeMessages />} />
           </Route>
         </Route>
       </Routes>
