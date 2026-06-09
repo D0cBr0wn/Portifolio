@@ -33,9 +33,9 @@ export default function Contact() {
 
   async function handleSubmit(evt: React.FormEvent) {
     evt.preventDefault()
+    setServerError('')
     if (!validate()) return
     setLoading(true)
-    setServerError('')
     try {
       await contactService.sendMessage({ name: name.trim(), email: email.trim(), message: message.trim() })
       setSuccess(true)
@@ -112,7 +112,7 @@ export default function Contact() {
             variant="contained"
             fullWidth
             size="large"
-            disabled={loading}
+            disabled={loading || success}
             data-testid="submit-btn"
           >
             {loading ? <CircularProgress size={22} color="inherit" /> : 'Envoyer'}
