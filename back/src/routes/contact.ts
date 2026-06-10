@@ -29,4 +29,22 @@ router.get('/', authenticateToken, requireAdmin, async (_req: Request, res: Resp
   }
 })
 
+router.delete('/:id', authenticateToken, requireAdmin, async (req: Request, res: Response) => {
+  const id = parseInt(String(req.params.id), 10)
+  if (isNaN(id)) {
+    res.status(400).json({ error: 'ID invalide' })
+    return
+  }
+  try {
+    await prisma.contactMessage.delete({ where: { id } })
+    res.status(204).send()
+  } catch (e: unknown) {
+    if ((e as { code?: string }).code === 'P2025') {
+      res.status(404).json({ error: 'Message introuvable' })
+      return
+    }
+    res.status(500).json({ error: 'Erreur serveur' })
+  }
+})
+
 export default router
