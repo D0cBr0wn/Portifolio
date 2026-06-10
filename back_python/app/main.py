@@ -22,7 +22,7 @@ app.add_middleware(
 )
 app.add_middleware(IpBanMiddleware)
 
-from app.routers import auth, backoffice, mfa, shows, users, venues  # noqa: E402
+from app.routers import auth, backoffice, contact, mfa, shows, users, venues  # noqa: E402
 
 app.include_router(auth.router, prefix="/api/auth", tags=["auth"])
 app.include_router(mfa.router, prefix="/api/mfa", tags=["mfa"])
@@ -30,6 +30,7 @@ app.include_router(shows.router, prefix="/api/shows", tags=["shows"])
 app.include_router(venues.router, prefix="/api/venues", tags=["venues"])
 app.include_router(users.router, prefix="/api/users", tags=["users"])
 app.include_router(backoffice.router, prefix="/api/backoffice", tags=["backoffice"])
+app.include_router(contact.router, prefix="/api/contact", tags=["contact"])
 
 
 @app.get("/")
