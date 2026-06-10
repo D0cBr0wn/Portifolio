@@ -166,7 +166,7 @@ export class ContactComponent {
     this.nameError.set(this.name.trim() ? '' : 'Le nom est requis');
     this.emailError.set(
       !this.email.trim() ? "L'email est requis" :
-      !isValidEmail(this.email) ? "L'email n'est pas valide" : ''
+      !isValidEmail(this.email.trim()) ? "L'email n'est pas valide" : ''
     );
     this.messageError.set(this.message.trim() ? '' : 'Le message est requis');
 
