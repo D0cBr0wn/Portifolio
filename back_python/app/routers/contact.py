@@ -21,8 +21,8 @@ def _to_dict(msg: ContactMessage) -> dict:
     }
 
 
-@router.post("/", status_code=201)
 @limiter.limit("20/10 minutes")
+@router.post("/", status_code=201)
 async def create_message(
     request: Request,
     body: ContactMessageIn,
