@@ -118,7 +118,10 @@ export class BackofficeMessagesComponent implements OnInit {
   ngOnInit(): void {
     this.contactService.getMessages().subscribe({
       next: (msgs) => this.messages.set(msgs),
-      error: () => this.error.set('Impossible de charger les messages.'),
+      error: () => {
+        this.error.set('Impossible de charger les messages.');
+        this.loading.set(false);
+      },
       complete: () => this.loading.set(false),
     });
   }
