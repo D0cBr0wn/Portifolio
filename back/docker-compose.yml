@@ -3,6 +3,7 @@ services:
   api:
     build:
       context: .
+    restart: on-failure
     ports:
       - '3000:3000'
     volumes:
@@ -44,10 +45,11 @@ services:
     networks:
       - prisma-network
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U ooodbuser -d ooo_db']
+      test: ['CMD-SHELL', 'pg_isready -h 127.0.0.1 -U ooodbuser -d ooo_db']
       interval: 5s
-      timeout: 2s
+      timeout: 5s
       retries: 20
+      start_period: 10s
     volumes:
       - postgres_data:/var/lib/postgresql/data
     command: postgres -c listen_addresses='*'
