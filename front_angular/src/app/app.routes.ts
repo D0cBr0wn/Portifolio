@@ -15,6 +15,11 @@ export const routes: Routes = [
       import('./pages/shows/shows.component').then((m) => m.ShowsComponent),
   },
   {
+    path: 'contact',
+    loadComponent: () =>
+      import('./pages/contact/contact.component').then((m) => m.ContactComponent),
+  },
+  {
     path: 'login',
     canActivate: [guestGuard],
     loadComponent: () =>
