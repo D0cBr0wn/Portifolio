@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate, Outlet, useLocation } from 'rea
 import { useAuthStore } from '@/stores/authStore'
 import Home from '@/pages/Home'
 import Shows from '@/pages/Shows'
+import Contact from '@/pages/Contact'
 import Login from '@/pages/Login'
 import Register from '@/pages/Register'
 import Venues from '@/pages/backoffice/Venues'
@@ -29,6 +30,7 @@ export default function AppRouter() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/shows" element={<Shows />} />
+        <Route path="/contact" element={<Contact />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/backoffice" element={<PrivateRoute />}>
