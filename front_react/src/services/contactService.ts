@@ -22,4 +22,8 @@ export const contactService = {
   getMessages: async (): Promise<ContactMessage[]> => {
     return await api.get<ContactMessage[]>('/contact')
   },
+
+  deleteMessage: async (id: number): Promise<void> => {
+    return await api.delete<void>(`/contact/${id}`)
+  },
 }

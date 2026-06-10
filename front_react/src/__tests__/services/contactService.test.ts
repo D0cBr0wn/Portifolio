@@ -11,7 +11,7 @@ vi.mock('../../services/api', () => ({
 }))
 
 import { api } from '../../services/api'
-const mockApi = api as { get: ReturnType<typeof vi.fn>; post: ReturnType<typeof vi.fn> }
+const mockApi = api as { get: ReturnType<typeof vi.fn>; post: ReturnType<typeof vi.fn>; delete: ReturnType<typeof vi.fn> }
 
 describe('contactService', () => {
   beforeEach(() => vi.clearAllMocks())
@@ -36,6 +36,15 @@ describe('contactService', () => {
       const result = await contactService.getMessages()
       expect(result).toEqual(messages)
       expect(mockApi.get).toHaveBeenCalledWith('/contact')
+    })
+  })
+
+  describe('deleteMessage()', () => {
+    it('DELETE /contact/:id', async () => {
+      mockApi.delete.mockResolvedValue(undefined)
+      const result = await contactService.deleteMessage(1)
+      expect(result).toBeUndefined()
+      expect(mockApi.delete).toHaveBeenCalledWith('/contact/1')
     })
   })
 })

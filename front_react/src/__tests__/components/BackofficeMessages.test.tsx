@@ -6,6 +6,7 @@ import { MemoryRouter } from 'react-router-dom'
 vi.mock('../../services/contactService', () => ({
   contactService: {
     getMessages: vi.fn(),
+    deleteMessage: vi.fn(),
   },
 }))
 
@@ -19,7 +20,10 @@ vi.mock('../../stores/authStore', () => ({
 import { contactService } from '../../services/contactService'
 import BackofficeMessages from '../../pages/backoffice/Messages'
 
-const mockContactService = contactService as unknown as { getMessages: ReturnType<typeof vi.fn> }
+const mockContactService = contactService as unknown as {
+  getMessages: ReturnType<typeof vi.fn>
+  deleteMessage: ReturnType<typeof vi.fn>
+}
 
 const mockMessages = [
   {
@@ -103,5 +107,80 @@ describe('BackofficeMessages', () => {
     await waitFor(() => {
       expect(screen.queryByTestId('modal-message')).not.toBeInTheDocument()
     })
+  })
+
+  it('affiche les icônes de suppression dans le tableau', async () => {
+    mockContactService.getMessages.mockResolvedValue(mockMessages)
+    renderPage()
+    await screen.findByText('Alice')
+    const deleteBtns = screen.getAllByTestId('delete-row-btn')
+    expect(deleteBtns).toHaveLength(mockMessages.length)
+  })
+
+  it('affiche le dialog de confirmation au clic sur l\'icône poubelle', async () => {
+    mockContactService.getMessages.mockResolvedValue(mockMessages)
+    renderPage()
+    await screen.findByText('Alice')
+    const [firstDeleteBtn] = screen.getAllByTestId('delete-row-btn')
+    await userEvent.click(firstDeleteBtn)
+    expect(await screen.findByTestId('confirm-delete-btn')).toBeInTheDocument()
+    expect(screen.getByTestId('cancel-delete-btn')).toBeInTheDocument()
+  })
+
+  it('supprime le message après confirmation et le retire du tableau', async () => {
+    mockContactService.getMessages.mockResolvedValue(mockMessages)
+    mockContactService.deleteMessage.mockResolvedValue(undefined)
+    renderPage()
+    await screen.findByText('Alice')
+    await screen.findByText('Bob')
+    const deleteBtns = screen.getAllByTestId('delete-row-btn')
+    // Grid sorted desc by date: Bob (2025-06-02) is row 0, Alice (2025-06-01) is row 1
+    await userEvent.click(deleteBtns[0])
+    await userEvent.click(await screen.findByTestId('confirm-delete-btn'))
+    await waitFor(() => {
+      expect(mockContactService.deleteMessage).toHaveBeenCalledTimes(1)
+    })
+    await waitFor(() => {
+      expect(screen.queryByText('Bob')).not.toBeInTheDocument()
+    })
+  })
+
+  it('ferme le dialog en cliquant sur Annuler sans supprimer', async () => {
+    mockContactService.getMessages.mockResolvedValue(mockMessages)
+    renderPage()
+    await screen.findByText('Alice')
+    const [firstDeleteBtn] = screen.getAllByTestId('delete-row-btn')
+    await userEvent.click(firstDeleteBtn)
+    await userEvent.click(await screen.findByTestId('cancel-delete-btn'))
+    await waitFor(() => {
+      expect(screen.queryByTestId('confirm-delete-btn')).not.toBeInTheDocument()
+    })
+    expect(mockContactService.deleteMessage).not.toHaveBeenCalled()
+  })
+
+  it('affiche une erreur si la suppression échoue', async () => {
+    mockContactService.getMessages.mockResolvedValue(mockMessages)
+    mockContactService.deleteMessage.mockRejectedValue(new Error('Server error'))
+    renderPage()
+    await screen.findByText('Alice')
+    const [firstDeleteBtn] = screen.getAllByTestId('delete-row-btn')
+    await userEvent.click(firstDeleteBtn)
+    await userEvent.click(await screen.findByTestId('confirm-delete-btn'))
+    expect(await screen.findByTestId('delete-error')).toBeInTheDocument()
+  })
+
+  it('affiche le bouton Supprimer dans la modale de détail', async () => {
+    mockContactService.getMessages.mockResolvedValue(mockMessages)
+    renderPage()
+    await userEvent.click(await screen.findByText('Alice'))
+    expect(await screen.findByTestId('modal-delete-btn')).toBeInTheDocument()
+  })
+
+  it('affiche le dialog de confirmation depuis le bouton Supprimer de la modale', async () => {
+    mockContactService.getMessages.mockResolvedValue(mockMessages)
+    renderPage()
+    await userEvent.click(await screen.findByText('Alice'))
+    await userEvent.click(await screen.findByTestId('modal-delete-btn'))
+    expect(await screen.findByTestId('confirm-delete-btn')).toBeInTheDocument()
   })
 })
