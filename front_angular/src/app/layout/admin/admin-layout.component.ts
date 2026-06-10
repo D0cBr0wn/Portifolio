@@ -53,6 +53,13 @@ const NAV_ITEMS: NavItem[] = [
               <mat-icon matListItemIcon>people</mat-icon>
               <span matListItemTitle>Utilisateurs</span>
             </a>
+            <a mat-list-item
+               routerLink="/backoffice/messages"
+               routerLinkActive="active-nav"
+               class="nav-item">
+              <mat-icon matListItemIcon>mail</mat-icon>
+              <span matListItemTitle>Messages</span>
+            </a>
           }
         </mat-nav-list>
       </mat-sidenav>
