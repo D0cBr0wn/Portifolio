@@ -1,7 +1,7 @@
 jest.mock('../../lib/prisma', () => ({
   __esModule: true,
   default: {
-    contactMessage: { findMany: jest.fn(), create: jest.fn() },
+    contactMessage: { findMany: jest.fn(), create: jest.fn(), delete: jest.fn() },
     ipBan: {
       findUnique: jest.fn().mockResolvedValue(null),
       deleteMany: jest.fn().mockResolvedValue({ count: 0 }),
@@ -17,6 +17,7 @@ import { buildTestApp } from '../helpers/testApp'
 const contactMock = prisma.contactMessage as unknown as {
   findMany: jest.Mock
   create: jest.Mock
+  delete: jest.Mock
 }
 const app = buildTestApp()
 
@@ -112,6 +113,54 @@ describe('GET /api/contact', () => {
     expect(res.body).toHaveLength(2)
     expect(res.body[0].name).toBe('Bob')
     expect(contactMock.findMany).toHaveBeenCalledWith({ orderBy: { createdAt: 'desc' } })
+  })
+})
+
+describe('DELETE /api/contact/:id', () => {
+  beforeEach(() => jest.clearAllMocks())
+
+  it('retourne 401 sans token', async () => {
+    const res = await request(app).delete('/api/contact/1')
+
+    expect(res.status).toBe(401)
+  })
+
+  it('retourne 403 avec token USER (non admin)', async () => {
+    const res = await request(app).delete('/api/contact/1').set('Authorization', userHeader())
+
+    expect(res.status).toBe(403)
+  })
+
+  it('supprime un message et retourne 204 (admin)', async () => {
+    contactMock.delete.mockResolvedValue(fakeMessage)
+
+    const res = await request(app).delete('/api/contact/1').set('Authorization', adminHeader())
+
+    expect(res.status).toBe(204)
+    expect(contactMock.delete).toHaveBeenCalledWith({ where: { id: 1 } })
+  })
+
+  it('retourne 404 si message introuvable (P2025)', async () => {
+    contactMock.delete.mockRejectedValue({ code: 'P2025' })
+
+    const res = await request(app).delete('/api/contact/999').set('Authorization', adminHeader())
+
+    expect(res.status).toBe(404)
+  })
+
+  it('retourne 400 si id invalide', async () => {
+    const res = await request(app).delete('/api/contact/abc').set('Authorization', adminHeader())
+
+    expect(res.status).toBe(400)
+    expect(contactMock.delete).not.toHaveBeenCalled()
+  })
+
+  it('retourne 500 si erreur Prisma inattendue', async () => {
+    contactMock.delete.mockRejectedValue(new Error('DB error'))
+
+    const res = await request(app).delete('/api/contact/1').set('Authorization', adminHeader())
+
+    expect(res.status).toBe(500)
   })
 })
 
