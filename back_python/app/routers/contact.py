@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Request
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -44,3 +44,17 @@ async def list_messages(
         select(ContactMessage).order_by(ContactMessage.createdAt.desc())
     )
     return [_to_dict(m) for m in result.scalars().all()]
+
+
+@router.delete("/{message_id}", status_code=204)
+async def delete_message(
+    message_id: int,
+    current_user: User = Depends(require_admin),
+    db: AsyncSession = Depends(get_db),
+):
+    result = await db.execute(select(ContactMessage).where(ContactMessage.id == message_id))
+    msg = result.scalar_one_or_none()
+    if not msg:
+        raise HTTPException(status_code=404, detail="Message introuvable")
+    await db.delete(msg)
+    await db.commit()

@@ -87,3 +87,46 @@ async def test_get_contact_sorted_by_date_desc(client):
     assert len(data) == 2
     assert data[0]["name"] == "Second"
     assert data[1]["name"] == "First"
+
+
+@pytest.mark.asyncio
+async def test_delete_contact_without_auth_returns_401(client):
+    resp = await client.delete("/api/contact/1")
+    assert resp.status_code == 401
+
+
+@pytest.mark.asyncio
+async def test_delete_contact_as_user_returns_403(client):
+    await client.post("/api/auth/register", json={"email": "superuser@test.com", "password": "secret123"})
+    await client.post("/api/auth/register", json={"email": "user@test.com", "password": "secret123"})
+    resp_login = await client.post("/api/auth/login", json={"email": "user@test.com", "password": "secret123"})
+    user_token = resp_login.json()["token"]
+    resp = await client.delete("/api/contact/1", headers={"Authorization": f"Bearer {user_token}"})
+    assert resp.status_code == 403
+
+
+@pytest.mark.asyncio
+async def test_delete_contact_as_admin_returns_204(client):
+    admin_token = await _admin_token(client)
+    create_resp = await client.post("/api/contact/", json=_VALID_PAYLOAD)
+    msg_id = create_resp.json()["id"]
+    resp = await client.delete(f"/api/contact/{msg_id}", headers={"Authorization": f"Bearer {admin_token}"})
+    assert resp.status_code == 204
+
+
+@pytest.mark.asyncio
+async def test_delete_contact_removes_message(client):
+    admin_token = await _admin_token(client)
+    create_resp = await client.post("/api/contact/", json=_VALID_PAYLOAD)
+    msg_id = create_resp.json()["id"]
+    await client.delete(f"/api/contact/{msg_id}", headers={"Authorization": f"Bearer {admin_token}"})
+    list_resp = await client.get("/api/contact/", headers={"Authorization": f"Bearer {admin_token}"})
+    assert list_resp.status_code == 200
+    assert all(m["id"] != msg_id for m in list_resp.json())
+
+
+@pytest.mark.asyncio
+async def test_delete_contact_not_found_returns_404(client):
+    admin_token = await _admin_token(client)
+    resp = await client.delete("/api/contact/99999", headers={"Authorization": f"Bearer {admin_token}"})
+    assert resp.status_code == 404
