@@ -90,7 +90,7 @@ function truncate(text: string, max = 60): string {
       </div>
 
       @if (deleteTarget()) {
-        <div class="confirm-overlay" (click)="deleteTarget.set(null)" data-testid="confirm-overlay">
+        <div class="confirm-overlay" (click)="!deleting() && deleteTarget.set(null)" data-testid="confirm-overlay">
           <div class="confirm-dialog" (click)="$event.stopPropagation()">
             <h3>Confirmer la suppression</h3>
             <p>Supprimer le message de <strong>{{ deleteTarget()!.name }}</strong> ?</p>
@@ -98,7 +98,7 @@ function truncate(text: string, max = 60): string {
               <p class="delete-error-msg" data-testid="delete-error">{{ deleteError() }}</p>
             }
             <div class="confirm-actions">
-              <button mat-button (click)="deleteTarget.set(null)" data-testid="cancel-delete-btn">Annuler</button>
+              <button mat-button (click)="deleteTarget.set(null)" [disabled]="deleting()" data-testid="cancel-delete-btn">Annuler</button>
               <button mat-raised-button color="warn" (click)="doDelete()" [disabled]="deleting()" data-testid="confirm-delete-btn">Supprimer</button>
             </div>
           </div>
