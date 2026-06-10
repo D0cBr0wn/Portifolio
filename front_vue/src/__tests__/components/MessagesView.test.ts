@@ -8,6 +8,7 @@ import { contactService } from '../../services/contactService'
 vi.mock('../../services/contactService', () => ({
   contactService: {
     getMessages: vi.fn(),
+    deleteMessage: vi.fn(),
   },
 }))
 
@@ -21,6 +22,7 @@ const vuetifyStubs = {
       <div data-testid="data-table">
         <slot v-for="item in items" name="item.createdAt" :item="item" />
         <slot v-for="item in items" name="item.message" :item="item" />
+        <slot v-for="item in items" name="item.actions" :item="item" />
       </div>
     `,
     props: ['headers', 'items', 'loading', 'loadingText', 'noDataText', 'itemValue', 'hover'],
@@ -39,13 +41,14 @@ const vuetifyStubs = {
   VSpacer: { template: '<span />' },
   VBtn: {
     template: '<button @click="$emit(\'click\')"><slot /></button>',
-    props: ['variant'],
+    props: ['variant', 'color', 'loading', 'icon', 'size'],
     emits: ['click'],
   },
   VAlert: {
-    template: '<div data-testid="alert"><slot /></div>',
+    template: '<div :data-testid="$attrs[\'data-testid\'] || \'alert\'"><slot /></div>',
     props: ['type'],
   },
+  VIcon: { template: '<span><slot /></span>' },
 }
 
 const mockMessages = [
@@ -77,7 +80,7 @@ describe('MessagesView', () => {
     const wrapper = mountView()
     await nextTick()
     await nextTick()
-    expect(wrapper.find('[data-testid="alert"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="load-error"]').exists()).toBe(true)
   })
 
   it('tronque un message long à 100 caractères', async () => {
@@ -139,5 +142,106 @@ describe('MessagesView', () => {
     await nextTick()
     expect(vm.detailDialog).toBe(true)
     expect(vm.selectedMessage).toEqual(mockMessages[0])
+  })
+
+  it('affiche les icônes de suppression dans le tableau', async () => {
+    vi.mocked(contactService.getMessages).mockResolvedValue(mockMessages)
+    const wrapper = mountView()
+    await nextTick()
+    await nextTick()
+    const btns = wrapper.findAll('[data-testid="delete-row-btn"]')
+    expect(btns).toHaveLength(mockMessages.length)
+  })
+
+  it('openDelete ouvre le dialog de confirmation', async () => {
+    vi.mocked(contactService.getMessages).mockResolvedValue(mockMessages)
+    const wrapper = mountView()
+    await nextTick()
+    const vm = wrapper.vm as {
+      openDelete: (m: (typeof mockMessages)[0]) => void
+      deleteDialog: boolean
+      deleteTarget: (typeof mockMessages)[0] | null
+    }
+    vm.openDelete(mockMessages[0])
+    await nextTick()
+    expect(vm.deleteDialog).toBe(true)
+    expect(vm.deleteTarget).toEqual(mockMessages[0])
+  })
+
+  it('handleDelete supprime le message et met à jour la liste', async () => {
+    vi.mocked(contactService.getMessages).mockResolvedValue([...mockMessages])
+    vi.mocked(contactService.deleteMessage).mockResolvedValue(undefined)
+    const wrapper = mountView()
+    await nextTick()
+    await nextTick()
+    const vm = wrapper.vm as {
+      openDelete: (m: (typeof mockMessages)[0]) => void
+      handleDelete: () => Promise<void>
+      deleteDialog: boolean
+      messages: typeof mockMessages
+    }
+    vm.openDelete(mockMessages[0])
+    await vm.handleDelete()
+    await nextTick()
+    expect(contactService.deleteMessage).toHaveBeenCalledWith(mockMessages[0].id)
+    expect(vm.messages.find(m => m.id === mockMessages[0].id)).toBeUndefined()
+    expect(vm.deleteDialog).toBe(false)
+  })
+
+  it('closeDeleteDialog ferme le dialog sans supprimer', async () => {
+    vi.mocked(contactService.getMessages).mockResolvedValue(mockMessages)
+    const wrapper = mountView()
+    await nextTick()
+    const vm = wrapper.vm as {
+      openDelete: (m: (typeof mockMessages)[0]) => void
+      closeDeleteDialog: () => void
+      deleteDialog: boolean
+    }
+    vm.openDelete(mockMessages[0])
+    await nextTick()
+    expect(vm.deleteDialog).toBe(true)
+    vm.closeDeleteDialog()
+    await nextTick()
+    expect(vm.deleteDialog).toBe(false)
+    expect(contactService.deleteMessage).not.toHaveBeenCalled()
+  })
+
+  it('handleDelete affiche une erreur en cas d\'échec', async () => {
+    vi.mocked(contactService.getMessages).mockResolvedValue(mockMessages)
+    vi.mocked(contactService.deleteMessage).mockRejectedValue(new Error('Server error'))
+    const wrapper = mountView()
+    await nextTick()
+    await nextTick()
+    const vm = wrapper.vm as {
+      openDelete: (m: (typeof mockMessages)[0]) => void
+      handleDelete: () => Promise<void>
+      deleteError: string | null
+    }
+    vm.openDelete(mockMessages[0])
+    await vm.handleDelete()
+    await nextTick()
+    expect(vm.deleteError).toBeTruthy()
+    expect(wrapper.find('[data-testid="delete-error"]').exists()).toBe(true)
+  })
+
+  it('handleDelete ferme la modale de détail si le message affiché est supprimé', async () => {
+    vi.mocked(contactService.getMessages).mockResolvedValue([...mockMessages])
+    vi.mocked(contactService.deleteMessage).mockResolvedValue(undefined)
+    const wrapper = mountView()
+    await nextTick()
+    await nextTick()
+    const vm = wrapper.vm as {
+      openDetail: (m: (typeof mockMessages)[0]) => void
+      openDelete: (m: (typeof mockMessages)[0]) => void
+      handleDelete: () => Promise<void>
+      detailDialog: boolean
+    }
+    vm.openDetail(mockMessages[0])
+    await nextTick()
+    expect(vm.detailDialog).toBe(true)
+    vm.openDelete(mockMessages[0])
+    await vm.handleDelete()
+    await nextTick()
+    expect(vm.detailDialog).toBe(false)
   })
 })
