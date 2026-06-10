@@ -14,6 +14,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
         <nav class="header-nav">
           <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Accueil</a>
           <a routerLink="/shows" routerLinkActive="active">Concerts</a>
+          <a routerLink="/contact" routerLinkActive="active">Contact</a>
         </nav>
       </header>
 
