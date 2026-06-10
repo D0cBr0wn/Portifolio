@@ -35,9 +35,15 @@ export default function BackofficeMessages() {
       .finally(() => setLoading(false))
   }, [])
 
+  function closeDeleteDialog() {
+    setDeleteTarget(null)
+    setDeleteError(null)
+  }
+
   async function handleDelete() {
     if (!deleteTarget) return
     setDeleting(true)
+    setDeleteError(null)
     try {
       await contactService.deleteMessage(deleteTarget.id)
       setMessages(prev => prev.filter(m => m.id !== deleteTarget.id))
@@ -120,14 +126,14 @@ export default function BackofficeMessages() {
         </DialogActions>
       </Dialog>
 
-      <Dialog open={!!deleteTarget} onClose={() => setDeleteTarget(null)} maxWidth="xs" fullWidth>
+      <Dialog open={!!deleteTarget} onClose={closeDeleteDialog} maxWidth="xs" fullWidth>
         <DialogTitle>Confirmer la suppression</DialogTitle>
         <DialogContentText sx={{ px: 3 }}>
           Supprimer le message de <strong>{deleteTarget?.name}</strong> ?<br />
           Cette action est irréversible.
         </DialogContentText>
         <DialogActions>
-          <Button onClick={() => setDeleteTarget(null)} data-testid="cancel-delete-btn">Annuler</Button>
+          <Button onClick={closeDeleteDialog} data-testid="cancel-delete-btn">Annuler</Button>
           <Button
             color="error"
             onClick={handleDelete}
