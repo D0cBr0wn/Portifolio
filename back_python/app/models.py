@@ -100,3 +100,15 @@ class FailedLoginAttempt(Base):
     ip: Mapped[str] = mapped_column(String, nullable=False)
     emailTried: Mapped[str] = mapped_column("emailTried", String, nullable=False)
     date: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+
+
+class ContactMessage(Base):
+    __tablename__ = "ContactMessage"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    name: Mapped[str] = mapped_column(String, nullable=False)
+    email: Mapped[str] = mapped_column(String, nullable=False)
+    message: Mapped[str] = mapped_column(String, nullable=False)
+    createdAt: Mapped[datetime] = mapped_column(
+        "createdAt", DateTime(timezone=True), default=_now, nullable=False
+    )
