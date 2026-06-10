@@ -14,7 +14,7 @@ if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
 from app.database import Base  # noqa: E402
-from app.models import FailedLoginAttempt, IpBan, Show, User, Venue  # noqa: E402, F401
+from app.models import ContactMessage, FailedLoginAttempt, IpBan, Show, User, Venue  # noqa: E402, F401
 
 target_metadata = Base.metadata
 
