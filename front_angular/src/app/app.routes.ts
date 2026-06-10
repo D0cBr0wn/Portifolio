@@ -57,6 +57,12 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./pages/backoffice/user-detail/user-detail.component').then((m) => m.UserDetailComponent),
       },
+      {
+        path: 'messages',
+        canActivate: [adminGuard],
+        loadComponent: () =>
+          import('./pages/backoffice/messages/messages.component').then((m) => m.BackofficeMessagesComponent),
+      },
       { path: '', redirectTo: 'venues', pathMatch: 'full' },
     ],
   },
