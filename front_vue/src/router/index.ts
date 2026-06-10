@@ -41,6 +41,11 @@ const router = createRouter({
           component: () => import('@/views/backoffice/MfaSetupView.vue'),
         },
         {
+          path: 'messages',
+          meta: { requiresAdmin: true },
+          component: () => import('@/views/backoffice/MessagesView.vue'),
+        },
+        {
           path: 'users',
           meta: { requiresAdmin: true },
           component: () => import('@/views/backoffice/UsersView.vue'),
