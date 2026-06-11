@@ -6,6 +6,7 @@ async function main() {
   await prisma.show.deleteMany();
   await prisma.venue.deleteMany();
   await prisma.user.deleteMany();
+  await prisma.contactMessage.deleteMany();
 
   const [admin] = await Promise.all([
     prisma.user.create({
@@ -86,7 +87,16 @@ async function main() {
     ],
   });
 
-  console.log('Seed terminé : 3 utilisateurs, 5 salles, 5 concerts créés.');
+  await prisma.contactMessage.create({
+    data: {
+      name: 'Michel test',
+      email: 'michel@test.com',
+      message: 'Hello !\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed eleifend nulla libero, a molestie nisl auctor ac. Integer urna massa, elementum a ultricies quis, efficitur eu ipsum. Nam sit amet tristique leo. Morbi scelerisque interdum ex, ut auctor massa bibendum a. Donec ante nisi, vehicula non finibus porttitor, gravida quis dui. Quisque consectetur vestibulum ipsum, at pretium sapien facilisis non. Phasellus tortor orci, vestibulum eget ultrices nec, tincidunt in sapien. Fusce molestie bibendum ligula, eu tincidunt ligula. Etiam in faucibus nisi, id suscipit nisl. Donec quis est vitae lectus vestibulum ullamcorper eu eu magna. Aliquam ante lectus, sollicitudin sed tristique non, sagittis sed metus. Aliquam mauris elit, placerat eget diam non, ultricies porta lacus. Maecenas vitae leo et purus vulputate egestas.',
+      createdAt: new Date('2026-06-10T12:28:33.371Z'),
+    },
+  });
+
+  console.log('Seed terminé : 3 utilisateurs, 5 salles, 5 concerts, 1 message de contact créés.');
 }
 
 main().finally(() => prisma.$disconnect());
