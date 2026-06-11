@@ -26,6 +26,7 @@ function formatDate(iso: string): string {
       </mat-dialog-content>
       <mat-dialog-actions align="end">
         <button mat-button mat-dialog-close data-testid="close-dialog-btn">Fermer</button>
+        <button mat-button color="warn" [mat-dialog-close]="'delete'" data-testid="modal-delete-btn">Supprimer</button>
       </mat-dialog-actions>
     </div>
   `,

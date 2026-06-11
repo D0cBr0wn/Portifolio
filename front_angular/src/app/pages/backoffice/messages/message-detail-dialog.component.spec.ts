@@ -40,4 +40,10 @@ describe('MessageDetailDialogComponent', () => {
   it('affiche l\'email et la date', () => {
     expect(fixture.nativeElement.textContent).toContain('alice@example.com');
   });
+
+  it('affiche un bouton Supprimer', () => {
+    const btn = fixture.nativeElement.querySelector('[data-testid="modal-delete-btn"]');
+    expect(btn).toBeTruthy();
+    expect(btn.textContent).toContain('Supprimer');
+  });
 });

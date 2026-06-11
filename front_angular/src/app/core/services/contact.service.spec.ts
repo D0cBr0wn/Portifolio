@@ -41,4 +41,11 @@ describe('ContactService', () => {
     expect(req.request.method).toBe('GET');
     req.flush([response]);
   });
+
+  it('deleteMessage() DELETE /contact/:id avec statut 204', (done) => {
+    service.deleteMessage(1).subscribe(() => done());
+    const req = http.expectOne(`${BASE}/contact/1`);
+    expect(req.request.method).toBe('DELETE');
+    req.flush(null, { status: 204, statusText: 'No Content' });
+  });
 });

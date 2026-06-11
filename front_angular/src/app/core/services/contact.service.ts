@@ -27,4 +27,8 @@ export class ContactService {
   getMessages(): Observable<ContactMessage[]> {
     return this.api.get<ContactMessage[]>('/contact');
   }
+
+  deleteMessage(id: number): Observable<void> {
+    return this.api.delete<void>(`/contact/${id}`);
+  }
 }
