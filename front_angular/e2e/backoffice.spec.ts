@@ -49,6 +49,61 @@ test.describe('Backoffice — Venues', () => {
   })
 })
 
+test.describe('Backoffice — Messages', () => {
+  const mockMessages = [
+    { id: 1, name: 'Alice', email: 'alice@example.com', message: 'Bonjour !', createdAt: '2025-06-01T10:00:00.000Z' },
+    { id: 2, name: 'Bob', email: 'bob@example.com', message: 'Super !', createdAt: '2025-06-02T12:00:00.000Z' },
+  ]
+
+  test.beforeEach(async ({ page }) => {
+    await page.addInitScript((token) => sessionStorage.setItem('token', token), JWT)
+    await page.route(`${API}/backoffice/venues`, route => route.fulfill({ json: [] }))
+    await page.route(`${API}/backoffice/shows`, route => route.fulfill({ json: [] }))
+    await page.route((url) => url.pathname.includes('/contact'), async route => {
+      if (route.request().method() === 'DELETE') {
+        await route.fulfill({ status: 204 })
+      } else {
+        await route.fulfill({ json: mockMessages })
+      }
+    })
+  })
+
+  test('affiche la liste des messages', async ({ page }) => {
+    await page.goto('/backoffice/messages')
+    await expect(page.getByText('Alice')).toBeVisible()
+    await expect(page.getByText('bob@example.com')).toBeVisible()
+  })
+
+  test('affiche le dialog de confirmation au clic sur supprimer', async ({ page }) => {
+    await page.goto('/backoffice/messages')
+    await page.getByTestId('delete-btn').first().click()
+    await expect(page.getByTestId('confirm-overlay')).toBeVisible()
+    await expect(page.getByText('Alice')).toBeVisible()
+  })
+
+  test('supprime un message après confirmation et ferme l\'overlay', async ({ page }) => {
+    await page.goto('/backoffice/messages')
+    await page.getByTestId('delete-btn').first().click()
+    await page.getByTestId('confirm-delete-btn').click()
+    await expect(page.getByTestId('confirm-overlay')).not.toBeVisible({ timeout: 3000 })
+  })
+
+  test('annule la suppression et garde le message', async ({ page }) => {
+    await page.goto('/backoffice/messages')
+    await page.getByTestId('delete-btn').first().click()
+    await page.getByTestId('cancel-delete-btn').click()
+    await expect(page.getByTestId('confirm-overlay')).not.toBeVisible()
+    await expect(page.getByText('Alice')).toBeVisible()
+  })
+
+  test('ouvre la modale de détail au clic sur une ligne', async ({ page }) => {
+    await page.goto('/backoffice/messages')
+    await page.getByTestId('message-row').first().click()
+    await expect(page.locator('[role="dialog"]')).toBeVisible()
+    await expect(page.getByTestId('modal-delete-btn')).toBeVisible()
+  })
+})
+
 test.describe('Backoffice — Shows', () => {
   const mockShowsFull = [{
     id: 1,
