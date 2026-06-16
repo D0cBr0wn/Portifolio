@@ -10,12 +10,13 @@ services:
       DATABASE_URL: postgresql+asyncpg://ooodbuser:password@postgres:5432/ooo_db
       JWT_SECRET: ${JWT_SECRET:-change_me_in_production}
       ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@example.com}
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:5173,http://localhost:5174,http://localhost:5175}
     networks:
       - ooo-network
     depends_on:
       postgres:
         condition: service_healthy
-    command: uvicorn app.main:app --host 0.0.0.0 --port 3000 --reload
+    command: sh -c "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 3000 --reload"
 
   postgres:
     image: postgres:15

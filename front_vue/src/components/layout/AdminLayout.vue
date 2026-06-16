@@ -25,6 +25,12 @@
         />
         <v-list-item
           v-if="auth.isAdmin"
+          title="Messages"
+          prepend-icon="mdi-email-outline"
+          to="/backoffice/messages"
+        />
+        <v-list-item
+          v-if="auth.isAdmin"
           title="Utilisateurs"
           prepend-icon="mdi-account-multiple"
           to="/backoffice/users"

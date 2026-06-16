@@ -21,6 +21,10 @@ const router = createRouter({
       component: () => import('@/views/RegisterView.vue'),
     },
     {
+      path: '/contact',
+      component: () => import('@/views/ContactView.vue'),
+    },
+    {
       path: '/backoffice',
       meta: { requiresAuth: true },
       children: [
@@ -35,6 +39,11 @@ const router = createRouter({
         {
           path: 'mfa-setup',
           component: () => import('@/views/backoffice/MfaSetupView.vue'),
+        },
+        {
+          path: 'messages',
+          meta: { requiresAdmin: true },
+          component: () => import('@/views/backoffice/MessagesView.vue'),
         },
         {
           path: 'users',

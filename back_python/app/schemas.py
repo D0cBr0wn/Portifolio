@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from pydantic import BaseModel, ConfigDict, EmailStr
+from pydantic import BaseModel, ConfigDict, EmailStr, Field
 from pydantic.alias_generators import to_camel
 
 
@@ -156,3 +156,11 @@ class UserUpdateIn(BaseSchema):
 
 class RoleIn(BaseModel):
     role: str
+
+
+# ── Contact ───────────────────────────────────────────────────────────────────
+
+class ContactMessageIn(BaseModel):
+    name: str = Field(min_length=1, max_length=100)
+    email: EmailStr
+    message: str = Field(min_length=1, max_length=2000)

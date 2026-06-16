@@ -5,7 +5,7 @@ from sqlalchemy import delete
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
 from app.config import settings
-from app.models import Role, Show, User, Venue
+from app.models import ContactMessage, Role, Show, User, Venue
 
 
 async def main() -> None:
@@ -16,6 +16,7 @@ async def main() -> None:
         await db.execute(delete(Show))
         await db.execute(delete(Venue))
         await db.execute(delete(User))
+        await db.execute(delete(ContactMessage))
         await db.commit()
 
         admin = User(
@@ -83,8 +84,16 @@ async def main() -> None:
         ])
         await db.commit()
 
+        db.add(ContactMessage(
+            name="Michel test",
+            email="michel@test.com",
+            message="Hello !\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed eleifend nulla libero, a molestie nisl auctor ac. Integer urna massa, elementum a ultricies quis, efficitur eu ipsum. Nam sit amet tristique leo. Morbi scelerisque interdum ex, ut auctor massa bibendum a. Donec ante nisi, vehicula non finibus porttitor, gravida quis dui. Quisque consectetur vestibulum ipsum, at pretium sapien facilisis non. Phasellus tortor orci, vestibulum eget ultrices nec, tincidunt in sapien. Fusce molestie bibendum ligula, eu tincidunt ligula. Etiam in faucibus nisi, id suscipit nisl. Donec quis est vitae lectus vestibulum ullamcorper eu eu magna. Aliquam ante lectus, sollicitudin sed tristique non, sagittis sed metus. Aliquam mauris elit, placerat eget diam non, ultricies porta lacus. Maecenas vitae leo et purus vulputate egestas.",
+            createdAt=datetime(2026, 6, 10, 12, 28, 33, 371000, tzinfo=timezone.utc),
+        ))
+        await db.commit()
+
     await engine.dispose()
-    print("Seed terminé : 3 utilisateurs, 5 salles, 5 concerts créés.")
+    print("Seed terminé : 3 utilisateurs, 5 salles, 5 concerts, 1 message de contact créés.")
 
 
 asyncio.run(main())

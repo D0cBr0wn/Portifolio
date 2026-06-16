@@ -15,6 +15,11 @@ export const routes: Routes = [
       import('./pages/shows/shows.component').then((m) => m.ShowsComponent),
   },
   {
+    path: 'contact',
+    loadComponent: () =>
+      import('./pages/contact/contact.component').then((m) => m.ContactComponent),
+  },
+  {
     path: 'login',
     canActivate: [guestGuard],
     loadComponent: () =>
@@ -56,6 +61,12 @@ export const routes: Routes = [
         canActivate: [adminGuard],
         loadComponent: () =>
           import('./pages/backoffice/user-detail/user-detail.component').then((m) => m.UserDetailComponent),
+      },
+      {
+        path: 'messages',
+        canActivate: [adminGuard],
+        loadComponent: () =>
+          import('./pages/backoffice/messages/messages.component').then((m) => m.BackofficeMessagesComponent),
       },
       { path: '', redirectTo: 'venues', pathMatch: 'full' },
     ],

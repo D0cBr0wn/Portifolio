@@ -7,6 +7,7 @@
       <nav>
         <router-link to="/">Accueil</router-link>
         <router-link to="/shows">Concerts</router-link>
+        <router-link to="/contact">Contact</router-link>
       </nav>
     </header>
     <main class="public-content">

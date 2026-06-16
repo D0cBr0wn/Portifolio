@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate, Outlet, useLocation } from 'rea
 import { useAuthStore } from '@/stores/authStore'
 import Home from '@/pages/Home'
 import Shows from '@/pages/Shows'
+import Contact from '@/pages/Contact'
 import Login from '@/pages/Login'
 import Register from '@/pages/Register'
 import Venues from '@/pages/backoffice/Venues'
@@ -9,6 +10,7 @@ import BackofficeShows from '@/pages/backoffice/Shows'
 import MfaSetup from '@/pages/backoffice/MfaSetup'
 import Users from '@/pages/backoffice/Users'
 import UserDetail from '@/pages/backoffice/UserDetail'
+import BackofficeMessages from '@/pages/backoffice/Messages'
 
 function PrivateRoute() {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
@@ -28,6 +30,7 @@ export default function AppRouter() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/shows" element={<Shows />} />
+        <Route path="/contact" element={<Contact />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/backoffice" element={<PrivateRoute />}>
@@ -37,6 +40,7 @@ export default function AppRouter() {
           <Route element={<AdminRoute />}>
             <Route path="users" element={<Users />} />
             <Route path="users/:id" element={<UserDetail />} />
+            <Route path="messages" element={<BackofficeMessages />} />
           </Route>
         </Route>
       </Routes>
